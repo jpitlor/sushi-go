@@ -1,0 +1,20 @@
+{
+    "name": "sushi-go",
+    "version": "1.0.0",
+    "scripts": {
+        "start": "parcel index.html",
+        "build": "parcel build index.html"
+    },
+    "dependencies": {
+        "parcel": "^1.12.4",
+        "react": "^17.0.1",
+        "react-dom": "^17.0.1",
+        "socket.io": "^3.1.1"
+    },
+    "devDependencies": {
+        "@types/node": "^14.14.22",
+        "@types/react": "^17.0.1",
+        "@types/react-dom": "^17.0.0",
+        "@types/socket.io": "^2.1.13"
+    }
+}

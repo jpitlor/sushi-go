@@ -1,4 +1,5 @@
 import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Assertions.assertEquals
 
 internal class CardsKtTest {
     @Test
@@ -7,7 +8,7 @@ internal class CardsKtTest {
         val hand = arrayListOf(Tempura, Tempura, Sashimi, Sashimi, Sashimi, nigiri, Wasabi(nigiri))
         val score = hand.score()
 
-        assert(score == 24)
+        assertEquals(24, score)
     }
 
     @Test
@@ -15,7 +16,7 @@ internal class CardsKtTest {
         val hand = arrayListOf(Chopsticks, Pudding, Wasabi(), Tempura, Sashimi)
         val score = hand.score()
 
-        assert(score == 0)
+        assertEquals(0, score)
     }
 
     @Test
@@ -23,7 +24,7 @@ internal class CardsKtTest {
         val hand = arrayListOf(Tempura, Sashimi, Sashimi)
         val score = hand.score()
 
-        assert(score == 0)
+        assertEquals(0, score)
     }
 
     @Test
@@ -40,9 +41,9 @@ internal class CardsKtTest {
         val players = arrayListOf(jim, jan, sue)
         players.scoreRound()
 
-        assert(jim.score == 0)
-        assert(jan.score == 0)
-        assert(sue.score == 0)
+        assertEquals(0, jim.score)
+        assertEquals(0, jan.score)
+        assertEquals(0, sue.score)
     }
 
     @Test
@@ -59,9 +60,9 @@ internal class CardsKtTest {
         val players = arrayListOf(jim, jan, sue)
         players.scoreRound(isEndOfGame = true)
 
-        assert(jim.score == 6)
-        assert(jan.score == 0)
-        assert(sue.score == -6)
+        assertEquals(6, jim.score)
+        assertEquals(0, jan.score)
+        assertEquals(-6, sue.score)
     }
 
     @Test
@@ -78,8 +79,8 @@ internal class CardsKtTest {
         val players = arrayListOf(jim, jan, sue)
         players.scoreRound()
 
-        assert(jim.score == 3)
-        assert(jan.score == 3)
-        assert(sue.score == 0)
+        assertEquals(3, jim.score)
+        assertEquals(3, jan.score)
+        assertEquals(0, sue.score)
     }
 }

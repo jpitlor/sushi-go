@@ -9,8 +9,8 @@ object Pudding : Card()
 data class Wasabi(var nigiri: Nigiri? = null) : Card()
 object Chopsticks : Card()
 
-fun newDeck(): Array<Card> {
-    return arrayOf(
+fun newDeck(): ArrayList<Card> {
+    return arrayListOf(
         *Array(14) { Tempura },
         *Array(14) { Sashimi },
         *Array(14) { Dumpling },

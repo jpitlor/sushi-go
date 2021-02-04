@@ -37,4 +37,19 @@ internal class GameTest {
         }
         assertEquals("Game can only be played with 2-5 people", exception.message)
     }
+
+    @Test
+    fun playCardPlayerDoesntExist() {
+
+    }
+
+    @Test
+    fun playCardInvalidIndex() {
+
+    }
+
+    @Test
+    fun playCard() {
+
+    }
 }

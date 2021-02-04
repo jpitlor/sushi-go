@@ -4,7 +4,11 @@
         "target": "es5",
         "sourceMap": true,
         "allowSyntheticDefaultImports": true,
-        "jsx": "react"
+        "jsx": "react",
+        "lib": [
+            "DOM",
+            "ESNext"
+        ],
     },
     "exclude": [
         "node_modules"

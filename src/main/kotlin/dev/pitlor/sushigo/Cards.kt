@@ -1,3 +1,5 @@
+package dev.pitlor.sushigo
+
 sealed class Card
 
 object Tempura : Card()

@@ -1,10 +1,29 @@
-class Game {
+package dev.pitlor.sushigo
+
+import java.util.*
+import kotlin.collections.ArrayList
+
+class Player(val name: String, val uuid: UUID) {
+    var score: Int = 0
+    var puddingCount: Int = 0
+    val hand: ArrayList<Card> = arrayListOf()
+    val cardsPlayed: ArrayList<Card> = arrayListOf()
+}
+
+class Game(val code: String) {
     val players = arrayListOf<Player>()
     private val deck = newDeck()
     private var round = 1
 
     init {
         deck.shuffle()
+    }
+
+    fun getPlayer(id: UUID): Player {
+        val player = players.find { it.uuid == id }
+        require(player != null) { "That player is not in this game" }
+
+        return player
     }
 
     fun playCard(player: String, cardIndex: Int) {

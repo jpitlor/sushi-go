@@ -8,7 +8,7 @@ import {
   TypedUseSelectorHook,
   useSelector as useUntypedSelector,
 } from "react-redux";
-import { serverDispatch } from "./api";
+import * as api from "./api";
 
 interface State {
   skin: "Default" | "Camp Fitch";
@@ -21,16 +21,8 @@ interface State {
   };
 }
 
-const createGame = createAsyncThunk<void, string>(
-  "createGame",
-  (code, thunkAPI) => {
-    serverDispatch({ type: "create_game", payload: code });
-    thunkAPI.dispatch(getGames());
-  }
-);
-
-const getGames = createAsyncThunk("getGames", () => {
-  serverDispatch({ type: "get_game_list", payload: null });
+const createGame = createAsyncThunk<void, string>("createGame", (code) => {
+  api.createGame(code);
 });
 
 const { actions, reducer } = createSlice({
@@ -43,7 +35,7 @@ const { actions, reducer } = createSlice({
   reducers: {
     requestException: (state, action: PayloadAction<string>) => {
       state.toast = {
-        id: state.toast.id++,
+        id: state.toast.id + 1,
         title: "Bad Request",
         description: action.payload,
         status: "error",
@@ -51,23 +43,26 @@ const { actions, reducer } = createSlice({
     },
     serverException: (state, action: PayloadAction<string>) => {
       state.toast = {
-        id: state.toast.id++,
+        id: state.toast.id + 1,
         title: "Server Error",
         description: action.payload,
         status: "error",
       };
     },
-    getGameListResponse: (state, action: PayloadAction<string[]>) => {
+    handleGamesListMessage: (state, action: PayloadAction<string[]>) => {
+      console.log(action.payload);
       state.openGames = [...action.payload];
     },
-    createGameResponse: (state) => {
+  },
+  extraReducers: (builder) => {
+    builder.addCase(createGame.fulfilled, (state) => {
       state.toast = {
-        id: state.toast.id++,
+        id: state.toast.id + 1,
         title: "Game Created",
         description: "",
         status: "success",
       };
-    },
+    });
   },
 });
 
@@ -75,4 +70,4 @@ const store = configureStore({ reducer });
 
 const useSelector: TypedUseSelectorHook<State> = useUntypedSelector;
 
-export { actions, reducer, store, useSelector, createGame, getGames };
+export { actions, reducer, store, useSelector, createGame };

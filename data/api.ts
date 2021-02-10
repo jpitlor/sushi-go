@@ -13,17 +13,22 @@ client.onConnect = () => {
     store.dispatch(actions.handleGamesListMessage(response.games));
   });
 
-  const [, userId] = /ws:\/\/[^/]+\/[^/]+\/([^/]+)/.exec(
-    client._stompHandler._webSocket._transport.url
-  );
-  client.subscribe(`/topic/errors/client-user${userId}`, ({ body }) => {
+  // const [, userId] = /ws:\/\/[^/]+\/[^/]+\/([^/]+)/.exec(
+  //   client._stompHandler._webSocket._transport.url
+  // );
+  client.subscribe(`/user/topic/errors/client`, ({ body }) => {
     const response = JSON.parse(body) as { message: string };
-    store.dispatch(actions.requestException(response.message));
+    store.dispatch(actions.handleRequestException(response.message));
   });
 
-  client.subscribe(`/topic/errors/server-user${userId}`, ({ body }) => {
+  client.subscribe(`/user/topic/errors/server`, ({ body }) => {
     const response = JSON.parse(body) as { message: string };
-    store.dispatch(actions.serverException(response.message));
+    store.dispatch(actions.handleServerException(response.message));
+  });
+
+  client.subscribe(`/user/topic/successes`, ({ body }) => {
+    const response = JSON.parse(body) as { message: string };
+    store.dispatch(actions.handleSuccess(response.message));
   });
 };
 client.activate();

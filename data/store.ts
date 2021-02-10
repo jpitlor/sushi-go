@@ -33,7 +33,7 @@ const { actions, reducer } = createSlice({
     toast: { id: 0, title: "", description: "", status: "success" },
   } as State,
   reducers: {
-    requestException: (state, action: PayloadAction<string>) => {
+    handleRequestException: (state, action: PayloadAction<string>) => {
       state.toast = {
         id: state.toast.id + 1,
         title: "Bad Request",
@@ -41,7 +41,7 @@ const { actions, reducer } = createSlice({
         status: "error",
       };
     },
-    serverException: (state, action: PayloadAction<string>) => {
+    handleServerException: (state, action: PayloadAction<string>) => {
       state.toast = {
         id: state.toast.id + 1,
         title: "Server Error",
@@ -49,19 +49,17 @@ const { actions, reducer } = createSlice({
         status: "error",
       };
     },
-    handleGamesListMessage: (state, action: PayloadAction<string[]>) => {
-      state.openGames = [...action.payload];
-    },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(createGame.fulfilled, (state) => {
+    handleSuccess: (state, action: PayloadAction<string>) => {
       state.toast = {
         id: state.toast.id + 1,
-        title: "Game Created",
+        title: action.payload,
         description: "",
         status: "success",
       };
-    });
+    },
+    handleGamesListMessage: (state, action: PayloadAction<string[]>) => {
+      state.openGames = [...action.payload];
+    },
   },
 });
 

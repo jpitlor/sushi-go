@@ -50,7 +50,6 @@ const { actions, reducer } = createSlice({
       };
     },
     handleGamesListMessage: (state, action: PayloadAction<string[]>) => {
-      console.log(action.payload);
       state.openGames = [...action.payload];
     },
   },

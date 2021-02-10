@@ -16,7 +16,7 @@ import com.fasterxml.jackson.module.kotlin.kotlinModule
 open class Config : WebSocketMessageBrokerConfigurer {
     override fun configureMessageBroker(registry: MessageBrokerRegistry) {
         registry.enableSimpleBroker("/topic")
-        registry.setApplicationDestinationPrefixes("/app")
+        registry.setApplicationDestinationPrefixes("/app", "/topic")
     }
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {

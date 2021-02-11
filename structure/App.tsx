@@ -4,6 +4,7 @@ import { Route, Switch } from "react-router-dom";
 import { useSelector } from "../data/store";
 import Game from "../pages/Game";
 import Home from "../pages/Home";
+import Lobby from "../pages/Lobby";
 
 export default function App() {
   const toastData = useSelector((state) => state.toast);
@@ -17,21 +18,22 @@ export default function App() {
       title,
       description,
       status,
-      duration: 3000,
+      duration: 2000,
       position: "bottom-right",
     });
   }, [toastData.id]);
 
   return (
-    <div>
-      <Switch>
-        <Route path="/game/:code">
-          <Game />
-        </Route>
-        <Route path="/">
-          <Home />
-        </Route>
-      </Switch>
-    </div>
+    <Switch>
+      <Route path="/game/:code">
+        <Game />
+      </Route>
+      <Route path="/lobby">
+        <Lobby />
+      </Route>
+      <Route path="/" exact>
+        <Home />
+      </Route>
+    </Switch>
   );
 }

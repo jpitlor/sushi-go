@@ -21,6 +21,10 @@ interface State {
   };
 }
 
+const goToLobby = createAsyncThunk<void, string>("goToLobby", (serverUrl) => {
+  api.connectToServer(serverUrl);
+});
+
 const createGame = createAsyncThunk<void, string>("createGame", (code) => {
   api.createGame(code);
 });
@@ -67,4 +71,4 @@ const store = configureStore({ reducer });
 
 const useSelector: TypedUseSelectorHook<State> = useUntypedSelector;
 
-export { actions, reducer, store, useSelector, createGame };
+export { actions, reducer, store, useSelector, goToLobby, createGame };

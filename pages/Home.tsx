@@ -10,17 +10,26 @@ import {
   Select,
 } from "@chakra-ui/react";
 import React, { FormEvent } from "react";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { goToLobby } from "../data/store";
 import logo from "../public/logo.png";
 import skins from "../skins";
 import useInput from "../utils/useInput";
 
 export default function Home() {
-  const [name, setName] = useInput("");
-  const [server, setServer] = useInput("");
-  const [skin, setSkin] = useInput("");
+  const [name, setName] = useInput(localStorage.getItem("name"));
+  const [server, setServer] = useInput(localStorage.getItem("server"));
+  const [skin, setSkin] = useInput("Default");
+  const dispatch = useDispatch();
+  const history = useHistory();
 
   function handleGoToLobby(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    localStorage.setItem("name", name);
+    localStorage.setItem("server", server);
+    dispatch(goToLobby(server));
+    history.push("/lobby");
     return false;
   }
 
@@ -47,13 +56,14 @@ export default function Home() {
             <FormLabel>Server</FormLabel>
             <Input value={server} onChange={setServer} placeholder="Server" />
             <FormHelperText>
-              If you're not sure what this is, keep the default
+              If you're not sure what this is, keep the default - <br />
+              https://sushi-go-server.pitlor.dev
             </FormHelperText>
           </FormControl>
           <FormControl id="skin" mt={4}>
             <FormLabel>Skin</FormLabel>
             {/* @ts-ignore - the types are wrong?? */}
-            <Select placeholder="Select a skin" value={skin} onChange={setSkin}>
+            <Select value={skin} onChange={setSkin}>
               {Object.keys(skins).map((skin) => (
                 <option value={skin} key={skin}>
                   {skin}

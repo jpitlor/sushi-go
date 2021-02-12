@@ -15,8 +15,9 @@ import {
 import { getGlobalLock } from "framer-motion/types/gestures/drag/utils/lock";
 import React, { FormEvent } from "react";
 import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 import RadioCard from "../components/RadioCard";
-import { createGame, useSelector } from "../data/store";
+import { createGame, joinGame, useSelector } from "../data/store";
 import logo from "../public/logo.png";
 import skins from "../skins";
 import useInput from "../utils/useInput";
@@ -25,6 +26,7 @@ export default function Lobby() {
   const [newGameCode, setNewGameCode] = useInput("");
   const dispatch = useDispatch();
   const openGames = useSelector((state) => state.openGames);
+  const history = useHistory();
 
   const { getRootProps, getRadioProps, value: gameCode } = useRadioGroup({
     name: "game-code",
@@ -37,6 +39,10 @@ export default function Lobby() {
 
     if (gameCode === "Create Game") {
       dispatch(createGame(newGameCode));
+      history.push(`/game/${newGameCode}`);
+    } else {
+      dispatch(joinGame(openGames[gameCode]));
+      history.push(`/game/${openGames[gameCode]}`);
     }
 
     return false;

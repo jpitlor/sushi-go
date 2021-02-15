@@ -1,15 +1,14 @@
 export interface Card {
   name: string;
   image: string;
+  color: string;
 }
 
 export interface Skin {
   tempura: Card;
   sashimi: Card;
   dumpling: Card;
-  maki1: Card;
-  maki2: Card;
-  maki3: Card;
+  maki: Card;
   nigiriSquid: Card;
   nigiriSalmon: Card;
   nigiriEgg: Card;

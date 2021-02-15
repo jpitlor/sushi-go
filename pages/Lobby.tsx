@@ -34,7 +34,7 @@ export default function Lobby() {
   });
   const selectRootProps = getRootProps();
 
-  function handleJoinGame(e: FormEvent<HTMLFormElement>) {
+  function handleJoinGame(e: FormEvent<any>) {
     e.preventDefault();
 
     if (gameCode === "Create Game") {
@@ -62,7 +62,12 @@ export default function Lobby() {
       >
         <Image src={logo} mb={8} />
 
-        <form onSubmit={handleJoinGame}>
+        <Flex
+          as="form"
+          flexDirection="column"
+          alignItems="center"
+          onSubmit={handleJoinGame}
+        >
           <Heading mb={4}>Open Games</Heading>
           <VStack {...selectRootProps} spacing={4}>
             {openGames.map((value) => (
@@ -83,9 +88,11 @@ export default function Lobby() {
                 />
               </FormControl>
             )}
-            <Button type="submit">Join Game</Button>
           </VStack>
-        </form>
+          <Button type="submit" mt={16} colorScheme="green">
+            Join Game
+          </Button>
+        </Flex>
       </Flex>
     </Box>
   );

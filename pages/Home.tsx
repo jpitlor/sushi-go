@@ -71,7 +71,7 @@ export default function Home() {
               ))}
             </Select>
           </FormControl>
-          <Button type="submit" mt={8}>
+          <Button type="submit" mt={8} colorScheme="green">
             Go to Lobby
           </Button>
         </form>

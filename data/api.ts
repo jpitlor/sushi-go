@@ -1,6 +1,7 @@
 import { store, actions } from "./store";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
+import { v4 as uuidv4 } from "uuid";
 
 const client = new Client();
 client.onConnect = () => {
@@ -26,9 +27,16 @@ client.onConnect = () => {
 };
 
 export function connectToServer(serverUrl) {
+  let uuid = localStorage.getItem("uuid");
+  if (!uuid) {
+    uuid = uuidv4();
+    localStorage.setItem("uuid", uuid);
+  }
+
   // This is word for word the example in the docs, not sure why it's an error
   // @ts-ignore
   client.webSocketFactory = () => new SockJS(serverUrl);
+  client.connectHeaders = { uuid };
   client.activate();
 }
 

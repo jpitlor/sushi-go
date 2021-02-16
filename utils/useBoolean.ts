@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 export default function useBoolean(
-  defaultValue: boolean
+  defaultValue: boolean = false
 ): [boolean, () => void, () => void] {
   const [state, setState] = useState(defaultValue);
 

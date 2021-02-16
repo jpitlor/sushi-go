@@ -8,16 +8,36 @@ import {
   TypedUseSelectorHook,
   useSelector as useUntypedSelector,
 } from "react-redux";
+import { Card } from "../types/props";
+import { Skins } from "../types/skins";
 import * as api from "./api";
 
+interface Settings {
+  id: string;
+  name: string;
+  skin: Skins;
+  server: string;
+}
+
 interface State {
-  skin: "Default" | "Camp Fitch";
   openGames: string[];
   toast: {
     id: number;
     title: string;
     description: string;
     status: "info" | "warning" | "success" | "error";
+  };
+  settings: Settings;
+  currentGame: {
+    code: string;
+    active: boolean;
+    players: {
+      name: string;
+      id: string;
+      connected: boolean;
+      cardsPlayed: Card[];
+      cardsLeft: number;
+    }[];
   };
 }
 
@@ -31,12 +51,35 @@ const createGame = createAsyncThunk<void, string>("createGame", (code) => {
 
 const joinGame = createAsyncThunk<void, string>("joinGame", (code) => {});
 
+const saveSettings = createAsyncThunk<Partial<Settings>, Partial<Settings>>(
+  "saveSettings",
+  (settings) => {
+    const { name, skin, server, id } = settings;
+    if (name) localStorage.setItem("name", name);
+    if (skin) localStorage.setItem("skin", skin);
+    if (server) localStorage.setItem("server", server);
+    if (id) localStorage.setItem("id", id);
+
+    return settings;
+  }
+);
+
 const { actions, reducer } = createSlice({
   name: "app",
   initialState: {
-    skin: "Default",
     openGames: [],
     toast: { id: 0, title: "", description: "", status: "success" },
+    currentGame: {
+      active: false,
+      code: "",
+      players: [],
+    },
+    settings: {
+      id: localStorage.getItem("uuid"),
+      name: localStorage.getItem("name"),
+      skin: localStorage.getItem("skin") || "Default",
+      server: localStorage.getItem("server") || "",
+    },
   } as State,
   reducers: {
     handleRequestException: (state, action: PayloadAction<string>) => {
@@ -67,6 +110,14 @@ const { actions, reducer } = createSlice({
       state.openGames = [...action.payload];
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(saveSettings.fulfilled, (state, action) => {
+      state.settings = {
+        ...state.settings,
+        ...action.payload,
+      };
+    });
+  },
 });
 
 const store = configureStore({ reducer });
@@ -81,4 +132,5 @@ export {
   goToLobby,
   createGame,
   joinGame,
+  saveSettings,
 };

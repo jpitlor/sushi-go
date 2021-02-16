@@ -16,3 +16,5 @@ export interface Skin {
   wasabi: Card;
   chopsticks: Card;
 }
+
+export type Skins = "Camp Fitch" | "Default";

@@ -12,22 +12,27 @@ import {
 import React, { FormEvent } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { goToLobby } from "../data/store";
+import { goToLobby, saveSettings, useSelector } from "../data/store";
 import logo from "../public/logo.png";
 import skins from "../skins";
+import { Skins } from "../types/skins";
 import useInput from "../utils/useInput";
 
 export default function Home() {
-  const [name, setName] = useInput(localStorage.getItem("name"));
-  const [server, setServer] = useInput(localStorage.getItem("server"));
-  const [skin, setSkin] = useInput("Default");
+  const {
+    name: defaultName,
+    skin: defaultSkin,
+    server: defaultServer,
+  } = useSelector((state) => state.settings);
+  const [name, setName] = useInput(defaultName);
+  const [server, setServer] = useInput(defaultServer);
+  const [skin, setSkin] = useInput(defaultSkin);
   const dispatch = useDispatch();
   const history = useHistory();
 
   function handleGoToLobby(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    localStorage.setItem("name", name);
-    localStorage.setItem("server", server);
+    dispatch(saveSettings({ name, server, skin: skin as Skins }));
     dispatch(goToLobby(server));
     history.push("/lobby");
     return false;

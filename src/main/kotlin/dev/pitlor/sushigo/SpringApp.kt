@@ -8,12 +8,19 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.messaging.Message
 import org.springframework.messaging.MessageChannel
+import org.springframework.messaging.handler.annotation.MessageExceptionHandler
+import org.springframework.messaging.handler.annotation.MessageMapping
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor
+import org.springframework.messaging.simp.SimpMessagingTemplate
+import org.springframework.messaging.simp.annotation.SendToUser
+import org.springframework.messaging.simp.annotation.SubscribeMapping
 import org.springframework.messaging.simp.config.ChannelRegistration
 import org.springframework.messaging.simp.config.MessageBrokerRegistry
 import org.springframework.messaging.simp.stomp.StompCommand
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor
 import org.springframework.messaging.support.ChannelInterceptor
 import org.springframework.messaging.support.MessageHeaderAccessor
+import org.springframework.stereotype.Controller
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer
@@ -48,6 +55,45 @@ open class SocketConfig : WebSocketMessageBrokerConfigurer {
 @Bean
 fun getJacksonKotlinModule(): KotlinModule {
     return kotlinModule()
+}
+
+data class CreateGameRequest(val code: String)
+data class CreateGameResponse(val games: Iterable<String>)
+data class NotificationResponse(val message: String)
+
+@Controller
+class ServerController(private val template: SimpMessagingTemplate) {
+    private val server = Server()
+
+    @MessageExceptionHandler
+    @SendToUser("/topic/errors/client")
+    fun on400Error(e: IllegalArgumentException): NotificationResponse {
+        return NotificationResponse(e.message ?: "")
+    }
+
+    @MessageExceptionHandler
+    @SendToUser("/topic/errors/server")
+    fun on500Error(e: IllegalStateException): NotificationResponse {
+        return NotificationResponse(e.message ?: "")
+    }
+
+    @SubscribeMapping("/games")
+    fun getGames(): CreateGameResponse {
+        return CreateGameResponse(server.getGames())
+    }
+
+    @MessageMapping("/games/create")
+    @SendToUser("/topic/successes")
+    fun createGame(request: CreateGameRequest, sha: SimpMessageHeaderAccessor): NotificationResponse {
+        val response = server.createGame(request.code)
+        template.convertAndSend("/topic/games", CreateGameResponse(server.getGames()))
+        return NotificationResponse(response)
+    }
+
+    @MessageMapping("/games/{gameCode}/join")
+    fun joinGame() {
+
+    }
 }
 
 @SpringBootApplication

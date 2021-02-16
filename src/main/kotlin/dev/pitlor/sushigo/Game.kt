@@ -3,7 +3,7 @@ package dev.pitlor.sushigo
 import java.util.*
 import kotlin.collections.ArrayList
 
-class Player(val name: String, val uuid: UUID) {
+class Player(var name: String, val uuid: UUID) {
     var score: Int = 0
     var puddingCount: Int = 0
     val hand: ArrayList<Card> = arrayListOf()
@@ -21,16 +21,17 @@ class Game(val code: String) {
 
     fun getPlayer(id: UUID): Player {
         val player = players.find { it.uuid == id }
+
         require(player != null) { "That player is not in this game" }
 
         return player
     }
 
-    fun playCard(player: String, cardIndex: Int) {
-        val i = players.indexOfFirst { it.name == player }
+    fun playCard(player: UUID, cardIndex: Int) {
+        val i = players.indexOfFirst { it.uuid == player }
 
         require(i == -1) { "Player is not in this game" }
-        require(cardIndex >= players[i].hand.size) { "$player doesn't have that many cards" }
+        require(cardIndex >= players[i].hand.size) { "Player doesn't have that many cards" }
         require(cardIndex < 0) { "Card index must be positive" }
 
         players[i].apply { cardsPlayed += hand.removeAt(cardIndex) }

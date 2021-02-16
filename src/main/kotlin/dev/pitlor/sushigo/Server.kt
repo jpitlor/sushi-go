@@ -2,6 +2,7 @@ package dev.pitlor.sushigo
 
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler
 import org.springframework.messaging.handler.annotation.MessageMapping
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.messaging.simp.annotation.SendToUser
 import org.springframework.messaging.simp.annotation.SubscribeMapping
@@ -34,14 +35,14 @@ class ServerController(private val template: SimpMessagingTemplate) {
 
     @MessageMapping("/games/create")
     @SendToUser("/topic/successes")
-    fun createGame(request: CreateGameRequest): NotificationResponse {
+    fun createGame(request: CreateGameRequest, sha: SimpMessageHeaderAccessor): NotificationResponse {
         require(request.code.isNotEmpty()) { "Code is empty" }
         require(games.firstOrNull { it.code == request.code } == null) { "That game code is already in use" }
 
         games += Game(request.code)
         template.convertAndSend("/topic/games", CreateGameResponse(games.map { it.code }))
 
-        return NotificationResponse("Game \"${request.code}\" Created")
+        return NotificationResponse("Game \"${request.code}\" Created; Hi, ${sha.user?.name}!")
     }
 }
 

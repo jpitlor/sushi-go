@@ -14,6 +14,7 @@ import * as api from "./api";
 
 interface Settings {
   id: string;
+  image: string;
   name: string;
   skin: Skins;
   server: string;
@@ -58,12 +59,7 @@ const joinGame = createAsyncThunk<void, string>("joinGame", (code) => {});
 const saveSettings = createAsyncThunk<Partial<Settings>, Partial<Settings>>(
   "saveSettings",
   (settings) => {
-    const { name, skin, server, id } = settings;
-    if (name) localStorage.setItem("name", name);
-    if (skin) localStorage.setItem("skin", skin);
-    if (server) localStorage.setItem("server", server);
-    if (id) localStorage.setItem("id", id);
-
+    Object.entries(settings).forEach(([k, v]) => localStorage.setItem(k, v));
     return settings;
   }
 );
@@ -82,6 +78,7 @@ const { actions, reducer } = createSlice({
     },
     settings: {
       id: localStorage.getItem("uuid"),
+      image: localStorage.getItem("image"),
       name: localStorage.getItem("name"),
       skin: localStorage.getItem("skin") || "Default",
       server: localStorage.getItem("server") || "",

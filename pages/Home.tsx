@@ -1,29 +1,53 @@
 import {
   Box,
   Button,
+  Divider,
   Flex,
   FormControl,
   FormHelperText,
   FormLabel,
   Image,
   Input,
+  InputGroup,
+  InputRightElement,
   Select,
+  IconButton,
+  Avatar,
 } from "@chakra-ui/react";
-import React, { FormEvent } from "react";
+import { RepeatIcon } from "@chakra-ui/icons";
+import Avatars from "@dicebear/avatars";
+import sprites from "@dicebear/avatars-human-sprites";
+import React, { FormEvent, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
+import {
+  uniqueNamesGenerator,
+  adjectives,
+  animals,
+} from "unique-names-generator";
+import { v4 as uuidv4 } from "uuid";
 import { goToLobby, saveSettings, useSelector } from "../data/store";
 import logo from "../public/logo.png";
 import skins from "../skins";
-import { Skins } from "../types/skins";
 import useInput from "../utils/useInput";
+
+const avatars = new Avatars(sprites, {});
+const getRandomName = () =>
+  uniqueNamesGenerator({
+    dictionaries: [adjectives, animals],
+    length: 2,
+    separator: " ",
+    style: "capital",
+  });
 
 export default function Home() {
   const {
-    name: defaultName,
+    name: defaultName = getRandomName(),
+    image: defaultImage = uuidv4(),
     skin: defaultSkin,
     server: defaultServer,
   } = useSelector((state) => state.settings);
+  const [image, setImage] = useState(defaultImage);
   const [name, setName] = useInput(defaultName);
   const [server, setServer] = useInput(defaultServer);
   const [skin, setSkin] = useInput(defaultSkin);
@@ -32,10 +56,18 @@ export default function Home() {
 
   function handleGoToLobby(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    dispatch(saveSettings({ name, server, skin: skin as Skins }));
+    dispatch(saveSettings({ name, server, skin }));
     dispatch(goToLobby(server));
     history.push("/lobby");
     return false;
+  }
+
+  function randomizeName() {
+    setName(getRandomName());
+  }
+
+  function randomizeImage() {
+    setImage(uuidv4());
   }
 
   return (
@@ -53,11 +85,45 @@ export default function Home() {
         <Image src={logo} mb={8} />
 
         <form onSubmit={handleGoToLobby}>
-          <FormControl id="name">
-            <FormLabel>Name</FormLabel>
-            <Input value={name} onChange={setName} placeholder="Name" />
+          <FormControl id="image">
+            <FormLabel>Image</FormLabel>
+            <InputGroup>
+              <Avatar
+                size="3xl"
+                mx="auto"
+                src={avatars.create(image, {
+                  width: 150,
+                  height: 150,
+                  margin: 15,
+                  dataUri: true,
+                })}
+              />
+              <InputRightElement>
+                {/* @ts-ignore - the types are wrong?? */}
+                <IconButton
+                  icon={<RepeatIcon />}
+                  onClick={randomizeImage}
+                  aria-label="Randomize Image"
+                />
+              </InputRightElement>
+            </InputGroup>
           </FormControl>
-          <FormControl id="server" mt={4}>
+          <FormControl id="name" mt={4}>
+            <FormLabel>Name</FormLabel>
+            <InputGroup>
+              <Input value={name} onChange={setName} placeholder="Name" />
+              <InputRightElement>
+                {/* @ts-ignore - the types are wrong?? */}
+                <IconButton
+                  icon={<RepeatIcon />}
+                  onClick={randomizeName}
+                  aria-label="Randomize Name"
+                />
+              </InputRightElement>
+            </InputGroup>
+          </FormControl>
+          <Divider my={8} />
+          <FormControl id="server">
             <FormLabel>Server</FormLabel>
             <Input value={server} onChange={setServer} placeholder="Server" />
             <FormHelperText>

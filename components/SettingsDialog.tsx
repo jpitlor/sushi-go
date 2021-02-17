@@ -17,7 +17,6 @@ import { useDispatch } from "react-redux";
 import { saveSettings, useSelector } from "../data/store";
 import skins from "../skins";
 import { ModalProps } from "../types/props";
-import { Skins } from "../types/skins";
 import useInput from "../utils/useInput";
 
 export default function SettingsDialog({ isOpen, onClose }: ModalProps) {
@@ -27,7 +26,7 @@ export default function SettingsDialog({ isOpen, onClose }: ModalProps) {
 
   function onSubmit(e: FormEvent<any>) {
     e.preventDefault();
-    dispatch(saveSettings({ skin: skin as Skins }));
+    dispatch(saveSettings({ skin }));
     onClose();
     return false;
   }

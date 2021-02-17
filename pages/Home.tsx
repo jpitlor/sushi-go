@@ -71,7 +71,7 @@ export default function Home() {
   }
 
   return (
-    <Box background="red.300" w="100vw" h="100vh" py={16}>
+    <Box background="red.300" w="100vw" h="100vh" overflow="auto" py={16}>
       <Flex
         mx="auto"
         flexDirection="column"
@@ -86,15 +86,14 @@ export default function Home() {
 
         <form onSubmit={handleGoToLobby}>
           <FormControl id="image">
-            <FormLabel>Image</FormLabel>
+            <FormLabel>Avatar</FormLabel>
             <InputGroup>
-              <Avatar
+              <Image
                 size="3xl"
                 mx="auto"
                 src={avatars.create(image, {
                   width: 150,
                   height: 150,
-                  margin: 15,
                   dataUri: true,
                 })}
               />
@@ -122,15 +121,6 @@ export default function Home() {
               </InputRightElement>
             </InputGroup>
           </FormControl>
-          <Divider my={8} />
-          <FormControl id="server">
-            <FormLabel>Server</FormLabel>
-            <Input value={server} onChange={setServer} placeholder="Server" />
-            <FormHelperText>
-              If you're not sure what this is, keep the default - <br />
-              https://sushi-go-server.pitlor.dev
-            </FormHelperText>
-          </FormControl>
           <FormControl id="skin" mt={4}>
             <FormLabel>Skin</FormLabel>
             {/* @ts-ignore - the types are wrong?? */}
@@ -141,6 +131,15 @@ export default function Home() {
                 </option>
               ))}
             </Select>
+          </FormControl>
+          <Divider my={8} />
+          <FormControl id="server">
+            <FormLabel>Server</FormLabel>
+            <Input value={server} onChange={setServer} placeholder="Server" />
+            <FormHelperText>
+              If you're not sure what this is, keep the default - <br />
+              https://sushi-go-server.pitlor.dev
+            </FormHelperText>
           </FormControl>
           <Button type="submit" mt={8} colorScheme="green">
             Go to Lobby

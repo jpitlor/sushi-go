@@ -18,6 +18,7 @@ export default function RadioCard(props) {
         boxShadow="md"
         _checked={{
           bg: "green.100",
+          color: "green.900",
           borderColor: "green.100",
         }}
         _focus={{

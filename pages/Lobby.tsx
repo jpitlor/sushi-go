@@ -39,17 +39,17 @@ export default function Lobby() {
 
     if (gameCode === "Create Game") {
       dispatch(createGame(newGameCode));
-      history.push(`/game/${newGameCode}`);
+      dispatch(joinGame(newGameCode));
     } else {
       dispatch(joinGame(openGames[gameCode]));
-      history.push(`/game/${openGames[gameCode]}`);
     }
 
+    history.push("/game");
     return false;
   }
 
   return (
-    <Box background="red.300" w="100vw" h="100vh" py={16}>
+    <Box background="red.300" w="100vw" h="100vh" overflow="auto" py={16}>
       <Flex
         mx="auto"
         flexDirection="column"

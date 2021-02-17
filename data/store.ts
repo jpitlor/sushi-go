@@ -45,6 +45,9 @@ interface State {
   settings: Settings;
   currentGame: Game;
 }
+interface ThunkApi {
+  state: State;
+}
 
 const goToLobby = createAsyncThunk<void, string>("goToLobby", (serverUrl) => {
   api.connectToServer(serverUrl);
@@ -54,15 +57,29 @@ const createGame = createAsyncThunk<void, string>("createGame", (code) => {
   api.createGame(code);
 });
 
-const joinGame = createAsyncThunk<void, string>("joinGame", (code) => {});
-
-const saveSettings = createAsyncThunk<Partial<Settings>, Partial<Settings>>(
-  "saveSettings",
-  (settings) => {
-    Object.entries(settings).forEach(([k, v]) => localStorage.setItem(k, v));
-    return settings;
+const joinGame = createAsyncThunk<void, string, ThunkApi>(
+  "joinGame",
+  (code, { getState }) => {
+    const { settings } = getState();
+    api.joinGame(code, settings);
   }
 );
+
+const saveSettings = createAsyncThunk<
+  Partial<Settings>,
+  Partial<Settings>,
+  ThunkApi
+>("saveSettings", (settings, { getState }) => {
+  const {
+    currentGame: { code },
+    settings: oldSettings,
+  } = getState();
+
+  api.updateSettings(code, { ...oldSettings, ...settings });
+  Object.entries(settings).forEach(([k, v]) => localStorage.setItem(k, v));
+
+  return settings;
+});
 
 const { actions, reducer } = createSlice({
   name: "app",
@@ -140,4 +157,5 @@ export {
   joinGame,
   saveSettings,
   Game,
+  Settings,
 };

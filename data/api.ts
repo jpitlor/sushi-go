@@ -1,7 +1,8 @@
-import { store, actions, Game } from "./store";
+import { store, actions, Game, Settings } from "./store";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import { v4 as uuidv4 } from "uuid";
+import set = Reflect.set;
 
 const client = new Client();
 client.onConnect = () => {
@@ -41,10 +42,20 @@ export function createGame(code: string) {
   client.publish({ destination: `/app/games/${code}/create` });
 }
 
-export function joinGame(code: string) {
-  client.publish({ destination: `/app/games/${code}/join` });
+export function joinGame(code: string, settings: Settings) {
+  client.publish({
+    destination: `/app/games/${code}/join`,
+    body: JSON.stringify(settings),
+  });
   client.subscribe(`/topic/games/${code}`, ({ body }) => {
     const response = JSON.parse(body) as Game;
     store.dispatch(actions.handleGameUpdate(response));
+  });
+}
+
+export function updateSettings(code: string, settings: Settings) {
+  client.publish({
+    destination: `/app/games/${code}/update`,
+    body: JSON.stringify(settings),
   });
 }

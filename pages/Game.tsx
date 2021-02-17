@@ -19,7 +19,13 @@ export default function Game() {
   ] = useBoolean();
 
   return (
-    <Flex background="red.200" w="100vw" h="100vh" flexDirection="column">
+    <Flex
+      background="red.200"
+      w="100vw"
+      h="100vh"
+      overflow="auto"
+      flexDirection="column"
+    >
       <Flex justifyContent="space-around" m={8} h={64}>
         {/* opponent cards */}
       </Flex>

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import java.util.*
 
 internal class CardsKtTest {
+    private val settings = PlayerSettings("Jim", "")
     @Test
     fun scoreSomePoints() {
         val nigiri = Nigiri(3)
@@ -32,13 +33,13 @@ internal class CardsKtTest {
 
     @Test
     fun scoreRoundNoPudding() {
-        val jim = Player("Jim", UUID.randomUUID())
+        val jim = Player(UUID.randomUUID(), settings)
         jim.puddingCount = 2
 
-        val jan = Player("Jan", UUID.randomUUID())
+        val jan = Player(UUID.randomUUID(), settings)
         jan.puddingCount = 1
 
-        val sue = Player("Sue", UUID.randomUUID())
+        val sue = Player(UUID.randomUUID(), settings)
         sue.puddingCount = 0
 
         val players = arrayListOf(jim, jan, sue)
@@ -51,13 +52,13 @@ internal class CardsKtTest {
 
     @Test
     fun scoreRoundWithPudding() {
-        val jim = Player("Jim", UUID.randomUUID())
+        val jim = Player(UUID.randomUUID(), settings)
         jim.puddingCount = 2
 
-        val jan = Player("Jan", UUID.randomUUID())
+        val jan = Player(UUID.randomUUID(), settings)
         jan.puddingCount = 1
 
-        val sue = Player("Sue", UUID.randomUUID())
+        val sue = Player(UUID.randomUUID(), settings)
         sue.puddingCount = 0
 
         val players = arrayListOf(jim, jan, sue)
@@ -70,13 +71,13 @@ internal class CardsKtTest {
 
     @Test
     fun scoreRoundFirstPlaceMakiTie() {
-        val jim = Player("Jim", UUID.randomUUID())
+        val jim = Player(UUID.randomUUID(), settings)
         jim.cardsPlayed += Maki(3)
 
-        val jan = Player("Jan", UUID.randomUUID())
+        val jan = Player(UUID.randomUUID(), settings)
         jan.cardsPlayed += Maki(3)
 
-        val sue = Player("Sue", UUID.randomUUID())
+        val sue = Player(UUID.randomUUID(), settings)
         sue.cardsPlayed += Maki(1)
 
         val players = arrayListOf(jim, jan, sue)

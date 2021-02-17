@@ -5,12 +5,14 @@ import org.junit.jupiter.api.Test
 import java.util.*
 
 internal class GameTest {
+    private val settings = PlayerSettings("Jim", "")
+
     @Test
     fun getPlayers() {
         val game = Game("")
-        game.players += Player("Jim", UUID.randomUUID())
-        game.players += Player("John", UUID.randomUUID())
-        game.players += Player("Jan", UUID.randomUUID())
+        game.players += Player(UUID.randomUUID(), settings)
+        game.players += Player(UUID.randomUUID(), settings)
+        game.players += Player(UUID.randomUUID(), settings)
 
         assertEquals(3, game.players.size)
     }
@@ -18,8 +20,8 @@ internal class GameTest {
     @Test
     fun startRoundMoreThan3Times() {
         val game = Game("")
-        game.players += Player("Jim", UUID.randomUUID())
-        game.players += Player("John", UUID.randomUUID())
+        game.players += Player(UUID.randomUUID(), settings)
+        game.players += Player(UUID.randomUUID(), settings)
 
         game.startRound()
         game.startRound()
@@ -33,12 +35,12 @@ internal class GameTest {
     @Test
     fun startRoundWithInvalidPlayerCount() {
         val game = Game("")
-        game.players += Player("Jim", UUID.randomUUID())
+        game.players += Player(UUID.randomUUID(), settings)
 
         val exception = assertThrows(Exception::class.java) {
             game.startRound()
         }
-        assertEquals("dev.pitlor.sushigo.Game can only be played with 2-5 people", exception.message)
+        assertEquals("Game can only be played with 2-5 people", exception.message)
     }
 
     @Test

@@ -101,15 +101,19 @@ class ServerController(private val template: SimpMessagingTemplate) {
     }
 
     @MessageMapping("/games/{gameCode}/join")
-    fun joinGame(@DestinationVariable gameCode: String, settings: PlayerSettings, sha: SimpMessageHeaderAccessor) {
+    @SendTo("/topic/games/{gameCode}")
+    fun joinGame(@DestinationVariable gameCode: String, settings: PlayerSettings, sha: SimpMessageHeaderAccessor): Game {
         val user = UUID.fromString(sha.user?.name ?: "")
         server.joinGame(gameCode, user, settings)
+        return server.getGame(gameCode)
     }
 
     @MessageMapping("/games/{gameCode}/update")
-    fun updateSettings(@DestinationVariable gameCode: String, settings: PlayerSettings, sha: SimpMessageHeaderAccessor) {
+    @SendTo("/topic/games/{gameCode}")
+    fun updateSettings(@DestinationVariable gameCode: String, settings: PlayerSettings, sha: SimpMessageHeaderAccessor): Game {
         val user = UUID.fromString(sha.user?.name ?: "")
         server.updateSettings(gameCode, user, settings)
+        return server.getGame(gameCode)
     }
 }
 

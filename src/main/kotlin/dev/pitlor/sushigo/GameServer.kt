@@ -1,10 +1,20 @@
 package dev.pitlor.sushigo
 
+import java.util.*
+
 val games = arrayListOf<Game>()
 
 class Server {
     fun getGames(): Iterable<String> {
         return games.map { it.code }
+    }
+
+    fun getGame(gameCode: String): Game {
+        val game = games.find { it.code == gameCode }
+
+        require(game != null) { "That game does not exist" }
+
+        return game
     }
 
     fun createGame(code: String): String {
@@ -16,7 +26,11 @@ class Server {
         return "Game \"${code}\" Created"
     }
 
-    fun joinGame(code: String, user: String) {
+    fun joinGame(code: String, user: UUID, settings: PlayerSettings) {
+
+    }
+
+    fun updateSettings(code: String, user: UUID, settings: PlayerSettings) {
 
     }
 }

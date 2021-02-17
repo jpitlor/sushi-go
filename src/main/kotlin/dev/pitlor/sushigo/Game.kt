@@ -3,10 +3,11 @@ package dev.pitlor.sushigo
 import java.util.*
 import kotlin.collections.ArrayList
 
-class Player(var name: String, val uuid: UUID) {
+data class PlayerSettings(val name: String, val avatar: String)
+class Player(val id: UUID, var settings: PlayerSettings) {
     var score: Int = 0
     var puddingCount: Int = 0
-    val hand: ArrayList<Card> = arrayListOf()
+    var hand: ArrayList<Card> = arrayListOf()
     val cardsPlayed: ArrayList<Card> = arrayListOf()
 }
 
@@ -20,7 +21,7 @@ class Game(val code: String) {
     }
 
     fun getPlayer(id: UUID): Player {
-        val player = players.find { it.uuid == id }
+        val player = players.find { it.id == id }
 
         require(player != null) { "That player is not in this game" }
 
@@ -28,7 +29,7 @@ class Game(val code: String) {
     }
 
     fun playCard(player: UUID, cardIndex: Int) {
-        val i = players.indexOfFirst { it.uuid == player }
+        val i = players.indexOfFirst { it.id == player }
 
         require(i == -1) { "Player is not in this game" }
         require(cardIndex >= players[i].hand.size) { "Player doesn't have that many cards" }
@@ -66,7 +67,7 @@ class Game(val code: String) {
 
         players.forEach {
             for (i in 1..cardsPerPlayer) {
-                it.hand += this.deck.removeAt(0)
+                it.hand.add(this.deck.removeAt(0))
             }
         }
     }

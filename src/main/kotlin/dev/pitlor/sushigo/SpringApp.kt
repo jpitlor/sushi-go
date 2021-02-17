@@ -8,8 +8,10 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.messaging.Message
 import org.springframework.messaging.MessageChannel
+import org.springframework.messaging.handler.annotation.DestinationVariable
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler
 import org.springframework.messaging.handler.annotation.MessageMapping
+import org.springframework.messaging.handler.annotation.SendTo
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor
 import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.messaging.simp.annotation.SendToUser
@@ -25,6 +27,13 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer
 import java.security.Principal
+import java.util.*
+
+class User(private val id: UUID, var userName: String) : Principal {
+    override fun getName(): String {
+        return id.toString()
+    }
+}
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -46,7 +55,7 @@ open class SocketConfig : WebSocketMessageBrokerConfigurer {
                     accessor.user = Principal { accessor.getNativeHeader("uuid")?.get(0) }
                 }
 
-                return message;
+                return message
             }
         })
     }
@@ -57,42 +66,50 @@ fun getJacksonKotlinModule(): KotlinModule {
     return kotlinModule()
 }
 
-data class CreateGameRequest(val code: String)
-data class CreateGameResponse(val games: Iterable<String>)
-data class NotificationResponse(val message: String)
-
 @Controller
 class ServerController(private val template: SimpMessagingTemplate) {
     private val server = Server()
 
     @MessageExceptionHandler
     @SendToUser("/topic/errors/client")
-    fun on400Error(e: IllegalArgumentException): NotificationResponse {
-        return NotificationResponse(e.message ?: "")
+    fun on400Error(e: IllegalArgumentException): String {
+        return e.message ?: ""
     }
 
     @MessageExceptionHandler
     @SendToUser("/topic/errors/server")
-    fun on500Error(e: IllegalStateException): NotificationResponse {
-        return NotificationResponse(e.message ?: "")
+    fun on500Error(e: IllegalStateException): String {
+        return e.message ?: ""
     }
 
     @SubscribeMapping("/games")
-    fun getGames(): CreateGameResponse {
-        return CreateGameResponse(server.getGames())
+    fun getGames(): Iterable<String> {
+        return server.getGames()
     }
 
-    @MessageMapping("/games/create")
+    @SubscribeMapping("/games/{gameCode}")
+    fun getGame(@DestinationVariable gameCode: String): Game {
+        return server.getGame(gameCode)
+    }
+
+    @MessageMapping("/games/{gameCode}/create")
     @SendToUser("/topic/successes")
-    fun createGame(request: CreateGameRequest, sha: SimpMessageHeaderAccessor): NotificationResponse {
-        val response = server.createGame(request.code)
-        template.convertAndSend("/topic/games", CreateGameResponse(server.getGames()))
-        return NotificationResponse(response)
+    fun createGame(@DestinationVariable gameCode: String, sha: SimpMessageHeaderAccessor): String {
+        val response = server.createGame(gameCode)
+        template.convertAndSend("/topic/games", server.getGames())
+        return response
     }
 
     @MessageMapping("/games/{gameCode}/join")
-    fun joinGame() {
+    fun joinGame(@DestinationVariable gameCode: String, settings: PlayerSettings, sha: SimpMessageHeaderAccessor) {
+        val user = UUID.fromString(sha.user?.name ?: "")
+        server.joinGame(gameCode, user, settings)
+    }
 
+    @MessageMapping("/games/{gameCode}/update")
+    fun updateSettings(@DestinationVariable gameCode: String, settings: PlayerSettings, sha: SimpMessageHeaderAccessor) {
+        val user = UUID.fromString(sha.user?.name ?: "")
+        server.updateSettings(gameCode, user, settings)
     }
 }
 

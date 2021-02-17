@@ -21,22 +21,18 @@ import { Skins } from "../types/skins";
 import useInput from "../utils/useInput";
 
 export default function SettingsDialog({ isOpen, onClose }: ModalProps) {
-  const { name: defaultName, skin: defaultSkin } = useSelector(
-    (state) => state.settings
-  );
-  const [name, setName] = useInput(defaultName);
+  const { skin: defaultSkin } = useSelector((state) => state.settings);
   const [skin, setSkin] = useInput(defaultSkin);
   const dispatch = useDispatch();
 
   function onSubmit(e: FormEvent<any>) {
     e.preventDefault();
-    dispatch(saveSettings({ name, skin: skin as Skins }));
+    dispatch(saveSettings({ skin: skin as Skins }));
     onClose();
     return false;
   }
 
   function onCancel() {
-    setName(defaultName);
     setSkin(defaultSkin);
     onClose();
   }
@@ -48,10 +44,6 @@ export default function SettingsDialog({ isOpen, onClose }: ModalProps) {
         <ModalHeader>Settings</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <FormControl id="name">
-            <FormLabel>Name</FormLabel>
-            <Input value={name} onChange={setName} placeholder="Name" />
-          </FormControl>
           <FormControl id="skin" mt={4}>
             <FormLabel>Skin</FormLabel>
             {/* @ts-ignore - the types are wrong?? */}

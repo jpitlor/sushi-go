@@ -1,6 +1,7 @@
 import { Box, Button, Flex, HStack } from "@chakra-ui/react";
 import React from "react";
 import HelpDialog from "../components/HelpDialog";
+import ScoresDialog from "../components/ScoresDialog";
 import SettingsDialog from "../components/SettingsDialog";
 import useBoolean from "../utils/useBoolean";
 
@@ -10,6 +11,11 @@ export default function Game() {
     settingsDialogIsVisible,
     showSettingsDialog,
     hideSettingsDialog,
+  ] = useBoolean();
+  const [
+    scoresDialogIsVisible,
+    showScoresDialog,
+    hideScoresDialog,
   ] = useBoolean();
 
   return (
@@ -30,8 +36,12 @@ export default function Game() {
         <Button size="lg" colorScheme="green">
           Play Card
         </Button>
-        <Button size="lg" colorScheme="gray">
+        <Button size="lg" colorScheme="gray" onClick={showScoresDialog}>
           Scores
+          <ScoresDialog
+            isOpen={scoresDialogIsVisible}
+            onClose={hideScoresDialog}
+          />
         </Button>
         <Button size="lg" colorScheme="gray" onClick={showSettingsDialog}>
           Settings

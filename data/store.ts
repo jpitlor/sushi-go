@@ -19,6 +19,20 @@ interface Settings {
   server: string;
 }
 
+interface Game {
+  code: string;
+  active: boolean;
+  admin: string;
+  players: {
+    name: string;
+    id: string;
+    connected: boolean;
+    cardsPlayed: Card[];
+    cardsLeft: number;
+  }[];
+  roundScores: { [k: string]: number }[];
+}
+
 interface State {
   openGames: string[];
   toast: {
@@ -28,17 +42,7 @@ interface State {
     status: "info" | "warning" | "success" | "error";
   };
   settings: Settings;
-  currentGame: {
-    code: string;
-    active: boolean;
-    players: {
-      name: string;
-      id: string;
-      connected: boolean;
-      cardsPlayed: Card[];
-      cardsLeft: number;
-    }[];
-  };
+  currentGame: Game;
 }
 
 const goToLobby = createAsyncThunk<void, string>("goToLobby", (serverUrl) => {
@@ -73,6 +77,8 @@ const { actions, reducer } = createSlice({
       active: false,
       code: "",
       players: [],
+      roundScores: [],
+      admin: "",
     },
     settings: {
       id: localStorage.getItem("uuid"),
@@ -109,6 +115,9 @@ const { actions, reducer } = createSlice({
     handleGamesListMessage: (state, action: PayloadAction<string[]>) => {
       state.openGames = [...action.payload];
     },
+    handleGameUpdate: (state, action: PayloadAction<Game>) => {
+      state.currentGame = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(saveSettings.fulfilled, (state, action) => {
@@ -133,4 +142,5 @@ export {
   createGame,
   joinGame,
   saveSettings,
+  Game,
 };

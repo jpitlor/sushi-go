@@ -21,11 +21,7 @@ import Avatars from "@dicebear/avatars";
 import sprites from "@dicebear/avatars-human-sprites";
 import React, { FormEvent, useState } from "react";
 import { useDispatch } from "react-redux";
-import {
-  adjectives,
-  animals,
-  uniqueNamesGenerator,
-} from "unique-names-generator";
+import { colors, animals, uniqueNamesGenerator } from "unique-names-generator";
 import { v4 as uuidv4 } from "uuid";
 import { saveSettings, useSelector } from "../data/store";
 import skins from "../skins";
@@ -35,7 +31,7 @@ import useInput from "../utils/useInput";
 const avatars = new Avatars(sprites, {});
 const getRandomName = () =>
   uniqueNamesGenerator({
-    dictionaries: [adjectives, animals],
+    dictionaries: [colors, animals],
     length: 2,
     separator: " ",
     style: "capital",
@@ -44,17 +40,17 @@ const getRandomName = () =>
 export default function SettingsDialog({ isOpen, onClose }: ModalProps) {
   const {
     name: defaultName = getRandomName(),
-    image: defaultImage = uuidv4(),
+    avatar: defaultAvatar = uuidv4(),
     skin: defaultSkin,
   } = useSelector((state) => state.settings);
-  const [image, setImage] = useState(defaultImage);
+  const [avatar, setAvater] = useState(defaultAvatar);
   const [name, setName] = useInput(defaultName);
   const [skin, setSkin] = useInput(defaultSkin);
   const dispatch = useDispatch();
 
   function onSubmit(e: FormEvent<any>) {
     e.preventDefault();
-    dispatch(saveSettings({ skin, image, name }));
+    dispatch(saveSettings({ skin, avatar, name }));
     onClose();
     return false;
   }
@@ -62,7 +58,7 @@ export default function SettingsDialog({ isOpen, onClose }: ModalProps) {
   function onCancel() {
     setSkin(defaultSkin);
     setName(defaultName);
-    setImage(defaultImage);
+    setAvater(defaultAvatar);
     onClose();
   }
 
@@ -71,7 +67,7 @@ export default function SettingsDialog({ isOpen, onClose }: ModalProps) {
   }
 
   function randomizeImage() {
-    setImage(uuidv4());
+    setAvater(uuidv4());
   }
 
   return (
@@ -87,7 +83,7 @@ export default function SettingsDialog({ isOpen, onClose }: ModalProps) {
               <Image
                 size="3xl"
                 mx="auto"
-                src={avatars.create(image, {
+                src={avatars.create(avatar, {
                   width: 150,
                   height: 150,
                   dataUri: true,

@@ -8,13 +8,12 @@ import {
   TypedUseSelectorHook,
   useSelector as useUntypedSelector,
 } from "react-redux";
-import { Card } from "../types/props";
 import { Skins } from "../types/skins";
 import * as api from "./api";
 
 interface Settings {
   id: string;
-  image: string;
+  avatar: string;
   name: string;
   skin: Skins;
   server: string;
@@ -25,11 +24,8 @@ interface Game {
   active: boolean;
   admin: string;
   players: {
-    name: string;
     id: string;
-    connected: boolean;
-    cardsPlayed: Card[];
-    cardsLeft: number;
+    settings: Settings;
   }[];
   roundScores: { [k: string]: number }[];
 }
@@ -95,7 +91,7 @@ const { actions, reducer } = createSlice({
     },
     settings: {
       id: localStorage.getItem("uuid"),
-      image: localStorage.getItem("image"),
+      avatar: localStorage.getItem("avatar"),
       name: localStorage.getItem("name"),
       skin: localStorage.getItem("skin") || "Default",
       server: localStorage.getItem("server") || "",

@@ -41,7 +41,7 @@ export default function Lobby() {
       dispatch(createGame(newGameCode));
       dispatch(joinGame(newGameCode));
     } else {
-      dispatch(joinGame(openGames[gameCode]));
+      dispatch(joinGame(gameCode.toString()));
     }
 
     history.push("/game");

@@ -12,7 +12,6 @@ import {
   InputRightElement,
   Select,
   IconButton,
-  Avatar,
 } from "@chakra-ui/react";
 import { RepeatIcon } from "@chakra-ui/icons";
 import Avatars from "@dicebear/avatars";
@@ -20,11 +19,7 @@ import sprites from "@dicebear/avatars-human-sprites";
 import React, { FormEvent, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import {
-  uniqueNamesGenerator,
-  adjectives,
-  animals,
-} from "unique-names-generator";
+import { uniqueNamesGenerator, colors, animals } from "unique-names-generator";
 import { v4 as uuidv4 } from "uuid";
 import { goToLobby, saveSettings, useSelector } from "../data/store";
 import logo from "../public/logo.png";
@@ -34,7 +29,7 @@ import useInput from "../utils/useInput";
 const avatars = new Avatars(sprites, {});
 const getRandomName = () =>
   uniqueNamesGenerator({
-    dictionaries: [adjectives, animals],
+    dictionaries: [colors, animals],
     length: 2,
     separator: " ",
     style: "capital",
@@ -42,13 +37,14 @@ const getRandomName = () =>
 
 export default function Home() {
   const {
-    name: defaultName = getRandomName(),
-    image: defaultImage = uuidv4(),
+    name: defaultName,
+    avatar: defaultAvatar,
     skin: defaultSkin,
     server: defaultServer,
   } = useSelector((state) => state.settings);
-  const [image, setImage] = useState(defaultImage);
-  const [name, setName] = useInput(defaultName);
+
+  const [avatar, setAvatar] = useState(defaultAvatar ?? uuidv4());
+  const [name, setName] = useInput(defaultName ?? getRandomName());
   const [server, setServer] = useInput(defaultServer);
   const [skin, setSkin] = useInput(defaultSkin);
   const dispatch = useDispatch();
@@ -56,7 +52,7 @@ export default function Home() {
 
   function handleGoToLobby(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    dispatch(saveSettings({ name, server, skin }));
+    dispatch(saveSettings({ name, server, skin, avatar }));
     dispatch(goToLobby(server));
     history.push("/lobby");
     return false;
@@ -67,7 +63,7 @@ export default function Home() {
   }
 
   function randomizeImage() {
-    setImage(uuidv4());
+    setAvatar(uuidv4());
   }
 
   return (
@@ -91,7 +87,7 @@ export default function Home() {
               <Image
                 size="3xl"
                 mx="auto"
-                src={avatars.create(image, {
+                src={avatars.create(avatar, {
                   width: 150,
                   height: 150,
                   dataUri: true,

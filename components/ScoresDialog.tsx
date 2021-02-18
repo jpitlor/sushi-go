@@ -18,33 +18,30 @@ import { useSelector } from "../data/store";
 import { ModalProps } from "../types/props";
 
 export default function ScoresDialog({ isOpen, onClose }: ModalProps) {
-  const currentGame = useSelector((state) => state.currentGame);
-  const players = currentGame.players.sort((a, b) =>
-    a.name.toLowerCase().localeCompare(b.name.toLowerCase())
-  );
+  const game = useSelector((state) => state.currentGame);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="3xl">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Game {currentGame.code}</ModalHeader>
+        <ModalHeader>Game {game.code}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Table variant="simple">
             <Thead>
               <Tr>
-                {players.map(({ name }) => (
+                {game.players.map(({ settings: { name } }) => (
                   <Th>{name}</Th>
                 ))}
               </Tr>
             </Thead>
           </Table>
-          {currentGame.roundScores.map((round, i) => (
+          {game.roundScores.map((round, i) => (
             <Table variant="simple">
               <TableCaption placement="top">Round {i + 1}</TableCaption>
               <Tbody>
                 <Tr>
-                  {players.map(({ id }) => (
+                  {game.players.map(({ id }) => (
                     <Td>{round[id]}</Td>
                   ))}
                 </Tr>

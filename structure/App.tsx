@@ -25,7 +25,7 @@ export default function App() {
 
   return (
     <Switch>
-      <Route path="/game/:code">
+      <Route path="/game">
         <Game />
       </Route>
       <Route path="/lobby">

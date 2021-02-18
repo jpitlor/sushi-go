@@ -3,9 +3,12 @@ import React from "react";
 import HelpDialog from "../components/HelpDialog";
 import ScoresDialog from "../components/ScoresDialog";
 import SettingsDialog from "../components/SettingsDialog";
+import { useSelector } from "../data/store";
 import useBoolean from "../utils/useBoolean";
 
 export default function Game() {
+  const game = useSelector((state) => state.currentGame);
+  const myId = useSelector((state) => state.settings.id);
   const [helpDialogIsVisible, showHelpDialog, hideHelpDialog] = useBoolean();
   const [
     settingsDialogIsVisible,
@@ -18,6 +21,13 @@ export default function Game() {
     hideScoresDialog,
   ] = useBoolean();
 
+  const iAmAdmin = myId === game.admin;
+  const otherPlayers = game.players.filter((p) => p.id !== myId);
+
+  function handlePlayCard() {}
+
+  function handleStartGame() {}
+
   return (
     <Flex
       background="red.200"
@@ -27,10 +37,12 @@ export default function Game() {
       flexDirection="column"
     >
       <Flex justifyContent="space-around" m={8} h={64}>
-        {/* opponent cards */}
+        {otherPlayers.map((player) => (
+          <Box>{player.settings.name}</Box>
+        ))}
       </Flex>
       <Flex justifyContent="space-around" flex={1} m={8} mt={0} h={64}>
-        {/* opponent cards */}
+        {/* your cards */}
       </Flex>
       <Flex
         justifyContent="space-around"
@@ -39,7 +51,17 @@ export default function Game() {
         h={24}
         shadow="dark-lg"
       >
-        <Button size="lg" colorScheme="green">
+        {!game.active && iAmAdmin && (
+          <Button size="lg" colorScheme="green" onClick={handleStartGame}>
+            Start Game
+          </Button>
+        )}
+        <Button
+          size="lg"
+          colorScheme="green"
+          disabled={!game.active}
+          onClick={handlePlayCard}
+        >
           Play Card
         </Button>
         <Button size="lg" colorScheme="gray" onClick={showScoresDialog}>

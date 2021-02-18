@@ -54,6 +54,8 @@ export function joinGame(code: string, settings: Settings) {
 }
 
 export function updateSettings(code: string, settings: Settings) {
+  if (!code) return;
+
   client.publish({
     destination: `/app/games/${code}/update`,
     body: JSON.stringify(settings),

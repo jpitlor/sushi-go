@@ -11,8 +11,10 @@ class Player(val id: UUID, var settings: PlayerSettings) {
     val cardsPlayed: ArrayList<Card> = arrayListOf()
 }
 
-class Game(val code: String) {
+class Game(val code: String, val admin: UUID) {
+    var active: Boolean = false
     val players = arrayListOf<Player>()
+    val roundScores = arrayListOf<Dictionary<String, Int>>()
     private val deck = newDeck()
     private var round = 1
 

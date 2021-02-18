@@ -17,35 +17,35 @@ class Server {
         return game
     }
 
-    fun createGame(code: String): String {
+    fun createGame(code: String, user: UUID): String {
         require(code.isNotEmpty()) { "Code is empty" }
         require(games.firstOrNull { it.code == code } == null) { "That game code is already in use" }
 
-        games += Game(code)
+        games += Game(code, user)
 
         return "Game \"${code}\" Created"
     }
 
     fun joinGame(code: String, user: UUID, settings: PlayerSettings) {
-        val game = games.find { it.code == code }
+        val gameIndex = games.indexOfFirst { it.code == code }
 
         require(code.isNotEmpty()) { "Code is empty" }
-        require(game != null) { "That game does not exist" }
-        require(game.players.find { it.id == user } == null) { "You are already in that game!" }
+        require(gameIndex > -1) { "That game does not exist" }
+        require(games[gameIndex].players.find { it.id == user } == null) { "You are already in that game!" }
 
         val player = Player(user, settings)
-        game.players += player
+        games[gameIndex].players += player
     }
 
     fun updateSettings(code: String, user: UUID, settings: PlayerSettings) {
-        val game = games.find { it.code == code }
-        val player = game?.players?.find { it.id == user }
-
+        val gameIndex = games.indexOfFirst { it.code == code }
         require(code.isNotEmpty()) { "Code is empty" }
-        require(game != null) { "That game does not exist" }
-        require(player != null) { "That player is not in this game" }
+        require(gameIndex > -1) { "That game does not exist" }
 
-        player.settings = settings
+        val playerIndex = games[gameIndex].players.indexOfFirst { it.id == user }
+        require(playerIndex > -1) { "That player is not in this game" }
+
+        games[gameIndex].players[playerIndex].settings = settings
     }
 }
 

@@ -95,7 +95,8 @@ class ServerController(private val template: SimpMessagingTemplate) {
     @MessageMapping("/games/{gameCode}/create")
     @SendToUser("/topic/successes")
     fun createGame(@DestinationVariable gameCode: String, sha: SimpMessageHeaderAccessor): String {
-        val response = server.createGame(gameCode)
+        val user = UUID.fromString(sha.user?.name ?: "")
+        val response = server.createGame(gameCode, user)
         template.convertAndSend("/topic/games", server.getGames())
         return response
     }

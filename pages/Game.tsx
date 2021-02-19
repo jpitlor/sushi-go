@@ -1,10 +1,16 @@
-import { Box, Button, Flex, HStack } from "@chakra-ui/react";
+import { Box, Button, Flex, Avatar, Tooltip } from "@chakra-ui/react";
+import Avatars from "@dicebear/avatars";
+import sprites from "@dicebear/avatars-human-sprites";
 import React from "react";
+import Card from "../components/Card";
+import CardStack from "../components/CardStack";
 import HelpDialog from "../components/HelpDialog";
 import ScoresDialog from "../components/ScoresDialog";
 import SettingsDialog from "../components/SettingsDialog";
 import { useSelector } from "../data/store";
 import useBoolean from "../utils/useBoolean";
+
+const avatars = new Avatars(sprites, {});
 
 export default function Game() {
   const game = useSelector((state) => state.currentGame);
@@ -38,7 +44,26 @@ export default function Game() {
     >
       <Flex justifyContent="space-around" m={8} h={64}>
         {otherPlayers.map((player) => (
-          <Box>{player.settings.name}</Box>
+          <React.Fragment key={player.id}>
+            <Flex>
+              <CardStack size={10} />
+              <Tooltip label={player.settings.name}>
+                <Avatar
+                  size="xl"
+                  shadow="md"
+                  bg="white"
+                  mx={4}
+                  src={avatars.create(player.settings.avatar, {
+                    width: 100,
+                    height: 100,
+                    margin: 15,
+                    dataUri: true,
+                  })}
+                />
+              </Tooltip>
+              <Card />
+            </Flex>
+          </React.Fragment>
         ))}
       </Flex>
       <Flex justifyContent="space-around" flex={1} m={8} mt={0} h={64}>
@@ -52,7 +77,12 @@ export default function Game() {
         shadow="dark-lg"
       >
         {!game.active && iAmAdmin && (
-          <Button size="lg" colorScheme="green" onClick={handleStartGame}>
+          <Button
+            size="lg"
+            colorScheme="green"
+            onClick={handleStartGame}
+            disabled={game.players.length < 3}
+          >
             Start Game
           </Button>
         )}

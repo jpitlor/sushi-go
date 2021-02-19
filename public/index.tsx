@@ -6,6 +6,8 @@ import { BrowserRouter } from "react-router-dom";
 import { store } from "../data/store";
 import App from "../structure/App";
 
+import "animate.css/animate.min.css";
+
 ReactDOM.render(
   <ChakraProvider>
     <Provider store={store}>

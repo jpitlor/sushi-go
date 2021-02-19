@@ -46,21 +46,22 @@ export default function Game() {
         {otherPlayers.map((player) => (
           <React.Fragment key={player.id}>
             <Flex>
-              <CardStack size={10} />
-              <Tooltip label={player.settings.name}>
-                <Avatar
-                  size="xl"
-                  shadow="md"
-                  bg="white"
-                  mx={4}
-                  src={avatars.create(player.settings.avatar, {
-                    width: 100,
-                    height: 100,
-                    margin: 15,
-                    dataUri: true,
-                  })}
-                />
-              </Tooltip>
+              <Flex flexDirection="column" mx={4} alignItems="center">
+                <Tooltip label={player.settings.name}>
+                  <Avatar
+                    size="xl"
+                    shadow="md"
+                    bg="white"
+                    src={avatars.create(player.settings.avatar, {
+                      width: 100,
+                      height: 100,
+                      margin: 15,
+                      dataUri: true,
+                    })}
+                  />
+                </Tooltip>
+                <CardStack size={10} />
+              </Flex>
               <Card />
             </Flex>
           </React.Fragment>

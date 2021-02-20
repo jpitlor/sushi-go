@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import java.util.*
 
 internal class CardsKtTest {
-    private val settings = PlayerSettings("Jim", "")
+    private val settings = mutableMapOf<String, Any>()
     @Test
     fun scoreSomePoints() {
         val nigiri = Nigiri(3)

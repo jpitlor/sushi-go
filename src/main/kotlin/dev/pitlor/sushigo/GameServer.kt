@@ -26,7 +26,7 @@ class Server {
         return "Game \"${code}\" Created"
     }
 
-    fun joinGame(code: String, user: UUID, settings: PlayerSettings) {
+    fun joinGame(code: String, user: UUID, settings: MutableMap<String, Any>) {
         val gameIndex = games.indexOfFirst { it.code == code }
 
         require(code.isNotEmpty()) { "Code is empty" }
@@ -37,7 +37,7 @@ class Server {
         games[gameIndex].players += player
     }
 
-    fun updateSettings(code: String, user: UUID, settings: PlayerSettings) {
+    fun updateSettings(code: String, user: UUID, settings: MutableMap<String, Any>) {
         val gameIndex = games.indexOfFirst { it.code == code }
         require(code.isNotEmpty()) { "Code is empty" }
         require(gameIndex > -1) { "That game does not exist" }
@@ -45,7 +45,11 @@ class Server {
         val playerIndex = games[gameIndex].players.indexOfFirst { it.id == user }
         require(playerIndex > -1) { "That player is not in this game" }
 
-        games[gameIndex].players[playerIndex].settings = settings
+        games[gameIndex].players[playerIndex].settings.putAll(settings)
+    }
+
+    fun findPlayer(user: UUID): String? {
+        return games.find { g -> g.players.any { p -> p.id == user } }?.code
     }
 }
 

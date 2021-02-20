@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 import java.util.*
 
 internal class GameTest {
-    private val settings = PlayerSettings("Jim", "")
+    private val settings = mutableMapOf<String, Any>()
 
     @Test
     fun getPlayers() {

@@ -3,15 +3,15 @@ package dev.pitlor.sushigo
 import java.util.*
 import kotlin.collections.ArrayList
 
-data class PlayerSettings(val name: String, val avatar: String)
-class Player(val id: UUID, var settings: PlayerSettings) {
+const val SETTING_CONNECTED = "connected"
+class Player(val id: UUID, val settings: MutableMap<String, Any>) {
     var score: Int = 0
     var puddingCount: Int = 0
     var hand: ArrayList<Card> = arrayListOf()
     val cardsPlayed: ArrayList<Card> = arrayListOf()
 }
 
-class Game(val code: String, val admin: UUID) {
+class Game(val code: String, var admin: UUID) {
     var active: Boolean = false
     val players = arrayListOf<Player>()
     val roundScores = arrayListOf<Dictionary<String, Int>>()

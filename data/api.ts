@@ -1,11 +1,14 @@
-import { store, actions, Game, Settings } from "./store";
+import { store, actions, Game, Settings, rejoinGame } from "./store";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import { v4 as uuidv4 } from "uuid";
-import set = Reflect.set;
 
 const client = new Client();
 client.onConnect = () => {
+  client.subscribe("/topic/rejoin-game", ({ body }) => {
+    store.dispatch(rejoinGame(body));
+  });
+
   client.subscribe("/topic/games", ({ body }) => {
     const response = JSON.parse(body) as string[];
     store.dispatch(actions.handleGamesListMessage(response));

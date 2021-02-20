@@ -77,6 +77,15 @@ const saveSettings = createAsyncThunk<
   return settings;
 });
 
+const rejoinGame = createAsyncThunk<void, string, ThunkApi>(
+  "rejoinGame",
+  (code, { getState }) => {
+    const { settings } = getState();
+    api.joinGame(code, settings);
+    window.location.assign("/game");
+  }
+);
+
 const { actions, reducer } = createSlice({
   name: "app",
   initialState: {
@@ -152,6 +161,7 @@ export {
   createGame,
   joinGame,
   saveSettings,
+  rejoinGame,
   Game,
   Settings,
 };

@@ -33,6 +33,7 @@ class Server {
         require(gameIndex > -1) { "That game does not exist" }
         require(games[gameIndex].players.find { it.id == user } == null) { "You are already in that game!" }
 
+        settings[SETTING_CONNECTED] = true
         val player = Player(user, settings)
         games[gameIndex].players += player
     }

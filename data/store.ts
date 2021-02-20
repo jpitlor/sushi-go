@@ -10,6 +10,7 @@ import {
 } from "react-redux";
 import { Skins } from "../types/skins";
 import * as api from "./api";
+import history from "./history";
 
 interface Settings {
   id: string;
@@ -17,6 +18,7 @@ interface Settings {
   name: string;
   skin: Skins;
   server: string;
+  connected: boolean;
 }
 
 interface Game {
@@ -72,7 +74,9 @@ const saveSettings = createAsyncThunk<
   } = getState();
 
   api.updateSettings(code, { ...oldSettings, ...settings });
-  Object.entries(settings).forEach(([k, v]) => localStorage.setItem(k, v));
+  Object.entries(settings).forEach(([k, v]) => {
+    if (typeof v === "string") localStorage.setItem(k, v);
+  });
 
   return settings;
 });
@@ -81,8 +85,8 @@ const rejoinGame = createAsyncThunk<void, string, ThunkApi>(
   "rejoinGame",
   (code, { getState }) => {
     const { settings } = getState();
-    api.joinGame(code, settings);
-    window.location.assign("/game");
+    api.joinGame(code, settings, true);
+    history.push("/game");
   }
 );
 

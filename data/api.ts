@@ -45,11 +45,17 @@ export function createGame(code: string) {
   client.publish({ destination: `/app/games/${code}/create` });
 }
 
-export function joinGame(code: string, settings: Settings) {
-  client.publish({
-    destination: `/app/games/${code}/join`,
-    body: JSON.stringify(settings),
-  });
+export function joinGame(
+  code: string,
+  settings: Settings,
+  rejoining: boolean = false
+) {
+  if (!rejoining) {
+    client.publish({
+      destination: `/app/games/${code}/join`,
+      body: JSON.stringify(settings),
+    });
+  }
   client.subscribe(`/topic/games/${code}`, ({ body }) => {
     const response = JSON.parse(body) as Game;
     store.dispatch(actions.handleGameUpdate(response));

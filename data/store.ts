@@ -53,9 +53,13 @@ interface ThunkApi {
   state: State;
 }
 
-const goToLobby = createAsyncThunk<void, string>("goToLobby", (serverUrl) => {
-  api.connectToServer(serverUrl);
-});
+const goToLobby = createAsyncThunk<void, string, ThunkApi>(
+  "goToLobby",
+  (serverUrl, { getState }) => {
+    const { settings } = getState();
+    api.connectToServer(serverUrl, settings.id);
+  }
+);
 
 const createGame = createAsyncThunk<void, string>("createGame", (code) => {
   api.createGame(code);
@@ -93,6 +97,14 @@ const rejoinGame = createAsyncThunk<void, string, ThunkApi>(
     const { settings } = getState();
     api.joinGame(code, settings, true);
     history.push("/game");
+  }
+);
+
+const startRound = createAsyncThunk<void, void, ThunkApi>(
+  "startRound",
+  (_, { getState }) => {
+    const { currentGame } = getState();
+    api.startRound(currentGame.code);
   }
 );
 

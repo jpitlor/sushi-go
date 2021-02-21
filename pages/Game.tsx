@@ -2,6 +2,7 @@ import { Box, Button, Flex, Avatar, Tooltip, Center } from "@chakra-ui/react";
 import Avatars from "@dicebear/avatars";
 import sprites from "@dicebear/avatars-human-sprites";
 import React from "react";
+import { useDispatch } from "react-redux";
 import Card from "../components/Card";
 import CardStack from "../components/CardStack";
 import HelpDialog from "../components/HelpDialog";
@@ -13,6 +14,7 @@ import useBoolean from "../utils/useBoolean";
 const avatars = new Avatars(sprites, {});
 
 export default function Game() {
+  const dispatch = useDispatch();
   const game = useSelector((state) => state.currentGame);
   const myId = useSelector((state) => state.settings.id);
   const [helpDialogIsVisible, showHelpDialog, hideHelpDialog] = useBoolean();

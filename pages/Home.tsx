@@ -52,7 +52,14 @@ export default function Home() {
 
   function handleGoToLobby(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    dispatch(saveSettings({ name, server, skin, avatar }));
+
+    let id = localStorage.getItem("uuid");
+    if (!id) {
+      id = uuidv4();
+      localStorage.setItem("uuid", id);
+    }
+
+    dispatch(saveSettings({ name, server, skin, avatar, id }));
     dispatch(goToLobby(server));
     history.push("/lobby");
     return false;

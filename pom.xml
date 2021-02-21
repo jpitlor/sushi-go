@@ -51,6 +51,22 @@
                 </executions>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources/client</directory>
+                <excludes>
+                    <exclude>**/*</exclude>
+                </excludes>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>src/main/resources/client</directory>
+                <excludes>
+                    <exclude>**/*</exclude>
+                </excludes>
+            </testResource>
+        </testResources>
     </build>
 
     <dependencies>

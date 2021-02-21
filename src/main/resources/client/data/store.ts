@@ -18,7 +18,6 @@ interface Settings {
   avatar: string;
   name: string;
   skin: Skins;
-  server: string;
   connected: boolean;
 }
 
@@ -53,11 +52,11 @@ interface ThunkApi {
   state: State;
 }
 
-const goToLobby = createAsyncThunk<void, string, ThunkApi>(
+const goToLobby = createAsyncThunk<void, void, ThunkApi>(
   "goToLobby",
-  (serverUrl, { getState }) => {
+  (_, { getState }) => {
     const { settings } = getState();
-    api.connectToServer(serverUrl, settings.id);
+    api.connectToServer(settings.id);
   }
 );
 
@@ -124,7 +123,6 @@ const { actions, reducer } = createSlice({
       avatar: localStorage.getItem("avatar"),
       name: localStorage.getItem("name"),
       skin: localStorage.getItem("skin") || "Default",
-      server: localStorage.getItem("server") || "",
     },
   } as State,
   reducers: {

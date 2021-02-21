@@ -57,7 +57,7 @@ open class SocketConfig : WebSocketMessageBrokerConfigurer {
     }
 
     override fun registerStompEndpoints(registry: StompEndpointRegistry) {
-        registry.addEndpoint("/").setAllowedOriginPatterns("*").withSockJS()
+        registry.addEndpoint("/websocket-server").setAllowedOriginPatterns("*").withSockJS()
     }
 
     override fun configureClientInboundChannel(registration: ChannelRegistration) {

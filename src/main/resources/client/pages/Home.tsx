@@ -40,12 +40,10 @@ export default function Home() {
     name: defaultName,
     avatar: defaultAvatar,
     skin: defaultSkin,
-    server: defaultServer,
   } = useSelector((state) => state.settings);
 
   const [avatar, setAvatar] = useState(defaultAvatar ?? uuidv4());
   const [name, setName] = useInput(defaultName ?? getRandomName());
-  const [server, setServer] = useInput(defaultServer);
   const [skin, setSkin] = useInput(defaultSkin);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -59,8 +57,8 @@ export default function Home() {
       localStorage.setItem("uuid", id);
     }
 
-    dispatch(saveSettings({ name, server, skin, avatar, id }));
-    dispatch(goToLobby(server));
+    dispatch(saveSettings({ name, skin, avatar, id }));
+    dispatch(goToLobby());
     history.push("/lobby");
     return false;
   }
@@ -134,15 +132,6 @@ export default function Home() {
                 </option>
               ))}
             </Select>
-          </FormControl>
-          <Divider my={8} />
-          <FormControl id="server">
-            <FormLabel>Server</FormLabel>
-            <Input value={server} onChange={setServer} placeholder="Server" />
-            <FormHelperText>
-              If you're not sure what this is, keep the default - <br />
-              https://sushi-go-server.pitlor.dev
-            </FormHelperText>
           </FormControl>
           <Button type="submit" mt={8} colorScheme="green">
             Go to Lobby

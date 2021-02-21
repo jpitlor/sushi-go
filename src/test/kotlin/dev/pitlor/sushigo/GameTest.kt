@@ -22,6 +22,7 @@ internal class GameTest {
         val game = Game("", UUID.randomUUID())
         game.players += Player(UUID.randomUUID(), settings)
         game.players += Player(UUID.randomUUID(), settings)
+        game.players += Player(UUID.randomUUID(), settings)
 
         game.startRound()
         game.startRound()

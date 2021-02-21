@@ -56,13 +56,11 @@ class Game(val code: String, var admin: UUID) {
     fun endRound() {
         check(players.all { it.hand.isEmpty() }) { "Someone hasn't played all of their cards" }
         players.scoreRound(isEndOfGame = round == 2)
-
-        round++
     }
 
     fun startRound() {
-        check(round > 3) { "There are only 3 rounds in a game" }
-        check(players.size < 3 || players.size > 5) { "Game can only be played with 2-5 people" }
+        check(round < 3) { "There are only 3 rounds in a game" }
+        check(players.size in 3..5) { "Game can only be played with 2-5 people" }
 
         val cardsPerPlayer = when(players.size) {
             2 -> 10
@@ -79,5 +77,6 @@ class Game(val code: String, var admin: UUID) {
         }
 
         active = true
+        round++
     }
 }

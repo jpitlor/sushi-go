@@ -62,7 +62,7 @@ fun ArrayList<Player>.scoreRound(isEndOfGame: Boolean = false) {
         }
         if (this.size > 2 && puddingLast != null) {
             puddingGroups[puddingLast]!!.forEach {
-                it.scores.last().pudding = 6 / puddingGroups[puddingLast]!!.size
+                it.scores.last().pudding = -6 / puddingGroups[puddingLast]!!.size
             }
         }
     } else {

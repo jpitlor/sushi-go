@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "module": "ESNext",
+        "moduleResolution": "Node",
+        "target": "es5",
+        "sourceMap": true,
+        "allowSyntheticDefaultImports": true,
+        "jsx": "react",
+        "lib": [
+            "DOM",
+            "ESNext"
+        ]
+    },
+    "exclude": [
+        "node_modules"
+    ]
+}

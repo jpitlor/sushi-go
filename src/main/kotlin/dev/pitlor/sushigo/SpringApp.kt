@@ -166,6 +166,14 @@ class ServerController(private val socket: SimpMessagingTemplate) {
         server.updateSettings(gameCode, user.id, settings)
         return server.getGame(gameCode)
     }
+
+    @MessageMapping("/games/{gameCode}/start-round")
+    @SendTo("/topic/games/{gameCode}")
+    fun startRound(@DestinationVariable gameCode: String, @ModelAttribute user: User): Game {
+        server.startRound(gameCode, user.id)
+        socket.convertAndSend("/topic/games", server.getGames())
+        return server.getGame(gameCode)
+    }
 }
 
 @SpringBootApplication

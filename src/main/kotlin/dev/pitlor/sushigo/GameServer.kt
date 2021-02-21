@@ -6,7 +6,7 @@ val games = arrayListOf<Game>()
 
 class Server {
     fun getGames(): Iterable<String> {
-        return games.map { it.code }
+        return games.filter { !it.active }.map { it.code }
     }
 
     fun getGame(gameCode: String): Game {
@@ -51,6 +51,15 @@ class Server {
 
     fun findPlayer(user: UUID): String? {
         return games.find { g -> g.players.any { p -> p.id == user } }?.code
+    }
+
+    fun startRound(code: String, id: UUID) {
+        val gameIndex = games.indexOfFirst { it.code == code }
+        require(code.isNotEmpty()) { "Code is empty" }
+        require(gameIndex > -1) { "That game does not exist" }
+        require(games[gameIndex].admin == id) { "You are not the admin of this game" }
+
+        games[gameIndex].startRound()
     }
 }
 

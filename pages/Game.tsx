@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Avatar, Tooltip } from "@chakra-ui/react";
+import { Box, Button, Flex, Avatar, Tooltip, Center } from "@chakra-ui/react";
 import Avatars from "@dicebear/avatars";
 import sprites from "@dicebear/avatars-human-sprites";
 import React from "react";
@@ -43,16 +43,16 @@ export default function Game() {
       flexDirection="column"
     >
       <Flex justifyContent="space-around" m={8} h={64}>
-        {otherPlayers.map((player) => (
-          <React.Fragment key={player.id}>
+        {otherPlayers.map(({ id, settings, currentCard, hand }) => (
+          <React.Fragment key={id}>
             <Flex>
-              <Flex flexDirection="column" mx={4} alignItems="center">
-                <Tooltip label={player.settings.name}>
+              <Flex flexDirection="column" mx={8} alignItems="center">
+                <Tooltip label={settings.name}>
                   <Avatar
                     size="xl"
                     shadow="md"
                     bg="white"
-                    src={avatars.create(player.settings.avatar, {
+                    src={avatars.create(settings.avatar, {
                       width: 100,
                       height: 100,
                       margin: 15,
@@ -60,9 +60,20 @@ export default function Game() {
                     })}
                   />
                 </Tooltip>
-                <CardStack size={10} />
+                <CardStack size={hand.length} />
               </Flex>
-              <Card />
+              {currentCard ? (
+                <Card type={currentCard} />
+              ) : (
+                <Box
+                  w="8rem"
+                  h="12rem"
+                  borderStyle="dashed"
+                  borderWidth="3px"
+                  borderRadius="15px"
+                  borderColor="gray.700"
+                />
+              )}
             </Flex>
           </React.Fragment>
         ))}

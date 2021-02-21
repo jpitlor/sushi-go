@@ -13,7 +13,6 @@ import {
   Td,
   TableCaption,
   Avatar,
-  Image,
   Flex,
   Text,
   AvatarBadge,
@@ -66,13 +65,37 @@ export default function ScoresDialog({ isOpen, onClose }: ModalProps) {
               </Tr>
             </Thead>
           </Table>
-          {game.roundScores.map((round, i) => (
-            <Table variant="simple">
+          {[...Array(game.round)].map((round, i) => (
+            <Table variant="simple" key={i}>
               <TableCaption placement="top">Round {i + 1}</TableCaption>
               <Tbody>
                 <Tr>
-                  {game.players.map(({ id }) => (
-                    <Td>{round[id]}</Td>
+                  {game.players.map(({ scores }) => (
+                    <Td>{scores[i].hand}</Td>
+                  ))}
+                </Tr>
+                <Tr>
+                  {game.players.map(({ scores }) => (
+                    <Td>{scores[i].maki}</Td>
+                  ))}
+                </Tr>
+                {i == 2 && (
+                  <Tr>
+                    {game.players.map(({ scores }) => (
+                      <Td>{scores[i].pudding}</Td>
+                    ))}
+                  </Tr>
+                )}
+                <Tr>
+                  {game.players.map(({ scores }) => (
+                    <Td as="strong">
+                      {scores
+                        .slice(0, i)
+                        .reduce(
+                          (acc, s) => acc + s.hand + s.maki + s.pudding,
+                          0
+                        )}
+                    </Td>
                   ))}
                 </Tr>
               </Tbody>

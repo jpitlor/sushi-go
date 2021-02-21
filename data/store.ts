@@ -8,6 +8,7 @@ import {
   TypedUseSelectorHook,
   useSelector as useUntypedSelector,
 } from "react-redux";
+import { Card } from "../types/props";
 import { Skins } from "../types/skins";
 import * as api from "./api";
 import history from "./history";
@@ -25,11 +26,16 @@ interface Game {
   code: string;
   active: boolean;
   admin: string;
+  round: number;
   players: {
     id: string;
+    scores: { hand: number; maki: number; pudding: number }[];
+    puddingCount: number;
+    currentCard: Card;
+    cardsPlayed: Card[];
+    hand: Card[];
     settings: Settings;
   }[];
-  roundScores: { [k: string]: number }[];
 }
 
 interface State {
@@ -99,7 +105,6 @@ const { actions, reducer } = createSlice({
       active: false,
       code: "",
       players: [],
-      roundScores: [],
       admin: "",
     },
     settings: {

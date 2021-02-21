@@ -30,7 +30,7 @@ fun newDeck(): ArrayList<Card> {
 
 fun ArrayList<Player>.scoreRound(isEndOfGame: Boolean = false) {
     // Sum the cards not dependent on other players
-    this.forEach { it.score += it.cardsPlayed.score() }
+    this.forEach { it.scores += Score(it.cardsPlayed.score()) }
 
     // Add points for Maki
     val makiGroups = this.groupBy { it.cardsPlayed.filterIsInstance<Maki>().map { m -> m.count }.sum() }
@@ -39,10 +39,14 @@ fun ArrayList<Player>.scoreRound(isEndOfGame: Boolean = false) {
     val makiSecond = keys.getOrElse(1) { 0 }
 
     if (makiFirst > 0) {
-        makiGroups[makiFirst]!!.forEach { it.score += 6 / makiGroups[makiFirst]!!.size }
+        makiGroups[makiFirst]!!.forEach {
+            it.scores.last().maki = 6 / makiGroups[makiFirst]!!.size
+        }
     }
     if (makiGroups[makiFirst]!!.size == 1 && makiSecond > 0) {
-        makiGroups[makiSecond]!!.forEach { it.score += 3 / makiGroups[makiSecond]!!.size }
+        makiGroups[makiSecond]!!.forEach {
+            it.scores.last().maki = 3 / makiGroups[makiSecond]!!.size
+        }
     }
 
     // Add points for Pudding
@@ -51,11 +55,15 @@ fun ArrayList<Player>.scoreRound(isEndOfGame: Boolean = false) {
         val puddingFirst = puddingGroups.keys.maxOrNull()
         val puddingLast = puddingGroups.keys.minOrNull()
 
-        if (puddingFirst!! > 0) {
-            puddingGroups[puddingFirst]!!.forEach { it.score += 6 / puddingGroups[puddingFirst]!!.size }
+        if (puddingFirst != null) {
+            puddingGroups[puddingFirst]!!.forEach {
+                it.scores.last().pudding = 6 / puddingGroups[puddingFirst]!!.size
+            }
         }
-        if (this.size > 2 && puddingFirst != puddingLast) {
-            puddingGroups[puddingLast]!!.forEach { it.score -= 6 / puddingGroups[puddingLast]!!.size }
+        if (this.size > 2 && puddingLast != null) {
+            puddingGroups[puddingLast]!!.forEach {
+                it.scores.last().pudding = 6 / puddingGroups[puddingLast]!!.size
+            }
         }
     } else {
         this.forEach { it.puddingCount += it.cardsPlayed.filterIsInstance<Pudding>().size }

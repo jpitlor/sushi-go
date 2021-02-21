@@ -45,9 +45,9 @@ internal class CardsKtTest {
         val players = arrayListOf(jim, jan, sue)
         players.scoreRound()
 
-        assertEquals(0, jim.score)
-        assertEquals(0, jan.score)
-        assertEquals(0, sue.score)
+        assertEquals(0, jim.scores.sum())
+        assertEquals(0, jan.scores.sum())
+        assertEquals(0, sue.scores.sum())
     }
 
     @Test
@@ -64,9 +64,9 @@ internal class CardsKtTest {
         val players = arrayListOf(jim, jan, sue)
         players.scoreRound(isEndOfGame = true)
 
-        assertEquals(6, jim.score)
-        assertEquals(0, jan.score)
-        assertEquals(-6, sue.score)
+        assertEquals(6, jim.scores.sum())
+        assertEquals(0, jan.scores.sum())
+        assertEquals(-6, sue.scores.sum())
     }
 
     @Test
@@ -83,8 +83,8 @@ internal class CardsKtTest {
         val players = arrayListOf(jim, jan, sue)
         players.scoreRound()
 
-        assertEquals(3, jim.score)
-        assertEquals(3, jan.score)
-        assertEquals(0, sue.score)
+        assertEquals(3, jim.scores.sum())
+        assertEquals(3, jan.scores.sum())
+        assertEquals(0, sue.scores.sum())
     }
 }

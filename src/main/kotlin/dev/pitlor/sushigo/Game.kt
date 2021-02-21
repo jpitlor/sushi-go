@@ -3,20 +3,25 @@ package dev.pitlor.sushigo
 import java.util.*
 import kotlin.collections.ArrayList
 
+data class Score(val hand: Int, var maki: Int = 0, var pudding: Int = 0)
+fun List<Score>.sum(): Int {
+    return this.map { it.hand + it.maki + it.pudding }.sum()
+}
+
 const val SETTING_CONNECTED = "connected"
 class Player(val id: UUID, val settings: MutableMap<String, Any>) {
-    var score: Int = 0
+    var scores: List<Score> = listOf()
     var puddingCount: Int = 0
     var hand: ArrayList<Card> = arrayListOf()
+    var currentCard: Card? = null
     val cardsPlayed: ArrayList<Card> = arrayListOf()
 }
 
 class Game(val code: String, var admin: UUID) {
     var active: Boolean = false
     val players = arrayListOf<Player>()
-    val roundScores = arrayListOf<Dictionary<String, Int>>()
+    var round = 0
     private val deck = newDeck()
-    private var round = 1
 
     init {
         deck.shuffle()
@@ -45,12 +50,12 @@ class Game(val code: String, var admin: UUID) {
     }
 
     fun canEndGame(): Boolean {
-        return round == 3
+        return round == 2
     }
 
     fun endRound() {
         check(players.all { it.hand.isEmpty() }) { "Someone hasn't played all of their cards" }
-        players.scoreRound(isEndOfGame = round == 3)
+        players.scoreRound(isEndOfGame = round == 2)
 
         round++
     }

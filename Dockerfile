@@ -1,27 +1,19 @@
-# Cache Frontend Dependencies
-FROM node:15.9.0-alpine3.0 as frontend-dep-cache
+# TODO: Cache dependencies!
+
+FROM node:15.9.0 as frontend
 WORKDIR /usr/sushi-go
-COPY src/main/resources/client/package.json ./src/main/resources/client/
+COPY src/main/resources/client/ ./src/main/resources/client/
 RUN ["npm", "install", "--prefix", "src/main/resources/client"]
-
-# Cache Backend Dependencies
-FROM maven:3.6.3-jdk-11 as backend-dep-cache
-WORKDIR /usr/sushi-go
-COPY pom.xml .
-RUN ["mvn", "dependency:go-offline"]
-
-# Build Frontend
-FROM frontend-dep-cache as frontend-build
 RUN ["npm", "run", "build", "--prefix", "src/main/resources/client"]
 
-# Build Backend
-FROM backend-dep-cache as backend-build
+FROM maven:3.6.3-jdk-11 as backend
 WORKDIR /usr/sushi-go
-COPY --from=frontend-build  /usr/sushi-go/* .
+COPY . ./
+COPY --from=frontend  /usr/sushi-go/src/main/resources/public ./src/main/resources/public/
 RUN ["mvn", "package"]
 
 # Run!
-FROM openjdk:17-ea-10-jdk as run
+FROM openjdk:11
 WORKDIR /usr/sushi-go
-COPY --from=backend-build /usr/sushi-go/target/sushi-go-server-1.0-SNAPSHOT.jar server.jar
+COPY --from=backend /usr/sushi-go/target/sushi-go-server-1.0-SNAPSHOT.jar ./server.jar
 ENTRYPOINT ["java", "-jar", "server.jar"]

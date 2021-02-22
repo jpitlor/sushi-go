@@ -1,0 +1,5 @@
+services:
+  sushi-go:
+    build: .
+    ports:
+      - "9000:8080"

@@ -39,8 +39,8 @@ export default function ScoresDialog({ isOpen, onClose }: ModalProps) {
             <Thead>
               <Tr>
                 {game.players.map(
-                  ({ settings: { name, avatar, connected } }) => (
-                    <Th>
+                  ({ id, settings: { name, avatar, connected } }) => (
+                    <Th key={id}>
                       <Flex flexDirection="column">
                         <Avatar
                           mx="auto"
@@ -65,30 +65,30 @@ export default function ScoresDialog({ isOpen, onClose }: ModalProps) {
               </Tr>
             </Thead>
           </Table>
-          {[...Array(game.round)].map((round, i) => (
+          {[...Array((game.round ?? 1) - 1)].map((round, i) => (
             <Table variant="simple" key={i}>
               <TableCaption placement="top">Round {i + 1}</TableCaption>
               <Tbody>
                 <Tr>
-                  {game.players.map(({ scores }) => (
-                    <Td>{scores[i].hand}</Td>
+                  {game.players.map(({ id, scores }) => (
+                    <Td key={id}>{scores[i].hand}</Td>
                   ))}
                 </Tr>
                 <Tr>
-                  {game.players.map(({ scores }) => (
-                    <Td>{scores[i].maki}</Td>
+                  {game.players.map(({ id, scores }) => (
+                    <Td key={id}>{scores[i].maki}</Td>
                   ))}
                 </Tr>
                 {i == 2 && (
                   <Tr>
-                    {game.players.map(({ scores }) => (
-                      <Td>{scores[i].pudding}</Td>
+                    {game.players.map(({ id, scores }) => (
+                      <Td key={id}>{scores[i].pudding}</Td>
                     ))}
                   </Tr>
                 )}
                 <Tr>
-                  {game.players.map(({ scores }) => (
-                    <Td as="strong">
+                  {game.players.map(({ id, scores }) => (
+                    <Td as="strong" key={id}>
                       {scores
                         .slice(0, i)
                         .reduce(

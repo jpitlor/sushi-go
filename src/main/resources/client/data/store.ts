@@ -181,6 +181,7 @@ export {
   joinGame,
   saveSettings,
   rejoinGame,
+  startRound,
   Game,
   Settings,
 };

@@ -8,7 +8,7 @@ import CardStack from "../components/CardStack";
 import HelpDialog from "../components/HelpDialog";
 import ScoresDialog from "../components/ScoresDialog";
 import SettingsDialog from "../components/SettingsDialog";
-import { useSelector } from "../data/store";
+import {startRound, useSelector} from "../data/store";
 import useBoolean from "../utils/useBoolean";
 
 const avatars = new Avatars(sprites, {});
@@ -34,7 +34,9 @@ export default function Game() {
 
   function handlePlayCard() {}
 
-  function handleStartGame() {}
+  function handleStartGame() {
+    dispatch(startRound())
+  }
 
   return (
     <Flex

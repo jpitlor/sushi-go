@@ -22,9 +22,10 @@ import logo from "../public/logo.png";
 import { useSelector } from "../data/store";
 import skins from "../skins";
 import toSkinKey from "../utils/toSkinKey";
-import { QuestionIcon } from "@chakra-ui/icons";
 import CardCorner from "./CardCorner";
 import helpText from "../utils/cardHelpText";
+import { faQuestionCircle } from "@fortawesome/pro-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type CardProps = {
   card?: CardType;
@@ -85,7 +86,7 @@ export default function Card({ card, onClick, isSelected = false }: CardProps) {
       <Popover>
         <PopoverTrigger>
           <IconButton
-            icon={<QuestionIcon />}
+            icon={<FontAwesomeIcon icon={faQuestionCircle} />}
             aria-label="Scoring Help"
             position="absolute"
             left={4}

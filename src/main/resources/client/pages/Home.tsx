@@ -13,7 +13,8 @@ import {
   Select,
   IconButton,
 } from "@chakra-ui/react";
-import { RepeatIcon } from "@chakra-ui/icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSync } from "@fortawesome/pro-regular-svg-icons";
 import Avatars from "@dicebear/avatars";
 import sprites from "@dicebear/avatars-human-sprites";
 import React, { FormEvent, useState } from "react";
@@ -101,7 +102,7 @@ export default function Home() {
               <InputRightElement>
                 {/* @ts-ignore - the types are wrong?? */}
                 <IconButton
-                  icon={<RepeatIcon />}
+                  icon={<FontAwesomeIcon icon={faSync} />}
                   onClick={randomizeImage}
                   aria-label="Randomize Image"
                 />
@@ -115,7 +116,7 @@ export default function Home() {
               <InputRightElement>
                 {/* @ts-ignore - the types are wrong?? */}
                 <IconButton
-                  icon={<RepeatIcon />}
+                  icon={<FontAwesomeIcon icon={faSync} />}
                   onClick={randomizeName}
                   aria-label="Randomize Name"
                 />

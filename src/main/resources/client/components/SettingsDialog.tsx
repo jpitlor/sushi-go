@@ -1,4 +1,5 @@
-import { RepeatIcon } from "@chakra-ui/icons";
+import { faSync } from "@fortawesome/pro-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Modal,
   ModalOverlay,
@@ -92,7 +93,7 @@ export default function SettingsDialog({ isOpen, onClose }: ModalProps) {
               <InputRightElement>
                 {/* @ts-ignore - the types are wrong?? */}
                 <IconButton
-                  icon={<RepeatIcon />}
+                  icon={<FontAwesomeIcon icon={faSync} />}
                   onClick={randomizeImage}
                   aria-label="Randomize Image"
                 />
@@ -106,7 +107,7 @@ export default function SettingsDialog({ isOpen, onClose }: ModalProps) {
               <InputRightElement>
                 {/* @ts-ignore - the types are wrong?? */}
                 <IconButton
-                  icon={<RepeatIcon />}
+                  icon={<FontAwesomeIcon icon={faSync} />}
                   onClick={randomizeName}
                   aria-label="Randomize Name"
                 />

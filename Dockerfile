@@ -1,7 +1,6 @@
-# TODO: Cache dependencies!
-
 FROM node:15.9.0 as frontend
 WORKDIR /usr/sushi-go
+ARG FONTAWESOME_NPM_AUTH_TOKEN
 COPY src/main/resources/client/ ./src/main/resources/client/
 RUN ["npm", "install", "--prefix", "src/main/resources/client"]
 RUN ["npm", "run", "build", "--prefix", "src/main/resources/client"]

@@ -4,12 +4,12 @@ import {
   Flex,
   Avatar,
   Tooltip,
-  Center,
-  Wrap,
   Container,
-  WrapItem,
   HStack,
   Divider,
+  Text,
+  Center,
+  VStack,
 } from "@chakra-ui/react";
 import Avatars from "@dicebear/avatars";
 import sprites from "@dicebear/avatars-human-sprites";
@@ -25,6 +25,8 @@ import SettingsDialog from "../components/SettingsDialog";
 import { startRound, useSelector } from "../data/store";
 import useBoolean from "../utils/useBoolean";
 import { Card as CardType } from "../types/props";
+import { faAward, faHands } from "@fortawesome/pro-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const avatars = new Avatars(sprites, {});
 
@@ -74,9 +76,9 @@ export default function Game() {
       >
         <Scrollable style={{ width: "100%", height: "18rem", margin: "2rem" }}>
           <Flex justifyContent="space-around" h={64} w="full">
-            {otherPlayers.map(({ id, settings, currentCard, hand }) => (
-              <React.Fragment key={id}>
-                <Flex>
+            {otherPlayers.map(
+              ({ id, settings, currentCard, hand, puddingCount }) => (
+                <Flex key={id}>
                   <Flex flexDirection="column" mx={8} alignItems="center">
                     <Tooltip label={settings.name}>
                       <Avatar
@@ -91,7 +93,37 @@ export default function Game() {
                         })}
                       />
                     </Tooltip>
-                    <CardStack size={hand.length} />
+                    <HStack spacing="0.5rem" mt={4} color="white">
+                      <Tooltip label="Hand Size">
+                        <Box
+                          p={1}
+                          w="3rem"
+                          h="4rem"
+                          borderRadius="15px"
+                          border="3px solid white"
+                          bg="red.700"
+                          textAlign="center"
+                        >
+                          <FontAwesomeIcon icon={faHands} />
+                          <Text>{hand.length}</Text>
+                        </Box>
+                      </Tooltip>
+                      {/* TODO Skin Name */}
+                      <Tooltip label="Pudding Count">
+                        <Box
+                          p={1}
+                          w="3rem"
+                          h="4rem"
+                          borderRadius="15px"
+                          border="3px solid white"
+                          bg="red.700"
+                          textAlign="center"
+                        >
+                          <FontAwesomeIcon icon={faAward} />
+                          <Text>{puddingCount}</Text>
+                        </Box>
+                      </Tooltip>
+                    </HStack>
                   </Flex>
                   {currentCard ? (
                     <Card />
@@ -106,8 +138,8 @@ export default function Game() {
                     />
                   )}
                 </Flex>
-              </React.Fragment>
-            ))}
+              )
+            )}
           </Flex>
         </Scrollable>
       </Container>

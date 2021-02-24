@@ -31,7 +31,7 @@ export default function App() {
       <Route path="/lobby">
         <Lobby />
       </Route>
-      <Route path="/" exact>
+      <Route path="/">
         <Home />
       </Route>
     </Switch>

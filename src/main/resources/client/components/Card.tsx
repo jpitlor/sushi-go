@@ -1,15 +1,52 @@
-import { Box, Center, Flex, Image, Tag, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  Flex,
+  Image,
+  Tag,
+  Text,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverFooter,
+  PopoverArrow,
+  PopoverCloseButton,
+  IconButton,
+  Tooltip,
+} from "@chakra-ui/react";
 import React from "react";
 import { Card as CardType } from "../types/props";
 import logo from "../public/logo.png";
 import { useSelector } from "../data/store";
 import skins from "../skins";
+import toSkinKey from "../utils/toSkinKey";
+import { QuestionIcon } from "@chakra-ui/icons";
+
+function helpText(card: CardType) {
+  switch (card.type) {
+    case "nigiri":
+      return `Worth ${card.value} point${card.value > 1 ? "s" : ""}`;
+    case "maki":
+      return "Top 2 Maki collectors at the end of the round win points";
+    case "sashimi":
+      return "A set of 3 earns 10 points. Incomplete sets earn 0 points";
+    case "tempura":
+      return "A set of 2 earns 5 points. Incomplete sets earn 0 points";
+    case "chopsticks":
+      return "Lets you play a second card from a future hand";
+    case "dumpling":
+    case "pudding":
+      return "Top pudding collectors at the end of the game earn points. Bottom pudding collectors lose points.";
+    case "wasabi":
+      // TODO: Skinify the string
+      return "Next Nigiri worth triple";
+  }
+}
 
 type CornerProps = { card: CardType };
 function Corner({ card }: CornerProps) {
-  const settings = useSelector((state) => state.settings);
-  const skin = skins[settings.skin];
-
   switch (card.type) {
     case "nigiri":
       return (
@@ -27,31 +64,13 @@ function Corner({ card }: CornerProps) {
       );
     case "maki":
       return (
-        <Flex position="absolute" right={2} top={2}>
-          {[...Array(card.count)].map((_, i) => (
-            <Image w={8} src={skin.maki.image} />
-          ))}
-        </Flex>
+        <Tag position="absolute" right={4} top={4}>
+          {card.count}
+        </Tag>
       );
     default:
       return null;
   }
-}
-
-function toSkinKey(card: CardType): string {
-  if (card.type === "nigiri") {
-    switch (card.value) {
-      case 1:
-        return "nigiriEgg";
-      case 2:
-        return "nigiriSalmon";
-      case 3:
-      default:
-        return "nigiriSquid";
-    }
-  }
-
-  return card.type;
 }
 
 type CardProps = {
@@ -110,6 +129,27 @@ export default function Card({ card, onClick, isSelected = false }: CardProps) {
         {skin[skinKey].name}
       </Text>
       <Corner card={card} />
+      <Popover>
+        <PopoverTrigger>
+          <IconButton
+            icon={<QuestionIcon />}
+            aria-label="Scoring Help"
+            position="absolute"
+            left={4}
+            top={4}
+            minW={6}
+            w={6}
+            h={6}
+          />
+        </PopoverTrigger>
+        <PopoverContent w="xs">
+          <PopoverCloseButton />
+          <PopoverHeader>Help</PopoverHeader>
+          <PopoverBody>
+            <Text fontSize="xs">{helpText(card)}</Text>
+          </PopoverBody>
+        </PopoverContent>
+      </Popover>
     </Center>
   );
 }

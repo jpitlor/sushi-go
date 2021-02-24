@@ -54,13 +54,13 @@ export default function Lobby() {
         mx="auto"
         flexDirection="column"
         alignItems="center"
-        maxW="40vw"
+        maxW="30rem"
         background="white"
         boxShadow="md"
         borderRadius="md"
         p={8}
       >
-        <Image src={logo} mb={8} />
+        <Image src={logo} mb={8} maxW="20rem" />
 
         <Flex
           as="form"

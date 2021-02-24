@@ -1,15 +1,15 @@
 package dev.pitlor.sushigo
 
-sealed class Card
+sealed class Card(val type: String)
 
-object Tempura : Card()
-object Sashimi : Card()
-object Dumpling : Card()
-data class Maki(val count: Int) : Card()
-data class Nigiri(val value: Int) : Card()
-object Pudding : Card()
-data class Wasabi(var nigiri: Nigiri? = null) : Card()
-object Chopsticks : Card()
+object Tempura : Card("tempura")
+object Sashimi : Card("sashimi")
+object Dumpling : Card("dumpling")
+data class Maki(val count: Int) : Card("maki")
+data class Nigiri(val value: Int) : Card("nigiri")
+object Pudding : Card("pudding")
+data class Wasabi(var nigiri: Nigiri? = null) : Card("wasabi")
+object Chopsticks : Card("chopsticks")
 
 fun newDeck(): ArrayList<Card> {
     return arrayListOf(

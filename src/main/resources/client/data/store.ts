@@ -9,7 +9,7 @@ import {
   useSelector as useUntypedSelector,
 } from "react-redux";
 import { Card } from "../types/props";
-import { Skins } from "../types/skins";
+import { Skin, Skins } from "../types/skins";
 import * as api from "./api";
 import history from "./history";
 
@@ -24,6 +24,7 @@ interface Settings {
 interface Game {
   code: string;
   active: boolean;
+  canStartRound: boolean;
   admin: string;
   round: number;
   players: {

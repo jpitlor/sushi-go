@@ -19,6 +19,7 @@ class Player(val id: UUID, val settings: MutableMap<String, Any>) {
 
 class Game(val code: String, var admin: UUID) {
     var active: Boolean = false
+    var canStartRound: Boolean = false
     val players = arrayListOf<Player>()
     var round = 0
     private val deck = newDeck()

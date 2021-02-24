@@ -65,7 +65,7 @@ export default function ScoresDialog({ isOpen, onClose }: ModalProps) {
               </Tr>
             </Thead>
           </Table>
-          {[...Array((game.round ?? 1) - 1)].map((round, i) => (
+          {[...Array(game.players[0]?.scores.length ?? 0)].map((round, i) => (
             <Table variant="simple" key={i}>
               <TableCaption placement="top">Round {i + 1}</TableCaption>
               <Tbody>

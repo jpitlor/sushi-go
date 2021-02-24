@@ -23,55 +23,8 @@ import { useSelector } from "../data/store";
 import skins from "../skins";
 import toSkinKey from "../utils/toSkinKey";
 import { QuestionIcon } from "@chakra-ui/icons";
-
-function helpText(card: CardType) {
-  switch (card.type) {
-    case "nigiri":
-      return `Worth ${card.value} point${card.value > 1 ? "s" : ""}`;
-    case "maki":
-      return "Top 2 Maki collectors at the end of the round win points";
-    case "sashimi":
-      return "A set of 3 earns 10 points. Incomplete sets earn 0 points";
-    case "tempura":
-      return "A set of 2 earns 5 points. Incomplete sets earn 0 points";
-    case "chopsticks":
-      return "Lets you play a second card from a future hand";
-    case "dumpling":
-    case "pudding":
-      return "Top pudding collectors at the end of the game earn points. Bottom pudding collectors lose points.";
-    case "wasabi":
-      // TODO: Skinify the string
-      return "Next Nigiri worth triple";
-  }
-}
-
-type CornerProps = { card: CardType };
-function Corner({ card }: CornerProps) {
-  switch (card.type) {
-    case "nigiri":
-      return (
-        <Tag position="absolute" right={4} top={4}>
-          {card.value}
-        </Tag>
-      );
-    case "wasabi":
-      if (!card.nigiri) return null;
-
-      return (
-        <Box position="absolute" right={4} top={4}>
-          TODO!
-        </Box>
-      );
-    case "maki":
-      return (
-        <Tag position="absolute" right={4} top={4}>
-          {card.count}
-        </Tag>
-      );
-    default:
-      return null;
-  }
-}
+import CardCorner from "./CardCorner";
+import helpText from "../utils/cardHelpText";
 
 type CardProps = {
   card?: CardType;
@@ -128,7 +81,7 @@ export default function Card({ card, onClick, isSelected = false }: CardProps) {
       >
         {skin[skinKey].name}
       </Text>
-      <Corner card={card} />
+      <CardCorner card={card} />
       <Popover>
         <PopoverTrigger>
           <IconButton

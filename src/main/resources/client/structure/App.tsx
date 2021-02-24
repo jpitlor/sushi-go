@@ -1,14 +1,23 @@
 import { useToast } from "@chakra-ui/react";
 import React, { useEffect } from "react";
-import { Route, Switch } from "react-router-dom";
-import { useSelector } from "../data/store";
+import { Route, Switch, useLocation } from "react-router-dom";
+import { goToLobby, useSelector } from "../data/store";
 import Game from "../pages/Game";
 import Home from "../pages/Home";
 import Lobby from "../pages/Lobby";
+import { useDispatch } from "react-redux";
 
 export default function App() {
   const toastData = useSelector((state) => state.toast);
   const toast = useToast();
+  const location = useLocation();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (location.pathname !== "/") {
+      dispatch(goToLobby());
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     const { title, description, status } = toastData;

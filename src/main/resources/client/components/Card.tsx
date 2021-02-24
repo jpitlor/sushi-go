@@ -83,6 +83,7 @@ export default function Card({ card, onClick, isSelected = false }: CardProps) {
       position="relative"
       w="8rem"
       h="12rem"
+      flexShrink={0}
       borderRadius="15px"
       border="3px solid white"
       borderColor={isSelected ? "green.500" : "white"}

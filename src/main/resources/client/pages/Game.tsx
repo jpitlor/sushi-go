@@ -8,11 +8,14 @@ import {
   Wrap,
   Container,
   WrapItem,
+  HStack,
+  Divider,
 } from "@chakra-ui/react";
 import Avatars from "@dicebear/avatars";
 import sprites from "@dicebear/avatars-human-sprites";
 import _partition from "lodash.partition";
 import React, { useState } from "react";
+import Scrollable from "react-custom-scrollbars";
 import { useDispatch } from "react-redux";
 import Card from "../components/Card";
 import CardStack from "../components/CardStack";
@@ -69,43 +72,46 @@ export default function Game() {
           "container.2xl",
         ]}
       >
-        <Flex justifyContent="space-around" m={8} h={64} w="full">
-          {otherPlayers.map(({ id, settings, currentCard, hand }) => (
-            <React.Fragment key={id}>
-              <Flex>
-                <Flex flexDirection="column" mx={8} alignItems="center">
-                  <Tooltip label={settings.name}>
-                    <Avatar
-                      size="xl"
-                      shadow="md"
-                      bg="white"
-                      src={avatars.create(settings.avatar, {
-                        width: 100,
-                        height: 100,
-                        margin: 15,
-                        dataUri: true,
-                      })}
+        <Scrollable style={{ width: "100%", height: "18rem", margin: "2rem" }}>
+          <Flex justifyContent="space-around" h={64} w="full">
+            {otherPlayers.map(({ id, settings, currentCard, hand }) => (
+              <React.Fragment key={id}>
+                <Flex>
+                  <Flex flexDirection="column" mx={8} alignItems="center">
+                    <Tooltip label={settings.name}>
+                      <Avatar
+                        size="xl"
+                        shadow="md"
+                        bg="white"
+                        src={avatars.create(settings.avatar, {
+                          width: 100,
+                          height: 100,
+                          margin: 15,
+                          dataUri: true,
+                        })}
+                      />
+                    </Tooltip>
+                    <CardStack size={hand.length} />
+                  </Flex>
+                  {currentCard ? (
+                    <Card />
+                  ) : (
+                    <Box
+                      w="8rem"
+                      h="12rem"
+                      borderStyle="dashed"
+                      borderWidth="3px"
+                      borderRadius="15px"
+                      borderColor="gray.700"
                     />
-                  </Tooltip>
-                  <CardStack size={hand.length} />
+                  )}
                 </Flex>
-                {currentCard ? (
-                  <Card />
-                ) : (
-                  <Box
-                    w="8rem"
-                    h="12rem"
-                    borderStyle="dashed"
-                    borderWidth="3px"
-                    borderRadius="15px"
-                    borderColor="gray.700"
-                  />
-                )}
-              </Flex>
-            </React.Fragment>
-          ))}
-        </Flex>
+              </React.Fragment>
+            ))}
+          </Flex>
+        </Scrollable>
       </Container>
+      <Divider m={4} w="calc(100% - 2rem)" borderColor="red.900" />
       <Flex
         flexDirection="column"
         justifyContent="space-around"
@@ -114,7 +120,7 @@ export default function Game() {
         mt={0}
         h={64}
       >
-        <Box>
+        <Box flex={1} minH={4}>
           {me?.cardsPlayed.map((card, i) => (
             <Card />
           ))}
@@ -129,24 +135,24 @@ export default function Game() {
             "container.2xl",
           ]}
         >
-          <Wrap spacing="1rem">
-            {me?.hand.map((card, i) => {
-              function onClick() {
-                setSelectedCard(card);
-              }
+          <Scrollable style={{ width: "100%", height: "14rem" }}>
+            <HStack spacing="1rem">
+              {me?.hand.map((card, i) => {
+                function onClick() {
+                  setSelectedCard(card);
+                }
 
-              return (
-                <WrapItem>
+                return (
                   <Card
                     card={card}
                     onClick={onClick}
                     isSelected={card === selectedCard}
                     key={i}
                   />
-                </WrapItem>
-              );
-            })}
-          </Wrap>
+                );
+              })}
+            </HStack>
+          </Scrollable>
         </Container>
       </Flex>
       <Box background="white" h={24} shadow="dark-lg">

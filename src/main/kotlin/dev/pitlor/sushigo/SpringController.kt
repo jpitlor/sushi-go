@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.socket.messaging.SessionConnectEvent
 import org.springframework.web.socket.messaging.SessionDisconnectEvent
 
+data class PlayCardRequest(val card: Card, val useWasabi: Boolean)
+
 @Controller
 class ServerController(private val socket: SimpMessagingTemplate) {
     private val server = Server()
@@ -95,5 +97,20 @@ class ServerController(private val socket: SimpMessagingTemplate) {
         server.startRound(gameCode, user.id)
         socket.convertAndSend("/topic/games", server.getGames())
         return server.getGame(gameCode)
+    }
+
+    @MessageMapping("/games/{gameCode}/start-play")
+    @SendTo("/topic/games/{gameCode}")
+    fun startPlay(@DestinationVariable gameCode: String, @ModelAttribute user: User): Game {
+        server.startPlay(gameCode, user.id)
+        return server.getGame(gameCode)
+    }
+
+    @MessageMapping("/games/{gameCode}/play-cards")
+    @SendToUser("/topic/successes")
+    fun playCards(@DestinationVariable gameCode: String, @ModelAttribute user: User, @Payload request: List<PlayCardRequest>): String {
+        val response = server.playCards(gameCode, user.id, request)
+        socket.convertAndSend("/topic/games/$gameCode", server.getGame(gameCode))
+        return response
     }
 }

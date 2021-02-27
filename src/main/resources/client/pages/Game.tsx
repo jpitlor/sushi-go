@@ -8,8 +8,6 @@ import {
   HStack,
   Divider,
   Text,
-  Center,
-  VStack,
 } from "@chakra-ui/react";
 import Avatars from "@dicebear/avatars";
 import sprites from "@dicebear/avatars-human-sprites";
@@ -18,22 +16,22 @@ import React, { useState } from "react";
 import Scrollable from "react-custom-scrollbars";
 import { useDispatch } from "react-redux";
 import Card from "../components/Card";
-import CardStack from "../components/CardStack";
 import HelpDialog from "../components/HelpDialog";
 import ScoresDialog from "../components/ScoresDialog";
 import SettingsDialog from "../components/SettingsDialog";
-import { startRound, useSelector } from "../data/store";
+import { startRound, playCards, useSelector } from "../data/store";
 import useBoolean from "../utils/useBoolean";
 import { Card as CardType } from "../types/props";
 import { faAward, faHands } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import skins from "../skins";
 
 const avatars = new Avatars(sprites, {});
 
 export default function Game() {
   const dispatch = useDispatch();
   const game = useSelector((state) => state.currentGame);
-  const myId = useSelector((state) => state.settings.id);
+  const settings = useSelector((state) => state.settings);
   const [helpDialogIsVisible, showHelpDialog, hideHelpDialog] = useBoolean();
   const [
     settingsDialogIsVisible,
@@ -47,10 +45,13 @@ export default function Game() {
   ] = useBoolean();
   const [selectedCard, setSelectedCard] = useState<CardType>(null);
 
-  const iAmAdmin = myId === game.admin;
-  const [[me], otherPlayers] = _partition(game.players, ["id", myId]);
+  const iAmAdmin = settings.id === game.admin;
+  const skin = skins[settings.skin];
+  const [[me], otherPlayers] = _partition(game.players, ["id", settings.id]);
 
-  function handlePlayCard() {}
+  function handlePlayCard() {
+    dispatch(playCards({ cards: [selectedCard], useWasabi: false }));
+  }
 
   function handleStartGame() {
     dispatch(startRound());
@@ -108,8 +109,7 @@ export default function Game() {
                           <Text>{hand.length}</Text>
                         </Box>
                       </Tooltip>
-                      {/* TODO Skin Name */}
-                      <Tooltip label="Pudding Count">
+                      <Tooltip label={`${skin.pudding.name} Count`}>
                         <Box
                           p={1}
                           w="3rem"

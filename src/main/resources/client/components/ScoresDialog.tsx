@@ -32,7 +32,7 @@ export default function ScoresDialog({ isOpen, onClose }: ModalProps) {
     <Modal isOpen={isOpen} onClose={onClose} size="3xl">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Game {game.code}</ModalHeader>
+        <ModalHeader>Game "{game.code}"</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Table variant="simple">

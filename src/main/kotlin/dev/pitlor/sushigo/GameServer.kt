@@ -27,26 +27,26 @@ class Server {
     }
 
     fun joinGame(code: String, user: UUID, settings: MutableMap<String, Any>) {
-        val gameIndex = games.indexOfFirst { it.code == code }
+        val game = games.find { it.code == code }
 
         require(code.isNotEmpty()) { "Code is empty" }
-        require(gameIndex > -1) { "That game does not exist" }
-        require(games[gameIndex].players.find { it.id == user } == null) { "You are already in that game!" }
+        require(game != null) { "That game does not exist" }
+        require(game.players.find { it.id == user } == null) { "You are already in that game!" }
 
         settings[SETTING_CONNECTED] = true
         val player = Player(user, settings)
-        games[gameIndex].players += player
+        game.players += player
     }
 
     fun updateSettings(code: String, user: UUID, settings: MutableMap<String, Any>) {
-        val gameIndex = games.indexOfFirst { it.code == code }
+        val game = games.find { it.code == code }
+        val player = game?.players?.find { it.id == user }
+
         require(code.isNotEmpty()) { "Code is empty" }
-        require(gameIndex > -1) { "That game does not exist" }
+        require(game != null) { "That game does not exist" }
+        require(player != null) { "That player is not in this game" }
 
-        val playerIndex = games[gameIndex].players.indexOfFirst { it.id == user }
-        require(playerIndex > -1) { "That player is not in this game" }
-
-        games[gameIndex].players[playerIndex].settings.putAll(settings)
+        player.settings.putAll(settings)
     }
 
     fun findPlayer(user: UUID): String? {
@@ -54,12 +54,39 @@ class Server {
     }
 
     fun startRound(code: String, id: UUID) {
-        val gameIndex = games.indexOfFirst { it.code == code }
-        require(code.isNotEmpty()) { "Code is empty" }
-        require(gameIndex > -1) { "That game does not exist" }
-        require(games[gameIndex].admin == id) { "You are not the admin of this game" }
+        val game = games.find { it.code == code }
 
-        games[gameIndex].startRound()
+        require(code.isNotEmpty()) { "Code is empty" }
+        require(game != null) { "That game does not exist" }
+        require(game.admin == id) { "You are not the admin of this game" }
+
+        game.startRound()
+    }
+
+    fun startPlay(code: String, id: UUID) {
+        val game = games.find { it.code == code }
+
+        require(code.isNotEmpty()) { "Code is empty" }
+        require(game != null) { "That game does not exist" }
+        require(game.admin == id) { "You are not the admin of this game" }
+
+        game.startPlay()
+    }
+
+    fun playCards(code: String, user: UUID, request: List<PlayCardRequest>): String {
+        val game = games.find { it.code == code }
+        val player = game?.players?.find { it.id == user }
+
+        require(code.isNotEmpty()) { "Code is empty" }
+        require(game != null) { "That game does not exist" }
+        require(player != null) { "That player is not in this game" }
+        require(request.size == 1 || request.size == 2) { "Invalid number of cards" }
+        require(request.size == 1 || player.cardsPlayed.any { it is Chopsticks }) { "You can only play 2 cards if you have previously played chopsticks" }
+        require(request.filter { it.useWasabi }.size <= player.cardsPlayed.filter { it is Wasabi && it.nigiri == null }.size) { "You don't have enough empty Wasabi for this move" }
+
+        game.playCard(user, request)
+
+        return "Play successfully completed"
     }
 }
 

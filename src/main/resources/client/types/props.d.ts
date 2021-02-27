@@ -23,3 +23,8 @@ interface Maki {
 }
 
 export type Card = BaseCard | Nigiri | Wasabi | Maki;
+
+export interface PlayCardRequest {
+  cards: Card[];
+  useWasabi: boolean;
+}

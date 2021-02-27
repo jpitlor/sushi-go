@@ -1,10 +1,12 @@
 import { store, actions, Game, Settings, rejoinGame } from "./store";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
+import { PlayCardRequest } from "../types/props";
 
-const BASE_URL = process.env.NODE_ENV === "production" ? "" : "http://localhost:8080"
+const BASE_URL =
+  process.env.NODE_ENV === "production" ? "" : "http://localhost:8080";
 const client = new Client({
-  webSocketFactory: () => new SockJS(BASE_URL + "/websocket-server")
+  webSocketFactory: () => new SockJS(BASE_URL + "/websocket-server"),
 });
 client.onConnect = () => {
   client.subscribe("/topic/rejoin-game", ({ body }) => {
@@ -66,4 +68,11 @@ export function updateSettings(code: string, settings: Settings) {
 
 export function startRound(code: string) {
   client.publish({ destination: `/app/games/${code}/start-round` });
+}
+
+export function playCards(code: string, request: PlayCardRequest) {
+  client.publish({
+    destination: `/app/games/${code}/play-cards`,
+    body: JSON.stringify(request),
+  });
 }

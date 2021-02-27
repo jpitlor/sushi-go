@@ -8,8 +8,8 @@ import {
   TypedUseSelectorHook,
   useSelector as useUntypedSelector,
 } from "react-redux";
-import { Card } from "../types/props";
-import { Skin, Skins } from "../types/skins";
+import { Card, PlayCardRequest } from "../types/props";
+import { Skins } from "../types/skins";
 import * as api from "./api";
 import history from "./history";
 
@@ -108,6 +108,14 @@ const startRound = createAsyncThunk<void, void, ThunkApi>(
   }
 );
 
+const playCards = createAsyncThunk<void, PlayCardRequest, ThunkApi>(
+  "playCard",
+  (cards, { getState }) => {
+    const { currentGame } = getState();
+    api.playCards(currentGame.code, cards);
+  }
+);
+
 const { actions, reducer } = createSlice({
   name: "app",
   initialState: {
@@ -183,6 +191,7 @@ export {
   saveSettings,
   rejoinGame,
   startRound,
+  playCards,
   Game,
   Settings,
 };

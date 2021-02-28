@@ -24,7 +24,10 @@ class Game(val code: String, var admin: UUID) {
     var active: Boolean = false
     var round = 0
 
+    // These 2 are properties passed down to the client to disable/enable admin buttons
+    @Suppress("unused")
     val canStartPlay: Boolean get() = players.all { it.currentCard.size > 0 }
+    @Suppress("unused")
     val canStartRound: Boolean get() = players.all { it.hand.isEmpty() }
 
     private val deck = newDeck().shuffled().toMutableList()
@@ -51,6 +54,8 @@ class Game(val code: String, var admin: UUID) {
                 player.cardsPlayed.remove(Chopsticks)
                 player.hand.add(Chopsticks)
             }
+
+            player.currentCard.clear()
         }
 
         val swp = players.first().hand

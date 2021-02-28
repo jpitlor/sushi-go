@@ -19,7 +19,7 @@ import Card from "../components/Card";
 import HelpDialog from "../components/HelpDialog";
 import ScoresDialog from "../components/ScoresDialog";
 import SettingsDialog from "../components/SettingsDialog";
-import { startRound, playCards, useSelector } from "../data/store";
+import { startRound, playCards, useSelector, startPlay } from "../data/store";
 import useBoolean from "../utils/useBoolean";
 import { Card as CardType } from "../types/props";
 import { faAward, faHands } from "@fortawesome/pro-regular-svg-icons";
@@ -50,11 +50,15 @@ export default function Game() {
   const [[me], otherPlayers] = _partition(game.players, ["id", settings.id]);
 
   function handlePlayCard() {
-    dispatch(playCards({ cards: [selectedCard], useWasabi: false }));
+    dispatch(playCards([{ card: selectedCard, useWasabi: false }]));
   }
 
   function handleStartGame() {
     dispatch(startRound());
+  }
+
+  function handleStartPlay() {
+    dispatch(startPlay());
   }
 
   return (
@@ -154,7 +158,7 @@ export default function Game() {
       >
         <Box flex={1} minH={4}>
           {me?.cardsPlayed.map((card, i) => (
-            <Card />
+            <Card card={card} isSelectable={false} />
           ))}
         </Box>
         <Container
@@ -205,24 +209,24 @@ export default function Game() {
             w="full"
             height="full"
           >
-            {!game.active && iAmAdmin && (
-              <Button
-                size="lg"
-                colorScheme="green"
-                onClick={handleStartGame}
-                disabled={game.players.length < 3}
-              >
-                Start Game
-              </Button>
-            )}
-            {game.active && iAmAdmin && (
+            {!game.active && iAmAdmin && game.canStartRound && (
               <Button
                 size="lg"
                 colorScheme="yellow"
                 onClick={handleStartGame}
-                disabled={!game.canStartRound}
+                disabled={game.players.length < 3}
               >
-                Start Round
+                Start {game.round === 0 ? "Game" : "Round"}
+              </Button>
+            )}
+            {game.active && iAmAdmin && !game.canStartRound && (
+              <Button
+                size="lg"
+                colorScheme="yellow"
+                onClick={handleStartPlay}
+                disabled={!game.canStartPlay}
+              >
+                Start Play
               </Button>
             )}
             <Button

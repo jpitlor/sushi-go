@@ -31,8 +31,14 @@ type CardProps = {
   card?: CardType;
   onClick?: () => void;
   isSelected?: boolean;
+  isSelectable?: boolean;
 };
-export default function Card({ card, onClick, isSelected = false }: CardProps) {
+export default function Card({
+  card,
+  onClick,
+  isSelected = false,
+  isSelectable = true,
+}: CardProps) {
   const settings = useSelector((state) => state.settings);
   const skin = skins[settings.skin];
 
@@ -64,10 +70,15 @@ export default function Card({ card, onClick, isSelected = false }: CardProps) {
       backgroundColor={skin[skinKey].color}
       transition="0.2s ease-in-out"
       onClick={onClick}
-      _hover={{
-        borderColor: "green.500",
-        boxShadow: "xl",
-      }}
+      cursor={isSelectable ? "pointer" : "auto"}
+      _hover={
+        isSelectable
+          ? {
+              borderColor: "green.500",
+              boxShadow: "xl",
+            }
+          : {}
+      }
     >
       <Image src={skin[skinKey].image} w="6rem" />
       <Text
@@ -94,6 +105,8 @@ export default function Card({ card, onClick, isSelected = false }: CardProps) {
             minW={6}
             w={6}
             h={6}
+            background="none"
+            color="gray.700"
           />
         </PopoverTrigger>
         <PopoverContent w="xs">

@@ -25,6 +25,7 @@ interface Game {
   code: string;
   active: boolean;
   canStartRound: boolean;
+  canStartPlay: boolean;
   admin: string;
   round: number;
   players: {
@@ -108,7 +109,15 @@ const startRound = createAsyncThunk<void, void, ThunkApi>(
   }
 );
 
-const playCards = createAsyncThunk<void, PlayCardRequest, ThunkApi>(
+const startPlay = createAsyncThunk<void, void, ThunkApi>(
+  "startPlay",
+  (_, { getState }) => {
+    const { currentGame } = getState();
+    api.startPlay(currentGame.code);
+  }
+);
+
+const playCards = createAsyncThunk<void, PlayCardRequest[], ThunkApi>(
   "playCard",
   (cards, { getState }) => {
     const { currentGame } = getState();
@@ -191,6 +200,7 @@ export {
   saveSettings,
   rejoinGame,
   startRound,
+  startPlay,
   playCards,
   Game,
   Settings,

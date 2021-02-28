@@ -70,7 +70,11 @@ export function startRound(code: string) {
   client.publish({ destination: `/app/games/${code}/start-round` });
 }
 
-export function playCards(code: string, request: PlayCardRequest) {
+export function startPlay(code: string) {
+  client.publish({ destination: `/app/games/${code}/start-play` });
+}
+
+export function playCards(code: string, request: PlayCardRequest[]) {
   client.publish({
     destination: `/app/games/${code}/play-cards`,
     body: JSON.stringify(request),

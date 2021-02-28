@@ -1,5 +1,19 @@
 package dev.pitlor.sushigo
 
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
+@JsonSubTypes(
+    JsonSubTypes.Type(Tempura::class, name = "tempura"),
+    JsonSubTypes.Type(Sashimi::class, name = "sashimi"),
+    JsonSubTypes.Type(Dumpling::class, name = "dumpling"),
+    JsonSubTypes.Type(Maki::class, name = "maki"),
+    JsonSubTypes.Type(Nigiri::class, name = "nigiri"),
+    JsonSubTypes.Type(Pudding::class, name = "pudding"),
+    JsonSubTypes.Type(Wasabi::class, name = "wasabi"),
+    JsonSubTypes.Type(Chopsticks::class, name = "chopsticks")
+)
 sealed class Card(val type: String)
 
 object Tempura : Card("tempura")

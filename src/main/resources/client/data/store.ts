@@ -32,7 +32,7 @@ interface Game {
     id: string;
     scores: { hand: number; maki: number; pudding: number }[];
     puddingCount: number;
-    currentCard: Card;
+    currentCard: Card[];
     cardsPlayed: Card[];
     hand: Card[];
     settings: Settings;
@@ -62,9 +62,14 @@ const goToLobby = createAsyncThunk<void, void, ThunkApi>(
   }
 );
 
-const createGame = createAsyncThunk<void, string>("createGame", (code) => {
-  api.createGame(code);
-});
+const createAndJoinGame = createAsyncThunk<void, string, ThunkApi>(
+  "createGame",
+  (code, { getState }) => {
+    const { settings } = getState();
+    api.createGame(code);
+    api.joinGame(code, settings);
+  }
+);
 
 const joinGame = createAsyncThunk<void, string, ThunkApi>(
   "joinGame",
@@ -195,7 +200,7 @@ export {
   store,
   useSelector,
   goToLobby,
-  createGame,
+  createAndJoinGame,
   joinGame,
   saveSettings,
   rejoinGame,

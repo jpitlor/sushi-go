@@ -129,7 +129,7 @@ export default function Game() {
                       </Tooltip>
                     </HStack>
                   </Flex>
-                  {currentCard ? (
+                  {currentCard.length > 0 ? (
                     <Card />
                   ) : (
                     <Box
@@ -156,11 +156,24 @@ export default function Game() {
         mt={0}
         h={64}
       >
-        <Box flex={1} minH={4}>
-          {me?.cardsPlayed.map((card, i) => (
-            <Card card={card} isSelectable={false} />
-          ))}
-        </Box>
+        <Container
+          centerContent
+          maxW={[
+            "container.sm",
+            "container.md",
+            "container.lg",
+            "container.xl",
+            "container.2xl",
+          ]}
+        >
+          <Scrollable style={{ width: "100%", height: "14rem" }}>
+            <HStack spacing="1rem">
+              {me?.cardsPlayed.map((card, i) => (
+                <Card card={card} isSelectable={false} />
+              ))}
+            </HStack>
+          </Scrollable>
+        </Container>
         <Container
           centerContent
           maxW={[

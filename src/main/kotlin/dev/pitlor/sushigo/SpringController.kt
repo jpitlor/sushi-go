@@ -108,7 +108,11 @@ class ServerController(private val socket: SimpMessagingTemplate) {
 
     @MessageMapping("/games/{gameCode}/play-cards")
     @SendToUser("/topic/successes")
-    fun playCards(@DestinationVariable gameCode: String, @ModelAttribute user: User, @Payload request: List<PlayCardRequest>): String {
+    fun playCards(
+        @DestinationVariable gameCode: String,
+        @ModelAttribute user: User,
+        @Payload request: List<PlayCardRequest>
+    ): String {
         val response = server.playCards(gameCode, user.id, request)
         socket.convertAndSend("/topic/games/$gameCode", server.getGame(gameCode))
         return response

@@ -14,7 +14,15 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
     JsonSubTypes.Type(Wasabi::class, name = "wasabi"),
     JsonSubTypes.Type(Chopsticks::class, name = "chopsticks")
 )
-sealed class Card(val type: String)
+sealed class Card(val type: String) {
+    override fun equals(other: Any?): Boolean {
+        return other != null && other::class == this::class
+    }
+
+    override fun hashCode(): Int {
+        return type.hashCode()
+    }
+}
 
 object Tempura : Card("tempura")
 object Sashimi : Card("sashimi")

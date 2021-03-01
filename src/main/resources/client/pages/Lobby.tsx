@@ -3,23 +3,19 @@ import {
   Button,
   Flex,
   FormControl,
-  FormHelperText,
   FormLabel,
   Heading,
   Image,
   Input,
-  Select,
   useRadioGroup,
   VStack,
 } from "@chakra-ui/react";
-import { getGlobalLock } from "framer-motion/types/gestures/drag/utils/lock";
 import React, { FormEvent } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import RadioCard from "../components/RadioCard";
-import { createGame, joinGame, useSelector } from "../data/store";
+import { createAndJoinGame, joinGame, useSelector } from "../data/store";
 import logo from "../public/logo.png";
-import skins from "../skins";
 import useInput from "../utils/useInput";
 
 export default function Lobby() {
@@ -34,12 +30,11 @@ export default function Lobby() {
   });
   const selectRootProps = getRootProps();
 
-  function handleJoinGame(e: FormEvent<any>) {
+  async function handleJoinGame(e: FormEvent<any>) {
     e.preventDefault();
 
     if (gameCode === "Create Game") {
-      dispatch(createGame(newGameCode));
-      dispatch(joinGame(newGameCode));
+      dispatch(createAndJoinGame(newGameCode));
     } else {
       dispatch(joinGame(gameCode.toString()));
     }

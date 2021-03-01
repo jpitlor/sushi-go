@@ -1,7 +1,6 @@
 package dev.pitlor.sushigo
 
 import java.util.*
-import kotlin.collections.ArrayList
 
 data class Score(val hand: Int, var maki: Int = 0, var pudding: Int = 0)
 
@@ -48,6 +47,8 @@ class Game(val code: String, var admin: UUID) {
                 } else {
                     player.cardsPlayed += request.card
                 }
+
+                player.hand.remove(request.card)
             }
 
             if (player.currentCard.size == 2) {

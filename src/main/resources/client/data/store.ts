@@ -8,7 +8,7 @@ import {
   TypedUseSelectorHook,
   useSelector as useUntypedSelector,
 } from "react-redux";
-import { Card, PlayCardRequest } from "../types/props";
+import { PlayCardRequest, Player } from "../types/props";
 import { Skins } from "../types/skins";
 import * as api from "./api";
 import history from "./history";
@@ -28,15 +28,7 @@ interface Game {
   canStartPlay: boolean;
   admin: string;
   round: number;
-  players: {
-    id: string;
-    scores: { hand: number; maki: number; pudding: number }[];
-    puddingCount: number;
-    currentCard: Card[];
-    cardsPlayed: Card[];
-    hand: Card[];
-    settings: Settings;
-  }[];
+  players: Player[];
 }
 
 interface State {

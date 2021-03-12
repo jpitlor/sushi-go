@@ -9,6 +9,7 @@ export interface Skin {
   sashimi: Card;
   dumpling: Card;
   maki: Card;
+  nigiri: Pick<Card, "name">;
   nigiriSquid: Card;
   nigiriSalmon: Card;
   nigiriEgg: Card;

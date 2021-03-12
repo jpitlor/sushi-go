@@ -26,6 +26,9 @@ export default {
     image: maki,
     color: "#E23227",
   },
+  nigiri: {
+    name: "Nigiri",
+  },
   nigiriEgg: {
     name: "Egg Nigiri",
     image: eggNigiri,

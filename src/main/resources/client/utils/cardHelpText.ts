@@ -1,22 +1,40 @@
 import { Card as CardType } from "../types/props";
+import { store } from "../data/store";
+import skins from "../skins";
 
 export default function helpText(card: CardType): string {
+  const state = store.getState();
+  const skin = skins[state.settings.skin];
+
+  let result = `${skin[card.type].name}: `;
   switch (card.type) {
     case "nigiri":
-      return `Worth ${card.value} point${card.value > 1 ? "s" : ""}`;
+      result += `Worth ${card.value} point${card.value > 1 ? "s" : ""}`;
+      break;
     case "maki":
-      return "Top 2 Maki collectors at the end of the round win points";
+      result += "Top 2 Maki collectors at the end of the round win points";
+      break;
     case "sashimi":
-      return "A set of 3 earns 10 points. Incomplete sets earn 0 points";
+      result += "A set of 3 earns 10 points. Incomplete sets earn 0 points";
+      break;
     case "tempura":
-      return "A set of 2 earns 5 points. Incomplete sets earn 0 points";
+      result += "A set of 2 earns 5 points. Incomplete sets earn 0 points";
+      break;
     case "chopsticks":
-      return "Lets you play a second card from a future hand";
+      result += "Lets you play a second card from a future hand";
+      break;
     case "dumpling":
+      result +=
+        "Worth different values depending on how big the set is. 1 = 1; 2 = 3; 3 = 6; 4 = 10; >=5 = 15";
+      break;
     case "pudding":
-      return "Top pudding collectors at the end of the game earn points. Bottom pudding collectors lose points.";
+      result +=
+        "Top pudding collectors at the end of the game earn points. Bottom pudding collectors lose points.";
+      break;
     case "wasabi":
-      // TODO: Skinify the string
-      return "Next Nigiri worth triple";
+      result += `Next ${skin.nigiri.name} worth triple`;
+      break;
   }
+
+  return result;
 }

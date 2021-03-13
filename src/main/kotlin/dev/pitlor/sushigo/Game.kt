@@ -52,8 +52,8 @@ class Game(val code: String, var admin: UUID) {
             }
 
             if (player.currentCard.size == 2) {
-                player.cardsPlayed.remove(Chopsticks)
-                player.hand.add(Chopsticks)
+                player.cardsPlayed.remove(Chopsticks())
+                player.hand.add(Chopsticks())
             }
 
             player.currentCard.clear()

@@ -2,6 +2,8 @@ package dev.pitlor.sushigo
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import java.util.*
+import kotlin.collections.ArrayList
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 @JsonSubTypes(
@@ -24,29 +26,29 @@ sealed class Card(val type: String) {
     }
 }
 
-object Tempura : Card("tempura")
-object Sashimi : Card("sashimi")
-object Dumpling : Card("dumpling")
+data class Tempura(val id: UUID = UUID.randomUUID()) : Card("tempura")
+data class Sashimi(val id: UUID = UUID.randomUUID()) : Card("sashimi")
+data class Dumpling(val id: UUID = UUID.randomUUID()) : Card("dumpling")
 data class Maki(val count: Int) : Card("maki")
 data class Nigiri(val value: Int) : Card("nigiri")
-object Pudding : Card("pudding")
+data class Pudding(val id: UUID = UUID.randomUUID()) : Card("pudding")
 data class Wasabi(var nigiri: Nigiri? = null) : Card("wasabi")
-object Chopsticks : Card("chopsticks")
+data class Chopsticks(val id: UUID = UUID.randomUUID()) : Card("chopsticks")
 
 fun newDeck(): ArrayList<Card> {
     return arrayListOf(
-        *Array(14) { Tempura },
-        *Array(14) { Sashimi },
-        *Array(14) { Dumpling },
+        *Array(14) { Tempura() },
+        *Array(14) { Sashimi() },
+        *Array(14) { Dumpling() },
         *Array(12) { Maki(2) },
         *Array(8) { Maki(3) },
         *Array(6) { Maki(1) },
         *Array(10) { Nigiri(2) },
         *Array(5) { Nigiri(3) },
         *Array(5) { Nigiri(1) },
-        *Array(10) { Pudding },
+        *Array(10) { Pudding() },
         *Array(6) { Wasabi() },
-        *Array(4) { Chopsticks }
+        *Array(4) { Chopsticks() }
     )
 }
 

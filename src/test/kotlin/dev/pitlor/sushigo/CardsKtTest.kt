@@ -9,7 +9,7 @@ internal class CardsKtTest {
     @Test
     fun scoreSomePoints() {
         val nigiri = Nigiri(3)
-        val hand = arrayListOf(Tempura, Tempura, Sashimi, Sashimi, Sashimi, nigiri, Wasabi(nigiri))
+        val hand = arrayListOf(Tempura(), Tempura(), Sashimi(), Sashimi(), Sashimi(), nigiri, Wasabi(nigiri))
         val score = hand.score()
 
         assertEquals(24, score)
@@ -17,7 +17,7 @@ internal class CardsKtTest {
 
     @Test
     fun scoreNoPoints() {
-        val hand = arrayListOf(Chopsticks, Pudding, Wasabi(), Tempura, Sashimi)
+        val hand = arrayListOf(Chopsticks(), Pudding(), Wasabi(), Tempura(), Sashimi())
         val score = hand.score()
 
         assertEquals(0, score)
@@ -25,7 +25,7 @@ internal class CardsKtTest {
 
     @Test
     fun scoreIncompleteSets() {
-        val hand = arrayListOf(Tempura, Sashimi, Sashimi)
+        val hand = arrayListOf(Tempura(), Sashimi(), Sashimi())
         val score = hand.score()
 
         assertEquals(0, score)

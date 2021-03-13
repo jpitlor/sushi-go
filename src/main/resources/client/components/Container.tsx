@@ -6,14 +6,16 @@ type ContainerProps = {
   margin?: string;
   height: number;
   children: React.ReactNode;
+  [k: string]: any;
 };
-export default function Container({
-  margin = "2rem",
-  height,
-  children,
-}: ContainerProps) {
-  return (
+export default React.forwardRef(
+  (
+    { margin = "2rem", height, children, ...otherProps }: ContainerProps,
+    ref
+  ) => (
     <ChakraContainer
+      {...otherProps}
+      ref={ref as any}
       centerContent
       maxW={[
         "container.sm",
@@ -24,7 +26,11 @@ export default function Container({
       ]}
     >
       <Scrollable
-        style={{ width: "100%", height: theme.sizes[height], margin }}
+        style={{
+          width: "100%",
+          height: theme.sizes[height],
+          margin,
+        }}
       >
         <HStack
           spacing="1rem"
@@ -36,5 +42,5 @@ export default function Container({
         </HStack>
       </Scrollable>
     </ChakraContainer>
-  );
-}
+  )
+);

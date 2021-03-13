@@ -6,20 +6,24 @@ export interface ModalProps {
 }
 
 interface BaseCard {
+  id: string;
   type: "tempura" | "sashimi" | "dumpling" | "pudding" | "chopsticks";
 }
 
 interface Nigiri {
+  id: string;
   type: "nigiri";
   value: number;
 }
 
 interface Wasabi {
+  id: string;
   type: "wasabi";
   nigiri: Nigiri;
 }
 
 interface Maki {
+  id: string;
   type: "maki";
   count: number;
 }

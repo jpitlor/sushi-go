@@ -34,6 +34,7 @@
         "@types/lodash.partition": "^4.6.6",
         "@types/node": "^14.14.22",
         "@types/react": "^17.0.1",
+        "@types/react-beautiful-dnd": "^13.0.0",
         "@types/react-custom-scrollbars": "^4.0.7",
         "@types/react-dom": "^17.0.0",
         "@types/react-redux": "^7.1.16",

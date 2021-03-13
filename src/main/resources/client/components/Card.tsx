@@ -58,7 +58,7 @@ export default function Card({
             borderColor="white"
             boxShadow="md"
             backgroundColor={skin[skinKey].color}
-            transition="0.2s ease-in-out"
+            transition="border 0.2s ease-in-out, box-shadow 0.2s ease-in-out"
             onClick={onClick}
             cursor={isSelectable ? "pointer" : "auto"}
             _hover={

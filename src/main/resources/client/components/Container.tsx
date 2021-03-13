@@ -6,11 +6,18 @@ type ContainerProps = {
   margin?: string;
   height: number;
   children: React.ReactNode;
+  centerItems: boolean;
   [k: string]: any;
 };
 export default React.forwardRef(
   (
-    { margin = "2rem", height, children, ...otherProps }: ContainerProps,
+    {
+      margin = "2rem",
+      height,
+      children,
+      centerItems = true,
+      ...otherProps
+    }: ContainerProps,
     ref
   ) => (
     <ChakraContainer
@@ -34,8 +41,10 @@ export default React.forwardRef(
       >
         <HStack
           spacing="1rem"
-          alignItems="center"
-          justifyContent={[null, null, "space-around"]}
+          alignItems={centerItems ? "center" : undefined}
+          justifyContent={
+            centerItems ? [null, null, "space-around"] : undefined
+          }
           height="full"
         >
           {children}

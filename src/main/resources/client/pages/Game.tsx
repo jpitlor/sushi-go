@@ -59,6 +59,7 @@ export default function Game() {
             {(provided, snapshot) => (
               <Container
                 height={56}
+                centerItems={false}
                 {...provided.droppableProps}
                 ref={provided.innerRef}
               >

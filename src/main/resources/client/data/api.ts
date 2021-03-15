@@ -1,7 +1,7 @@
 import { store, actions, Game, Settings, rejoinGame } from "./store";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
-import { PlayCardRequest } from "../types/props";
+import { MoveCardRequest, PlayCardRequest } from "../types/props";
 
 const BASE_URL =
   process.env.NODE_ENV === "production" ? "" : "http://localhost:8080";
@@ -77,6 +77,13 @@ export function startPlay(code: string) {
 export function playCards(code: string, request: PlayCardRequest[]) {
   client.publish({
     destination: `/app/games/${code}/play-cards`,
+    body: JSON.stringify(request),
+  });
+}
+
+export function moveCard(code: string, request: MoveCardRequest) {
+  client.publish({
+    destination: `/app/games/${code}/move-card`,
     body: JSON.stringify(request),
   });
 }

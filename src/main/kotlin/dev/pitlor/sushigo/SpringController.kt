@@ -9,8 +9,10 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.socket.messaging.SessionConnectEvent
 import org.springframework.web.socket.messaging.SessionDisconnectEvent
+import java.util.*
 
-data class PlayCardRequest(val card: Card, val useWasabi: Boolean)
+data class PlayCardRequest(val card: Card, val wasabi: UUID?)
+data class MoveCardRequest(val oldIndex: Int, val newIndex: Int)
 
 @Controller
 class ServerController(private val socket: SimpMessagingTemplate) {
@@ -116,5 +118,16 @@ class ServerController(private val socket: SimpMessagingTemplate) {
         val response = server.playCards(gameCode, user.id, request)
         socket.convertAndSend("/topic/games/$gameCode", server.getGame(gameCode))
         return response
+    }
+
+    @MessageMapping("/games/{gameCode}/move-card")
+    @SendTo("/topic/games/{gameCode}")
+    fun moveCard(
+        @DestinationVariable gameCode: String,
+        @ModelAttribute user: User,
+        @Payload request: MoveCardRequest
+    ): Game {
+        server.moveCard(gameCode, user.id, request)
+        return server.getGame(gameCode)
     }
 }

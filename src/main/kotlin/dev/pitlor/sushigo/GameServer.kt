@@ -82,11 +82,22 @@ class Server {
         require(player != null) { "That player is not in this game" }
         require(request.size == 1 || request.size == 2) { "Invalid number of cards" }
         require(request.size == 1 || player.cardsPlayed.any { it is Chopsticks }) { "You can only play 2 cards if you have previously played chopsticks" }
-        require(request.filter { it.useWasabi }.size <= player.cardsPlayed.filter { it is Wasabi && it.nigiri == null }.size) { "You don't have enough empty Wasabi for this move" }
+        require(request.all { it.wasabi == null || player.cardsPlayed.find { c -> c is Wasabi && c.nigiri == null && c.id == it.wasabi } != null }) { "You don't have enough empty Wasabi for this move" }
 
         game.playCard(user, request)
 
         return "Play successfully completed"
+    }
+
+    fun moveCard(code: String, user: UUID, request: MoveCardRequest) {
+        val game = games.find { it.code == code }
+        val player = game?.players?.find { it.id == user }
+
+        require(code.isNotEmpty()) { "Code is empty" }
+        require(game != null) { "That game does not exist" }
+        require(player != null) { "That player is not in this game" }
+
+        player.hand.move(request.oldIndex, request.newIndex)
     }
 }
 

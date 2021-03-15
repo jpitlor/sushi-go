@@ -16,6 +16,9 @@ class Player(val id: UUID, val settings: MutableMap<String, Any>) {
     var hand: ArrayList<Card> = arrayListOf()
     var currentCard: ArrayList<PlayCardRequest> = arrayListOf()
     val cardsPlayed: ArrayList<Card> = arrayListOf()
+
+    @Suppress("unused")
+    val canDrag: Boolean get() = currentCard.size == 0 || (currentCard.size == 1 && cardsPlayed.contains(Chopsticks()))
 }
 
 class Game(val code: String, var admin: UUID) {
@@ -41,7 +44,7 @@ class Game(val code: String, var admin: UUID) {
     fun startPlay() {
         players.forEach { player ->
             player.currentCard.forEach { request ->
-                if (request.useWasabi) {
+                if (request.wasabi != null) {
                     require(request.card is Nigiri) { "You can only play a Nigiri on a Wasabi" }
                     player.cardsPlayed.filterIsInstance<Wasabi>().first { c -> c.nigiri == null }.nigiri = request.card
                 } else {

@@ -29,10 +29,10 @@ sealed class Card(val type: String) {
 data class Tempura(val id: UUID = UUID.randomUUID()) : Card("tempura")
 data class Sashimi(val id: UUID = UUID.randomUUID()) : Card("sashimi")
 data class Dumpling(val id: UUID = UUID.randomUUID()) : Card("dumpling")
-data class Maki(val count: Int) : Card("maki")
-data class Nigiri(val value: Int) : Card("nigiri")
+data class Maki(val count: Int, val id: UUID = UUID.randomUUID()) : Card("maki")
+data class Nigiri(val value: Int, val id: UUID = UUID.randomUUID()) : Card("nigiri")
 data class Pudding(val id: UUID = UUID.randomUUID()) : Card("pudding")
-data class Wasabi(var nigiri: Nigiri? = null) : Card("wasabi")
+data class Wasabi(var nigiri: Nigiri? = null, val id: UUID = UUID.randomUUID()) : Card("wasabi")
 data class Chopsticks(val id: UUID = UUID.randomUUID()) : Card("chopsticks")
 
 fun newDeck(): ArrayList<Card> {
@@ -109,4 +109,8 @@ fun ArrayList<Card>.score(): Int {
         else -> 15
     }
     return score
+}
+
+fun ArrayList<Card>.move(oldIndex: Int, newIndex: Int) {
+    this.add(newIndex, this.removeAt(oldIndex))
 }

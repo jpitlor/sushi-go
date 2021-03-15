@@ -35,6 +35,11 @@ export interface PlayCardRequest {
   useWasabi: boolean;
 }
 
+export interface MoveCardRequest {
+  oldIndex: number;
+  newIndex: number;
+}
+
 export interface Player {
   id: string;
   scores: { hand: number; maki: number; pudding: number }[];
@@ -43,4 +48,5 @@ export interface Player {
   cardsPlayed: Card[];
   hand: Card[];
   settings: Settings;
+  canDrag: boolean;
 }

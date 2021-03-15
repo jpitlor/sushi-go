@@ -6,14 +6,21 @@ import { Router } from "react-router-dom";
 import { store } from "../data/store";
 import App from "../structure/App";
 import history from "../data/history";
+import * as dragDropHandlers from "../data/drag-drop-handlers";
 
 import "animate.css/animate.min.css";
+import { DragDropContext } from "react-beautiful-dnd";
 
 ReactDOM.render(
   <ChakraProvider>
     <Provider store={store}>
       <Router history={history}>
-        <App />
+        <DragDropContext
+          onDragEnd={dragDropHandlers.onDragEnd}
+          onDragStart={dragDropHandlers.onDragStart}
+        >
+          <App />
+        </DragDropContext>
       </Router>
     </Provider>
   </ChakraProvider>,

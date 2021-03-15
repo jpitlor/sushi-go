@@ -8,10 +8,11 @@ import {
   TypedUseSelectorHook,
   useSelector as useUntypedSelector,
 } from "react-redux";
-import { PlayCardRequest, Player } from "../types/props";
+import { MoveCardRequest, PlayCardRequest, Player } from "../types/props";
 import { Skins } from "../types/skins";
 import * as api from "./api";
 import history from "./history";
+import { DragStart, DropResult, OnDragEndResponder } from "react-beautiful-dnd";
 
 interface Settings {
   id: string;
@@ -41,6 +42,7 @@ interface State {
   };
   settings: Settings;
   currentGame: Game;
+  isDragging: boolean;
 }
 interface ThunkApi {
   state: State;
@@ -122,6 +124,16 @@ const playCards = createAsyncThunk<void, PlayCardRequest[], ThunkApi>(
   }
 );
 
+// TODO: While this technically works, the delay even on a local dev setup
+// TODO: is large and causes jitter. Card order needs a local cache
+const moveCards = createAsyncThunk<void, MoveCardRequest, ThunkApi>(
+  "moveCard",
+  (request, { getState }) => {
+    const { currentGame } = getState();
+    api.moveCard(currentGame.code, request);
+  }
+);
+
 const { actions, reducer } = createSlice({
   name: "app",
   initialState: {
@@ -139,6 +151,7 @@ const { actions, reducer } = createSlice({
       name: localStorage.getItem("name"),
       skin: localStorage.getItem("skin") || "Default",
     },
+    isDragging: false,
   } as State,
   reducers: {
     handleRequestException: (state, action: PayloadAction<string>) => {
@@ -171,6 +184,9 @@ const { actions, reducer } = createSlice({
     handleGameUpdate: (state, action: PayloadAction<Game>) => {
       state.currentGame = action.payload;
     },
+    handleOnDragStart: (state, action: PayloadAction<DragStart>) => {
+      state.isDragging = true;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(saveSettings.fulfilled, (state, action) => {
@@ -178,6 +194,9 @@ const { actions, reducer } = createSlice({
         ...state.settings,
         ...action.payload,
       };
+    });
+    builder.addCase(moveCards.fulfilled, (state) => {
+      state.isDragging = false;
     });
   },
 });
@@ -199,6 +218,7 @@ export {
   startRound,
   startPlay,
   playCards,
+  moveCards,
   Game,
   Settings,
 };

@@ -11,7 +11,8 @@ import { Droppable } from "react-beautiful-dnd";
 export default function Game() {
   const game = useSelector((state) => state.currentGame);
   const settings = useSelector((state) => state.settings);
-  const isDragging = useSelector((state) => state.isDragging);
+  const isDragging = useSelector((state) => state.dragAndDrop.isDragging);
+  const dragAndDropLists = useSelector((state) => state.dragAndDrop.lists);
   const [[me], otherPlayers] = _partition(game.players, ["id", settings.id]);
 
   return (
@@ -34,29 +35,41 @@ export default function Game() {
         m={8}
         mt={0}
       >
-        <Container height={56}>
-          {me?.cardsPlayed.map((card, i) => (
-            // Each wasabi and chopsticks are a drop zone, plus one at the end
-            <Card card={card} key={card.id} index={i} />
-          ))}
-          <Box
-            w={8}
-            h={12}
-            border={isDragging ? "2px dashed black" : ""}
-            borderRadius="md"
-          />
-        </Container>
+        <Droppable droppableId="cardsPlayed" direction="horizontal">
+          {(provided, snapshot) => (
+            <Container
+              height={56}
+              centerItems={false}
+              border={isDragging ? "2px dashed black" : undefined}
+              borderRadius="md"
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+            >
+              {me?.cardsPlayed.map((card, i) => (
+                // Each wasabi and chopsticks are a drop zone, plus one at the end
+                <Card card={card} key={card.id} index={i} />
+              ))}
+              {dragAndDropLists.cardsPlayed.map((card, i) => (
+                <Card card={card} key={card.id} index={i} />
+              ))}
+              {provided.placeholder}
+            </Container>
+          )}
+        </Droppable>
         <Droppable droppableId="hand" direction="horizontal">
           {(provided, snapshot) => (
             <Container
               height={56}
               centerItems={false}
+              border={isDragging ? "2px dashed black" : undefined}
+              borderRadius="md"
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
-              {me?.hand.map((card, i) => (
+              {dragAndDropLists.hand.map((card, i) => (
                 <Card card={card} key={card.id} index={i} />
               ))}
+              {provided.placeholder}
             </Container>
           )}
         </Droppable>

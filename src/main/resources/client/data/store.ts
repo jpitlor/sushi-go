@@ -8,7 +8,7 @@ import {
   TypedUseSelectorHook,
   useSelector as useUntypedSelector,
 } from "react-redux";
-import { MoveCardRequest, PlayCardRequest, Player } from "../types/props";
+import { Card, MoveCardRequest, PlayCardRequest, Player } from "../types/props";
 import { Skins } from "../types/skins";
 import * as api from "./api";
 import history from "./history";
@@ -42,7 +42,15 @@ interface State {
   };
   settings: Settings;
   currentGame: Game;
-  isDragging: boolean;
+  dragAndDrop: {
+    isDragging: boolean;
+    round: number;
+    lists: {
+      hand: Card[];
+      cardsPlayed: Card[];
+      [k: string]: Card[];
+    };
+  };
 }
 interface ThunkApi {
   state: State;
@@ -124,16 +132,6 @@ const playCards = createAsyncThunk<void, PlayCardRequest[], ThunkApi>(
   }
 );
 
-// TODO: While this technically works, the delay even on a local dev setup
-// TODO: is large and causes jitter. Card order needs a local cache
-const moveCards = createAsyncThunk<void, MoveCardRequest, ThunkApi>(
-  "moveCard",
-  (request, { getState }) => {
-    const { currentGame } = getState();
-    api.moveCard(currentGame.code, request);
-  }
-);
-
 const { actions, reducer } = createSlice({
   name: "app",
   initialState: {
@@ -144,6 +142,9 @@ const { actions, reducer } = createSlice({
       code: "",
       players: [],
       admin: "",
+      round: 0,
+      canStartPlay: false,
+      canStartRound: false,
     },
     settings: {
       id: localStorage.getItem("uuid"),
@@ -151,7 +152,14 @@ const { actions, reducer } = createSlice({
       name: localStorage.getItem("name"),
       skin: localStorage.getItem("skin") || "Default",
     },
-    isDragging: false,
+    dragAndDrop: {
+      isDragging: false,
+      round: 0,
+      lists: {
+        hand: [],
+        cardsPlayed: [],
+      },
+    },
   } as State,
   reducers: {
     handleRequestException: (state, action: PayloadAction<string>) => {
@@ -183,9 +191,68 @@ const { actions, reducer } = createSlice({
     },
     handleGameUpdate: (state, action: PayloadAction<Game>) => {
       state.currentGame = action.payload;
+
+      if (action.payload.round > state.dragAndDrop.round) {
+        state.dragAndDrop.lists.cardsPlayed = [];
+        state.dragAndDrop.lists.hand = action.payload.players.find(
+          (p) => p.id === state.settings.id
+        ).hand;
+      }
     },
     handleOnDragStart: (state, action: PayloadAction<DragStart>) => {
-      state.isDragging = true;
+      state.dragAndDrop.isDragging = true;
+    },
+    handleOnDragEnd: (state, action: PayloadAction<DropResult>) => {
+      const { source, destination } = action.payload;
+
+      state.dragAndDrop.isDragging = false;
+
+      if (!destination) {
+        // Draggable was dropped outside of a droppable; it will reset
+        return;
+      }
+
+      if (
+        source.droppableId === destination.droppableId &&
+        destination.droppableId !== "hand" &&
+        destination.droppableId !== "cardsPlayed"
+      ) {
+        // This code should never be executed. The hand and cards played are the
+        // only 2 droppables that should ever have >1 card. Something has gone
+        // horribly wrong if this is not true
+        return;
+      }
+
+      const maxCardsPlayedAllowed = state.currentGame.players
+        .find((p) => p.id === state.settings.id)
+        .cardsPlayed.some((c) => c.type === "chopsticks")
+        ? 2
+        : 1;
+      if (
+        destination.droppableId === "cardsPlayed" &&
+        state.dragAndDrop.lists.cardsPlayed.length >= maxCardsPlayedAllowed
+      ) {
+        // TODO skin name
+        state.toast = {
+          id: state.toast.id + 1,
+          title: "Illegal Move",
+          description: `You can only play 1 card per turn (or 2 if you have Chopsticks)`,
+          status: "error",
+        };
+        return;
+      }
+
+      // Draggable was dropped somewhere else. "cardsPlayed" and "hand" are self
+      // explanatory, else it is a card ID
+      const [oldCard] = state.dragAndDrop.lists[source.droppableId].splice(
+        source.index,
+        1
+      );
+      state.dragAndDrop.lists[destination.droppableId].splice(
+        destination.index,
+        0,
+        oldCard
+      );
     },
   },
   extraReducers: (builder) => {
@@ -194,9 +261,6 @@ const { actions, reducer } = createSlice({
         ...state.settings,
         ...action.payload,
       };
-    });
-    builder.addCase(moveCards.fulfilled, (state) => {
-      state.isDragging = false;
     });
   },
 });
@@ -218,7 +282,6 @@ export {
   startRound,
   startPlay,
   playCards,
-  moveCards,
   Game,
   Settings,
 };

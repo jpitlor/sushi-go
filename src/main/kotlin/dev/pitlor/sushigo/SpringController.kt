@@ -119,15 +119,4 @@ class ServerController(private val socket: SimpMessagingTemplate) {
         socket.convertAndSend("/topic/games/$gameCode", server.getGame(gameCode))
         return response
     }
-
-    @MessageMapping("/games/{gameCode}/move-card")
-    @SendTo("/topic/games/{gameCode}")
-    fun moveCard(
-        @DestinationVariable gameCode: String,
-        @ModelAttribute user: User,
-        @Payload request: MoveCardRequest
-    ): Game {
-        server.moveCard(gameCode, user.id, request)
-        return server.getGame(gameCode)
-    }
 }

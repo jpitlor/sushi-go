@@ -88,16 +88,5 @@ class Server {
 
         return "Play successfully completed"
     }
-
-    fun moveCard(code: String, user: UUID, request: MoveCardRequest) {
-        val game = games.find { it.code == code }
-        val player = game?.players?.find { it.id == user }
-
-        require(code.isNotEmpty()) { "Code is empty" }
-        require(game != null) { "That game does not exist" }
-        require(player != null) { "That player is not in this game" }
-
-        player.hand.move(request.oldIndex, request.newIndex)
-    }
 }
 

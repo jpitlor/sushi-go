@@ -110,7 +110,3 @@ fun ArrayList<Card>.score(): Int {
     }
     return score
 }
-
-fun ArrayList<Card>.move(oldIndex: Int, newIndex: Int) {
-    this.add(newIndex, this.removeAt(oldIndex))
-}

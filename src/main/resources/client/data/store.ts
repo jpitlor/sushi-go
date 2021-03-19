@@ -216,6 +216,8 @@ const { actions, reducer } = createSlice({
         .filter(([key]) => key !== "hand")
         .map(([, cards]) => cards.length)
         .reduce((a, b) => a + b);
+      const cardPlayed =
+        state.dragAndDrop.lists[source.droppableId][source.index];
 
       state.dragAndDrop.isDragging = false;
       if (!state.dragAndDrop.lists[destination.droppableId]) {
@@ -235,6 +237,19 @@ const { actions, reducer } = createSlice({
           id: state.toast.id + 1,
           title: "Illegal Move",
           description: `You can only put 1 ${skin.nigiri.name} on a ${skin.wasabi.name}`,
+          status: "error",
+        };
+        return;
+      }
+
+      if (
+        !["hand", "cardsPlayed"].includes(destination.droppableId) &&
+        !cardPlayed.type.includes("nigiri")
+      ) {
+        state.toast = {
+          id: state.toast.id + 1,
+          title: "Illegal Move",
+          description: `You can only use ${skin.nigiri.name} on a ${skin.wasabi.name}`,
           status: "error",
         };
         return;

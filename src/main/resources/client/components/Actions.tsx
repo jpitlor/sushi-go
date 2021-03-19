@@ -6,9 +6,8 @@ import HelpDialog from "./HelpDialog";
 import { useDispatch } from "react-redux";
 import { playCards, startPlay, startRound, useSelector } from "../data/store";
 import useBoolean from "../utils/useBoolean";
-import { Card as CardType } from "../types/props";
 
-export default function Actions({}) {
+export default function Actions() {
   const dispatch = useDispatch();
   const game = useSelector((state) => state.currentGame);
   const settings = useSelector((state) => state.settings);
@@ -27,7 +26,7 @@ export default function Actions({}) {
 
   const iAmAdmin = settings.id === game.admin;
   const canMakePlay =
-    game.players.find((p) => p.id === settings.id)?.cardsPlayed.length === 0 &&
+    game.players.find((p) => p.id === settings.id)?.canDrag &&
     Object.entries(lists)
       .filter(([key]) => key !== "hand")
       .flatMap(([, cards]) => cards).length > 0;

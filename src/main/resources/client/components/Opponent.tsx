@@ -88,7 +88,7 @@ export default function Opponent({ player }: OpponentProps) {
             </Tooltip>
           </HStack>
         </Flex>
-        <SimpleGrid>
+        <SimpleGrid columns={4} spacing={2}>
           {cardsPlayed.map((c) => (
             <Card card={c} isSelectable={false} size="sm" key={c.id} />
           ))}

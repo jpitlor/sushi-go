@@ -1,4 +1,4 @@
-import { Center, Image, Text } from "@chakra-ui/react";
+import { Box, Center, Image, Text } from "@chakra-ui/react";
 import React from "react";
 import { Card as CardType } from "../types/props";
 import logo from "../public/logo.png";
@@ -6,7 +6,8 @@ import { useSelector } from "../data/store";
 import skins from "../skins";
 import toSkinKey from "../utils/toSkinKey";
 import CardCorner from "./CardCorner";
-import { Draggable } from "react-beautiful-dnd";
+import { Draggable, Droppable } from "react-beautiful-dnd";
+import Container from "./Container";
 
 type CardProps = {
   card?: CardType;
@@ -106,6 +107,65 @@ export default function Card({
           />
         )}
       </Draggable>
+    );
+  }
+
+  if (card.type === "wasabi" && card.nigiri) {
+    return (
+      <Box position="relative" role="group">
+        <Box
+          position="absolute"
+          zIndex={2}
+          transition="0.1s ease-in-out"
+          top={0}
+          _groupHover={{
+            top: "-3rem",
+          }}
+        >
+          <Card
+            card={card.nigiri}
+            isSelectable={false}
+            canBeDragged={false}
+            size={size}
+          />
+        </Box>
+        <Content />
+      </Box>
+    );
+  }
+
+  if (card.type === "wasabi" && me.cardsPlayed.some((c) => c.id === card.id)) {
+    return (
+      <Box position="relative">
+        <Droppable droppableId={card.id} direction="vertical">
+          {(provided, snapshot) => (
+            <Box
+              border={isDragging ? "2px dashed black" : undefined}
+              padding={isDragging ? "0" : "2px"}
+              borderRadius="md"
+              flex={1}
+              position="absolute"
+              h="full"
+              w="full"
+              zIndex={2}
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+            >
+              {lists[card.id]?.map((card, i) => (
+                <Card
+                  card={card}
+                  key={card.id}
+                  index={i}
+                  canBeDragged={me.canDrag}
+                  isSelectable={me.canDrag}
+                />
+              ))}
+              {provided.placeholder}
+            </Box>
+          )}
+        </Droppable>
+        <Content />
+      </Box>
     );
   }
 

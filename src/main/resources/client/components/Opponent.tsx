@@ -90,7 +90,7 @@ export default function Opponent({ player }: OpponentProps) {
         </Flex>
         <SimpleGrid>
           {cardsPlayed.map((c) => (
-            <Card card={c} isSelectable={false} size="sm" />
+            <Card card={c} isSelectable={false} size="sm" key={c.id} />
           ))}
         </SimpleGrid>
       </Flex>

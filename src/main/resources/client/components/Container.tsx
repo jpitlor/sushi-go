@@ -4,7 +4,7 @@ import { Container as ChakraContainer, theme, HStack } from "@chakra-ui/react";
 
 type ContainerProps = {
   margin?: string;
-  height: number;
+  height: number | string;
   children: React.ReactNode;
   centerItems: boolean;
   [k: string]: any;
@@ -35,13 +35,13 @@ export default React.forwardRef(
       <Scrollable
         style={{
           width: "100%",
-          height: theme.sizes[height],
+          height: theme.sizes[height] || height,
           margin,
         }}
       >
         <HStack
           spacing="1rem"
-          alignItems={centerItems ? "center" : undefined}
+          alignItems="center"
           justifyContent={
             centerItems ? [null, null, "space-around"] : undefined
           }

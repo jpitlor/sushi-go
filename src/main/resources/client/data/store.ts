@@ -8,11 +8,12 @@ import {
   TypedUseSelectorHook,
   useSelector as useUntypedSelector,
 } from "react-redux";
-import { Card, MoveCardRequest, PlayCardRequest, Player } from "../types/props";
+import { Card, PlayCardRequest, Player } from "../types/props";
 import { Skins } from "../types/skins";
 import * as api from "./api";
 import history from "./history";
-import { DragStart, DropResult, OnDragEndResponder } from "react-beautiful-dnd";
+import { DragStart, DropResult } from "react-beautiful-dnd";
+import skins from "../skins";
 
 interface Settings {
   id: string;
@@ -193,6 +194,7 @@ const { actions, reducer } = createSlice({
       state.currentGame = action.payload;
 
       if (action.payload.round > state.dragAndDrop.round) {
+        state.dragAndDrop.round = action.payload.round;
         state.dragAndDrop.lists.cardsPlayed = [];
         state.dragAndDrop.lists.hand = action.payload.players.find(
           (p) => p.id === state.settings.id
@@ -205,7 +207,20 @@ const { actions, reducer } = createSlice({
     handleOnDragEnd: (state, action: PayloadAction<DropResult>) => {
       const { source, destination } = action.payload;
 
+      const skin = skins[state.settings.skin];
+      const cardsPlayed = state.currentGame.players.find(
+        (p) => p.id === state.settings.id
+      ).cardsPlayed;
+      const hasChopsticks = cardsPlayed.some((c) => c.type === "chopsticks");
+      const totalCardsPlayed = Object.entries(state.dragAndDrop.lists)
+        .filter(([key]) => key !== "hand")
+        .map(([, cards]) => cards.length)
+        .reduce((a, b) => a + b);
+
       state.dragAndDrop.isDragging = false;
+      if (!state.dragAndDrop.lists[destination.droppableId]) {
+        state.dragAndDrop.lists[destination.droppableId] = [];
+      }
 
       if (!destination) {
         // Draggable was dropped outside of a droppable; it will reset
@@ -213,36 +228,54 @@ const { actions, reducer } = createSlice({
       }
 
       if (
-        source.droppableId === destination.droppableId &&
-        destination.droppableId !== "hand" &&
-        destination.droppableId !== "cardsPlayed"
+        !["hand", "cardsPlayed"].includes(destination.droppableId) &&
+        state.dragAndDrop.lists[destination.droppableId].length === 1
       ) {
-        // This code should never be executed. The hand and cards played are the
-        // only 2 droppables that should ever have >1 card. Something has gone
-        // horribly wrong if this is not true
-        return;
-      }
-
-      const maxCardsPlayedAllowed = state.currentGame.players
-        .find((p) => p.id === state.settings.id)
-        .cardsPlayed.some((c) => c.type === "chopsticks")
-        ? 2
-        : 1;
-      if (
-        destination.droppableId === "cardsPlayed" &&
-        state.dragAndDrop.lists.cardsPlayed.length >= maxCardsPlayedAllowed
-      ) {
-        // TODO skin name
         state.toast = {
           id: state.toast.id + 1,
           title: "Illegal Move",
-          description: `You can only play 1 card per turn (or 2 if you have Chopsticks)`,
+          description: `You can only put 1 ${skin.nigiri.name} on a ${skin.wasabi.name}`,
           status: "error",
         };
         return;
       }
 
-      // Draggable was dropped somewhere else. "cardsPlayed" and "hand" are self
+      if (
+        destination.droppableId !== "hand" &&
+        !hasChopsticks &&
+        totalCardsPlayed === 1
+      ) {
+        state.toast = {
+          id: state.toast.id + 1,
+          title: "Illegal Move",
+          description: `You can only play 1 card per turn without a ${skin.chopsticks.name}`,
+          status: "error",
+        };
+        return;
+      }
+
+      if (
+        destination.droppableId !== "hand" &&
+        hasChopsticks &&
+        totalCardsPlayed === 2
+      ) {
+        // This is a vague part of the rules - having a specific error message for it
+        // is probably helpful
+        const description =
+          cardsPlayed.filter((c) => c.type === "chopsticks").length > 1
+            ? `You can only use 1 ${skin.chopsticks.name} per turn for a total of 2 cards`
+            : `You can only play 2 cards per turn using ${skin.chopsticks.name}`;
+
+        state.toast = {
+          id: state.toast.id + 1,
+          title: "Illegal Move",
+          description,
+          status: "error",
+        };
+        return;
+      }
+
+      // Draggable was dropped somewhere valid. "cardsPlayed" and "hand" are self
       // explanatory, else it is a card ID
       const [oldCard] = state.dragAndDrop.lists[source.droppableId].splice(
         source.index,

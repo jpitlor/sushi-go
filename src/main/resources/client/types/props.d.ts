@@ -32,7 +32,7 @@ export type Card = BaseCard | Nigiri | Wasabi | Maki;
 
 export interface PlayCardRequest {
   card: Card;
-  useWasabi: boolean;
+  wasabi?: string;
 }
 
 export interface MoveCardRequest {

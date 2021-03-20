@@ -45,7 +45,6 @@ interface State {
   currentGame: Game;
   dragAndDrop: {
     isDragging: boolean;
-    round: number;
     lists: {
       hand: Card[];
       cardsPlayed: Card[];
@@ -155,7 +154,6 @@ const { actions, reducer } = createSlice({
     },
     dragAndDrop: {
       isDragging: false,
-      round: 0,
       lists: {
         hand: [],
         cardsPlayed: [],
@@ -191,15 +189,19 @@ const { actions, reducer } = createSlice({
       state.openGames = [...action.payload];
     },
     handleGameUpdate: (state, action: PayloadAction<Game>) => {
-      state.currentGame = action.payload;
-
-      if (action.payload.round > state.dragAndDrop.round) {
-        state.dragAndDrop.round = action.payload.round;
-        state.dragAndDrop.lists.cardsPlayed = [];
-        state.dragAndDrop.lists.hand = action.payload.players.find(
-          (p) => p.id === state.settings.id
-        ).hand;
+      if (
+        state.dragAndDrop.lists.hand.length === 0 ||
+        (state.dragAndDrop.lists.cardsPlayed.length > 0 &&
+          action.payload.players.every((p) => p.currentCard.length === 0))
+      ) {
+        state.dragAndDrop.lists = {
+          cardsPlayed: [],
+          hand: action.payload.players.find((p) => p.id === state.settings.id)
+            .hand,
+        };
       }
+
+      state.currentGame = action.payload;
     },
     handleOnDragStart: (state, action: PayloadAction<DragStart>) => {
       state.dragAndDrop.isDragging = true;

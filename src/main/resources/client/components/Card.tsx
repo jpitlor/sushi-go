@@ -73,7 +73,16 @@ export default function Card({
           : {}
       }
     >
-      <Image src={skin[skinKey].image} w={(size === "sm" ? 3 : 6) + "rem"} />
+      <Image
+        src={skin[skinKey].image}
+        w={(size === "sm" ? 3 : 6) + "rem"}
+        alignSelf={
+          size === "sm" && /nigiri|maki/.test(card.type)
+            ? "flex-end"
+            : undefined
+        }
+        pb={size === "sm" && /nigiri/.test(card.type) ? 2 : undefined}
+      />
       {size !== "sm" && (
         <Text
           as="strong"

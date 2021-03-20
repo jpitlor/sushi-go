@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, HStack } from "@chakra-ui/react";
 import _partition from "lodash.partition";
 import React from "react";
 import Card from "../components/Card";
@@ -41,12 +41,13 @@ export default function Game() {
           ))}
           <Droppable droppableId="cardsPlayed" direction="horizontal">
             {(provided, snapshot) => (
-              <Box
+              <HStack
                 border={isDragging ? "2px dashed black" : undefined}
-                padding={isDragging ? "0" : "2px"}
+                padding={isDragging ? "0 1rem" : "2px calc(1rem + 2px)"}
                 borderRadius="md"
                 flex={1}
                 h="full"
+                alignItems="center"
                 {...provided.droppableProps}
                 ref={provided.innerRef}
               >
@@ -60,18 +61,21 @@ export default function Game() {
                   />
                 ))}
                 {provided.placeholder}
-              </Box>
+              </HStack>
             )}
           </Droppable>
         </Container>
         <Droppable droppableId="hand" direction="horizontal">
           {(provided, snapshot) => (
             <Container
-              height={48}
+              height={64}
               centerItems={false}
-              border={isDragging ? "2px dashed black" : undefined}
-              padding={isDragging ? "0 1rem" : "2px calc(1rem + 2px)"}
-              borderRadius="md"
+              innerProps={{
+                height: 64,
+                border: isDragging ? "2px dashed black" : undefined,
+                padding: isDragging ? "0 1rem" : "2px calc(1rem + 2px)",
+                borderRadius: "md",
+              }}
               {...provided.droppableProps}
               ref={provided.innerRef}
             >

@@ -7,6 +7,7 @@ type ContainerProps = {
   height: number | string;
   children: React.ReactNode;
   centerItems: boolean;
+  innerProps?: object;
   [k: string]: any;
 };
 export default React.forwardRef(
@@ -16,6 +17,7 @@ export default React.forwardRef(
       height,
       children,
       centerItems = true,
+      innerProps = {},
       ...otherProps
     }: ContainerProps,
     ref
@@ -46,6 +48,7 @@ export default React.forwardRef(
             centerItems ? [null, null, "space-around"] : undefined
           }
           height="full"
+          {...innerProps}
         >
           {children}
         </HStack>

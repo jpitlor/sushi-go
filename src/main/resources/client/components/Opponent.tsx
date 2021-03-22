@@ -9,14 +9,12 @@ import {
   Text,
   Tooltip,
   Image,
-  useDisclosure,
   ScaleFade,
-  Button,
 } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAward, faHands } from "@fortawesome/pro-regular-svg-icons";
+import { faAward, faPie } from "@fortawesome/pro-regular-svg-icons";
 import Card from "./Card";
-import React, { useEffect } from "react";
+import React from "react";
 import Avatars from "@dicebear/avatars";
 import sprites from "@dicebear/avatars-human-sprites";
 import skins from "../skins";
@@ -31,8 +29,19 @@ type OpponentProps = { player: Player };
 export default function Opponent({ player }: OpponentProps) {
   const isSushiGoLogoVisible = useChopsticksNotification(player.id);
   const skinKey = useSelector((state) => state.settings.skin);
-  const { hand, cardsPlayed, currentCard, puddingCount, settings } = player;
+  const {
+    hand,
+    cardsPlayed,
+    currentCard,
+    puddingCount,
+    settings,
+    scores,
+  } = player;
   const skin = skins[skinKey];
+  const currentPoints = scores.reduce(
+    (a, b) => a + b.hand + b.pudding + b.maki,
+    0
+  );
 
   return (
     <Flex
@@ -77,7 +86,7 @@ export default function Opponent({ player }: OpponentProps) {
           </Avatar>
         </Tooltip>
         <HStack spacing="0.5rem" mt={4} color="white">
-          <Tooltip label="Hand Size">
+          <Tooltip label="Points">
             <Box
               p={1}
               w="3rem"
@@ -87,8 +96,8 @@ export default function Opponent({ player }: OpponentProps) {
               bg="red.700"
               textAlign="center"
             >
-              <FontAwesomeIcon icon={faHands} />
-              <Text>{hand.length}</Text>
+              <FontAwesomeIcon icon={faAward} />
+              <Text>{currentPoints}</Text>
             </Box>
           </Tooltip>
           <Tooltip label={`${skin.pudding.name} Count`}>
@@ -101,7 +110,7 @@ export default function Opponent({ player }: OpponentProps) {
               bg="red.700"
               textAlign="center"
             >
-              <FontAwesomeIcon icon={faAward} />
+              <FontAwesomeIcon icon={faPie} />
               <Text>{puddingCount}</Text>
             </Box>
           </Tooltip>

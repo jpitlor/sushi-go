@@ -66,18 +66,18 @@ const goToLobby = createAsyncThunk<void, void, ThunkApi>(
 
 const createAndJoinGame = createAsyncThunk<void, string, ThunkApi>(
   "createGame",
-  (code, { getState }) => {
+  async (code, { getState }) => {
     const { settings } = getState();
     api.createGame(code);
-    api.joinGame(code, settings);
+    await api.joinGame(code, settings);
   }
 );
 
 const joinGame = createAsyncThunk<void, string, ThunkApi>(
   "joinGame",
-  (code, { getState }) => {
+  async (code, { getState }) => {
     const { settings } = getState();
-    api.joinGame(code, settings);
+    await api.joinGame(code, settings);
   }
 );
 
@@ -194,11 +194,13 @@ const { actions, reducer } = createSlice({
         (state.dragAndDrop.lists.cardsPlayed.length > 0 &&
           action.payload.players.every((p) => p.currentCard.length === 0))
       ) {
-        state.dragAndDrop.lists = {
-          cardsPlayed: [],
-          hand: action.payload.players.find((p) => p.id === state.settings.id)
-            .hand,
-        };
+        for (let key in state.dragAndDrop.lists) {
+          state.dragAndDrop.lists[key] = [];
+        }
+
+        state.dragAndDrop.lists.hand = action.payload.players.find(
+          (p) => p.id === state.settings.id
+        ).hand;
       }
 
       state.currentGame = action.payload;
@@ -258,6 +260,7 @@ const { actions, reducer } = createSlice({
       }
 
       if (
+        source.droppableId === "hand" &&
         destination.droppableId !== "hand" &&
         !hasChopsticks &&
         totalCardsPlayed === 1
@@ -272,6 +275,7 @@ const { actions, reducer } = createSlice({
       }
 
       if (
+        source.droppableId === "hand" &&
         destination.droppableId !== "hand" &&
         hasChopsticks &&
         totalCardsPlayed === 2

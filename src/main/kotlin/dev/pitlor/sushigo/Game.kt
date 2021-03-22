@@ -55,8 +55,9 @@ class Game(val code: String, var admin: UUID) {
             }
 
             if (player.currentCard.size == 2) {
-                player.cardsPlayed.remove(Chopsticks())
-                player.hand.add(Chopsticks())
+                val chopsticksIndex = player.cardsPlayed.indexOfFirst { it is Chopsticks }
+                val chopsticks = player.cardsPlayed.removeAt(chopsticksIndex)
+                player.hand.add(chopsticks)
             }
 
             player.currentCard.clear()

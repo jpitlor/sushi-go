@@ -40,7 +40,7 @@ export function createGame(code: string) {
   client.publish({ destination: `/app/games/${code}/create` });
 }
 
-export function joinGame(
+export async function joinGame(
   code: string,
   settings: Settings,
   rejoining: boolean = false
@@ -51,6 +51,11 @@ export function joinGame(
       body: JSON.stringify(settings),
     });
   }
+
+  // A race condition happens where if we dont wait 1ms, the subscription may happen first
+  // giving an error that the game doesn't exist
+  await new Promise((resolve) => setTimeout(resolve, 1));
+
   client.subscribe(`/topic/games/${code}`, ({ body }) => {
     const response = JSON.parse(body) as Game;
     store.dispatch(actions.handleGameUpdate(response));

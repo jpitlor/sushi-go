@@ -44,7 +44,7 @@ export interface Player {
   id: string;
   scores: { hand: number; maki: number; pudding: number }[];
   puddingCount: number;
-  currentCard: Card[];
+  currentCard: PlayCardRequest[];
   cardsPlayed: Card[];
   hand: Card[];
   settings: Settings;

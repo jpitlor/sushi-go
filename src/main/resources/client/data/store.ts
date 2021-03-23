@@ -189,18 +189,28 @@ const { actions, reducer } = createSlice({
       state.openGames = [...action.payload];
     },
     handleGameUpdate: (state, action: PayloadAction<Game>) => {
+      const { id } = state.settings;
+      const { players } = action.payload;
+      const player = players.find((p) => p.id === id);
+
+      if (Object.values(state.dragAndDrop.lists).every((l) => l.length === 0)) {
+        state.dragAndDrop.lists = {
+          hand: player.hand.filter(
+            (c) => !player.currentCard.map((cc) => cc.card.id).includes(c.id)
+          ),
+          cardsPlayed: player.currentCard.map((r) => r.card),
+        };
+      }
+
       if (
-        state.dragAndDrop.lists.hand.length === 0 ||
-        (state.dragAndDrop.lists.cardsPlayed.length > 0 &&
-          action.payload.players.every((p) => p.currentCard.length === 0))
+        state.dragAndDrop.lists.cardsPlayed.length > 0 &&
+        action.payload.players.every((p) => p.currentCard.length === 0)
       ) {
         for (let key in state.dragAndDrop.lists) {
           state.dragAndDrop.lists[key] = [];
         }
 
-        state.dragAndDrop.lists.hand = action.payload.players.find(
-          (p) => p.id === state.settings.id
-        ).hand;
+        state.dragAndDrop.lists.hand = player.hand;
       }
 
       state.currentGame = action.payload;

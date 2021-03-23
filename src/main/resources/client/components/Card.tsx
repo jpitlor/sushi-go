@@ -16,6 +16,7 @@ type CardProps = {
   size?: "sm" | "md" | "lg";
   index?: number;
   canBeDragged?: boolean;
+  isTripled?: boolean;
 };
 export default function Card({
   card,
@@ -24,6 +25,7 @@ export default function Card({
   size = "lg",
   index,
   canBeDragged = false,
+  isTripled = false,
 }: CardProps) {
   const settings = useSelector((state) => state.settings);
   const players = useSelector((state) => state.currentGame.players);
@@ -97,7 +99,7 @@ export default function Card({
           {skin[skinKey].name}
         </Text>
       )}
-      <CardCorner card={card} />
+      <CardCorner card={card} isTripled={isTripled} />
     </Center>
   ));
 
@@ -136,6 +138,7 @@ export default function Card({
             isSelectable={false}
             canBeDragged={false}
             size={size}
+            isTripled
           />
         </Box>
         <Content />
@@ -150,7 +153,6 @@ export default function Card({
           {(provided, snapshot) => (
             <Box
               border={isDragging ? "2px dashed black" : undefined}
-              padding={isDragging ? "0" : "2px"}
               borderRadius="md"
               flex={1}
               position="absolute"
@@ -167,6 +169,7 @@ export default function Card({
                   index={i}
                   canBeDragged={me.canDrag}
                   isSelectable={me.canDrag}
+                  isTripled
                 />
               ))}
               {provided.placeholder}

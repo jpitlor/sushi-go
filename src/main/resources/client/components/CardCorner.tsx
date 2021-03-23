@@ -1,23 +1,24 @@
 import { Card as CardType } from "../types/props";
-import { Box, Tag } from "@chakra-ui/react";
+import { Tag } from "@chakra-ui/react";
 import React from "react";
 
-type CardCornerProps = { card: CardType };
-export default function CardCorner({ card }: CardCornerProps) {
+type CardCornerProps = { card: CardType; isTripled?: boolean };
+export default function CardCorner({
+  card,
+  isTripled = false,
+}: CardCornerProps) {
   switch (card.type) {
     case "nigiri":
       return (
-        <Tag position="absolute" right={4} top={4}>
-          {card.value}
+        <Tag
+          position="absolute"
+          right={4}
+          top={4}
+          variant={isTripled ? "solid" : undefined}
+          colorScheme={isTripled ? "green" : "gray"}
+        >
+          {card.value * (isTripled ? 3 : 1)}
         </Tag>
-      );
-    case "wasabi":
-      if (!card.nigiri) return null;
-
-      return (
-        <Box position="absolute" right={4} top={4}>
-          TODO!
-        </Box>
       );
     case "maki":
       return (

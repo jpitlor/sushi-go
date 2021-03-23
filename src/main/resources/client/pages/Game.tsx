@@ -35,7 +35,11 @@ export default function Game() {
         m={8}
         mt={0}
       >
-        <Container height={56} centerItems={false}>
+        <Container
+          height={64}
+          centerItems={false}
+          innerProps={{ padding: "1rem" }}
+        >
           {me?.cardsPlayed.map((card, i) => (
             <Card card={card} key={card.id} index={i} isSelectable={false} />
           ))}

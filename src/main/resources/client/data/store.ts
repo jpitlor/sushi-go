@@ -234,6 +234,7 @@ const { actions, reducer } = createSlice({
       }
 
       if (
+        source.droppableId !== destination.droppableId &&
         !["hand", "cardsPlayed"].includes(destination.droppableId) &&
         state.dragAndDrop.lists[destination.droppableId].length === 1
       ) {

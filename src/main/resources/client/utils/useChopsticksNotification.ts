@@ -19,7 +19,7 @@ export default function useChopsticksNotification(playerId: string) {
 
   useEffect(() => {
     if (isOpen) {
-      setTimeout(() => onToggle(), 2000);
+      setTimeout(() => onToggle(), 1500);
     }
   }, [isOpen]);
 

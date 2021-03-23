@@ -51,18 +51,18 @@ export default function Actions() {
 
   return (
     <>
-      {!game.active && iAmAdmin && game.canStartRound && (
+      {iAmAdmin && (
         <Button
           flexShrink={0}
           size="lg"
           colorScheme="yellow"
           onClick={handleStartGame}
-          disabled={game.players.length < 3}
+          disabled={game.players.length < 3 || !game.canStartRound}
         >
           Start {game.round === 0 ? "Game" : "Round"}
         </Button>
       )}
-      {game.active && iAmAdmin && !game.canStartRound && (
+      {iAmAdmin && (
         <Button
           flexShrink={0}
           size="lg"

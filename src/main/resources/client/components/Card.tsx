@@ -79,7 +79,9 @@ export default function Card({
         src={skin[skinKey].image}
         w={(size === "sm" ? 3 : 6) + "rem"}
         alignSelf={
-          size === "sm" && /nigiri|maki/.test(card.type)
+          size === "sm" &&
+          (/nigiri|maki/.test(card.type) ||
+            (card.type === "wasabi" && card.nigiri != null))
             ? "flex-end"
             : undefined
         }

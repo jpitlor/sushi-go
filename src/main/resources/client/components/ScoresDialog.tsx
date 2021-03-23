@@ -38,9 +38,14 @@ export default function ScoresDialog({ isOpen, onClose }: ModalProps) {
           <Table variant="simple">
             <Thead>
               <Tr>
+                <Th w="5rem" />
                 {game.players.map(
-                  ({ id, settings: { name, avatar, connected } }) => (
-                    <Th key={id}>
+                  ({ id, settings: { name, avatar, connected } }, j) => (
+                    <Th
+                      key={id}
+                      backgroundColor={j % 2 === 0 ? "gray.100" : undefined}
+                      borderColor={j % 2 === 0 ? "gray.200" : "gray.100"}
+                    >
                       <Flex flexDirection="column">
                         <Avatar
                           mx="auto"
@@ -70,31 +75,69 @@ export default function ScoresDialog({ isOpen, onClose }: ModalProps) {
               <TableCaption placement="top">Round {i + 1}</TableCaption>
               <Tbody>
                 <Tr>
-                  {game.players.map(({ id, scores }) => (
-                    <Td key={id}>{scores[i].hand}</Td>
+                  <Td color="gray.500" w="5rem">
+                    Hand
+                  </Td>
+                  {game.players.map(({ id, scores }, j) => (
+                    <Td
+                      key={id}
+                      backgroundColor={j % 2 === 0 ? "gray.100" : undefined}
+                      borderColor={j % 2 === 0 ? "gray.200" : "gray.100"}
+                      textAlign="right"
+                    >
+                      {scores[i].hand}
+                    </Td>
                   ))}
                 </Tr>
                 <Tr>
-                  {game.players.map(({ id, scores }) => (
-                    <Td key={id}>{scores[i].maki}</Td>
+                  <Td color="gray.500" w="5rem">
+                    Maki
+                  </Td>
+                  {game.players.map(({ id, scores }, j) => (
+                    <Td
+                      key={id}
+                      backgroundColor={j % 2 === 0 ? "gray.100" : undefined}
+                      borderColor={j % 2 === 0 ? "gray.200" : "gray.100"}
+                      textAlign="right"
+                    >
+                      {scores[i].maki}
+                    </Td>
                   ))}
                 </Tr>
                 {i == 2 && (
                   <Tr>
-                    {game.players.map(({ id, scores }) => (
-                      <Td key={id}>{scores[i].pudding}</Td>
+                    <Td color="gray.500" w="5rem">
+                      Pudding
+                    </Td>
+                    {game.players.map(({ id, scores }, j) => (
+                      <Td
+                        key={id}
+                        backgroundColor={j % 2 === 0 ? "gray.100" : undefined}
+                        borderColor={j % 2 === 0 ? "gray.200" : "gray.100"}
+                        textAlign="right"
+                      >
+                        {scores[i].pudding}
+                      </Td>
                     ))}
                   </Tr>
                 )}
                 <Tr>
-                  {game.players.map(({ id, scores }) => (
-                    <Td as="strong" key={id}>
-                      {scores
-                        .slice(0, i)
-                        .reduce(
-                          (acc, s) => acc + s.hand + s.maki + s.pudding,
-                          0
-                        )}
+                  <Td w="5rem" />
+                  {game.players.map(({ id, scores }, j) => (
+                    <Td
+                      key={id}
+                      backgroundColor={j % 2 === 0 ? "gray.100" : undefined}
+                      borderColor={j % 2 === 0 ? "gray.200" : "gray.100"}
+                      textAlign="right"
+                    >
+                      <strong>
+                        {scores
+                          .slice(0, i + 1)
+                          .reduce(
+                            (acc, s) => acc + s.hand + s.maki + s.pudding,
+                            0
+                          )}
+                      </strong>
                     </Td>
                   ))}
                 </Tr>

@@ -192,23 +192,35 @@ const { actions, reducer } = createSlice({
       const { id } = state.settings;
       const { players } = action.payload;
       const player = players.find((p) => p.id === id);
+      const totalCardsPlayed = Object.entries(state.dragAndDrop.lists)
+        .filter(([key]) => key !== "hand")
+        .map(([, list]) => list.length)
+        .reduce((a, b) => a + b);
 
       if (Object.values(state.dragAndDrop.lists).every((l) => l.length === 0)) {
         state.dragAndDrop.lists = {
           hand: player.hand.filter(
             (c) => !player.currentCard.map((cc) => cc.card.id).includes(c.id)
           ),
-          cardsPlayed: player.currentCard.map((r) => r.card),
+          cardsPlayed: player.currentCard
+            .filter((c) => !c.wasabi)
+            .map((r) => r.card),
         };
+
+        player.currentCard
+          .filter((c) => c.wasabi)
+          .forEach((c) => {
+            state.dragAndDrop.lists[c.wasabi] = [c.card];
+          });
       }
 
       if (
-        state.dragAndDrop.lists.cardsPlayed.length > 0 &&
+        totalCardsPlayed > 0 &&
         action.payload.players.every((p) => p.currentCard.length === 0)
       ) {
-        for (let key in state.dragAndDrop.lists) {
-          state.dragAndDrop.lists[key] = [];
-        }
+        Object.keys(state.dragAndDrop.lists).forEach((list) => {
+          state.dragAndDrop.lists[list] = [];
+        });
 
         state.dragAndDrop.lists.hand = player.hand;
       }

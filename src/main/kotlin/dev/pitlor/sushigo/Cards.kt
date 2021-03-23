@@ -16,15 +16,7 @@ import kotlin.collections.ArrayList
     JsonSubTypes.Type(Wasabi::class, name = "wasabi"),
     JsonSubTypes.Type(Chopsticks::class, name = "chopsticks")
 )
-sealed class Card(val type: String) {
-    override fun equals(other: Any?): Boolean {
-        return other != null && other::class == this::class
-    }
-
-    override fun hashCode(): Int {
-        return type.hashCode()
-    }
-}
+sealed class Card(val type: String)
 
 data class Tempura(val id: UUID = UUID.randomUUID()) : Card("tempura")
 data class Sashimi(val id: UUID = UUID.randomUUID()) : Card("sashimi")

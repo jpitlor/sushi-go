@@ -12,7 +12,6 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent
 import java.util.*
 
 data class PlayCardRequest(val card: Card, val wasabi: UUID?)
-data class MoveCardRequest(val oldIndex: Int, val newIndex: Int)
 
 @Controller
 class ServerController(private val socket: SimpMessagingTemplate) {

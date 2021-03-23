@@ -17,6 +17,7 @@ class Player(val id: UUID, val settings: MutableMap<String, Any>) {
     var currentCard: ArrayList<PlayCardRequest> = arrayListOf()
     val cardsPlayed: ArrayList<Card> = arrayListOf()
 
+    // This is a property passed down to the client to enable/disable drag+drop
     @Suppress("unused")
     val canDrag: Boolean get() = currentCard.size == 0 || (currentCard.size == 1 && cardsPlayed.contains(Chopsticks()))
 }
@@ -46,12 +47,16 @@ class Game(val code: String, var admin: UUID) {
             player.currentCard.forEach { request ->
                 if (request.wasabi != null) {
                     require(request.card is Nigiri) { "You can only play a Nigiri on a Wasabi" }
-                    player.cardsPlayed.filterIsInstance<Wasabi>().first { c -> c.nigiri == null }.nigiri = request.card
+                    player.cardsPlayed
+                        .filterIsInstance<Wasabi>()
+                        .first { c -> c.id == request.wasabi }
+                        .nigiri = request.card
                 } else {
                     player.cardsPlayed += request.card
                 }
 
-                player.hand.remove(request.card)
+                val cardFound = player.hand.remove(request.card)
+                check(cardFound) { "The card played was not found in the hand" }
             }
 
             if (player.currentCard.size == 2) {
@@ -71,15 +76,15 @@ class Game(val code: String, var admin: UUID) {
                 player.hand = swp
             }
         }
+
+        if (players.all { it.hand.size == 0 }) {
+            players.scoreRound(isEndOfGame = round == 2)
+        }
     }
 
     fun startRound() {
         check(round < 3) { "There are only 3 rounds in a game" }
         check(players.size in 3..5) { "Game can only be played with 2-5 people" }
-
-        if (round > 0) {
-            players.scoreRound(isEndOfGame = round == 2)
-        }
 
         val cardsPerPlayer = when (players.size) {
             2 -> 10
@@ -93,6 +98,8 @@ class Game(val code: String, var admin: UUID) {
             for (i in 1..cardsPerPlayer) {
                 it.hand.add(this.deck.removeAt(0))
             }
+
+            it.cardsPlayed.clear()
         }
 
         active = true

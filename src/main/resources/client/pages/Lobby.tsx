@@ -44,7 +44,14 @@ export default function Lobby() {
   }
 
   return (
-    <Box background="red.300" w="100vw" h="100vh" overflow="auto" py={16}>
+    <Box
+      background="red.300"
+      w="100vw"
+      h="100vh"
+      overflow="auto"
+      py={[4, 4, 16]}
+      px={4}
+    >
       <Flex
         mx="auto"
         flexDirection="column"

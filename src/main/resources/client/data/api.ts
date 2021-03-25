@@ -4,7 +4,10 @@ import { Client } from "@stomp/stompjs";
 import { MoveCardRequest, PlayCardRequest } from "../types/props";
 
 const BASE_URL =
-  process.env.NODE_ENV === "production" ? "" : "http://localhost:8080";
+  process.env.NODE_ENV === "production"
+    ? `https://${window.location.host}`
+    : "http://localhost:8080";
+console.log(process.env.NODE_ENV);
 const client = new Client({
   webSocketFactory: () => new SockJS(BASE_URL + "/websocket-server"),
 });

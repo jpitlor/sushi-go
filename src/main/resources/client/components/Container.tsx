@@ -45,7 +45,7 @@ export default React.forwardRef(
           spacing="1rem"
           alignItems="center"
           justifyContent={
-            centerItems ? [null, null, "space-around"] : undefined
+            centerItems ? [null, null, null, "space-around"] : undefined
           }
           height="full"
           {...innerProps}

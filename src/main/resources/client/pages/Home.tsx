@@ -73,7 +73,14 @@ export default function Home() {
   }
 
   return (
-    <Box background="red.300" w="100vw" h="100vh" overflow="auto" py={16}>
+    <Box
+      background="red.300"
+      w="100vw"
+      h="100vh"
+      overflow="auto"
+      py={[4, 4, 16]}
+      px={4}
+    >
       <Flex
         mx="auto"
         flexDirection="column"
@@ -100,7 +107,6 @@ export default function Home() {
                 })}
               />
               <InputRightElement>
-                {/* @ts-ignore - the types are wrong?? */}
                 <IconButton
                   icon={<FontAwesomeIcon icon={faSync} />}
                   onClick={randomizeImage}
@@ -114,7 +120,6 @@ export default function Home() {
             <InputGroup>
               <Input value={name} onChange={setName} placeholder="Name" />
               <InputRightElement>
-                {/* @ts-ignore - the types are wrong?? */}
                 <IconButton
                   icon={<FontAwesomeIcon icon={faSync} />}
                   onClick={randomizeName}
@@ -125,8 +130,7 @@ export default function Home() {
           </FormControl>
           <FormControl id="skin" mt={4}>
             <FormLabel>Skin</FormLabel>
-            {/* @ts-ignore - the types are wrong?? */}
-            <Select value={skin} onChange={setSkin}>
+            <Select value={skin} onChange={setSkin as any}>
               {Object.keys(skins).map((skin) => (
                 <option value={skin} key={skin}>
                   {skin}

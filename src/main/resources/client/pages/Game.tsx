@@ -8,6 +8,7 @@ import Container from "../components/Container";
 import Actions from "../components/Actions";
 import { Droppable } from "react-beautiful-dnd";
 import MobileTabs from "../components/MobileTabs";
+import FinalScores from "../components/FinalScores";
 
 export default function Game() {
   const game = useSelector((state) => state.currentGame);
@@ -15,6 +16,10 @@ export default function Game() {
   const isDragging = useSelector((state) => state.dragAndDrop.isDragging);
   const dragAndDropLists = useSelector((state) => state.dragAndDrop.lists);
   const [[me], otherPlayers] = _partition(game.players, ["id", settings.id]);
+
+  if (game.round === 3 && game.players.every((p) => p.hand.length === 0)) {
+    return <FinalScores />;
+  }
 
   return (
     <Flex

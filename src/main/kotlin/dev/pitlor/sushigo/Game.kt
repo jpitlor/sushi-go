@@ -84,7 +84,7 @@ class Game(val code: String, var admin: UUID) {
 
     fun startRound() {
         check(round < 3) { "There are only 3 rounds in a game" }
-        check(players.size in 3..5) { "Game can only be played with 2-5 people" }
+        check(players.size in 3..5) { "Game can only be played with 3-5 people" }
 
         val cardsPerPlayer = when (players.size) {
             2 -> 10

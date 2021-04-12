@@ -5,6 +5,7 @@ import { store } from "../data/store";
 import history from "../data/history";
 import { DragDropContext } from "react-beautiful-dnd";
 import { ChakraProvider } from "@chakra-ui/react";
+import { onDragEnd, onDragStart } from "../data/drag-drop-handlers";
 
 type testWrapperProps = { children: React.ReactNode };
 export default function testWrapper({ children }: testWrapperProps) {
@@ -12,7 +13,7 @@ export default function testWrapper({ children }: testWrapperProps) {
     <ChakraProvider>
       <Provider store={store}>
         <Router history={history}>
-          <DragDropContext onDragEnd={() => null} onDragStart={() => null}>
+          <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
             {children}
           </DragDropContext>
         </Router>

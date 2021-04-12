@@ -132,6 +132,14 @@ const playCards = createAsyncThunk<void, PlayCardRequest[], ThunkApi>(
   }
 );
 
+const becomeAdmin = createAsyncThunk<void, void, ThunkApi>(
+  "becomeAdmin",
+  (_, { getState }) => {
+    const { currentGame } = getState();
+    api.becomeAdmin(currentGame.code);
+  }
+);
+
 const { actions, reducer } = createSlice({
   name: "app",
   initialState: {
@@ -359,6 +367,7 @@ export {
   startRound,
   startPlay,
   playCards,
+  becomeAdmin,
   Game,
   Settings,
 };

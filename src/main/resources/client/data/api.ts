@@ -95,3 +95,7 @@ export function moveCard(code: string, request: MoveCardRequest) {
     body: JSON.stringify(request),
   });
 }
+
+export function becomeAdmin(code: string) {
+  client.publish({ destination: `/app/games/${code}/become-admin` });
+}

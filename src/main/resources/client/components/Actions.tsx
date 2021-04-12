@@ -4,7 +4,13 @@ import ScoresDialog from "./ScoresDialog";
 import SettingsDialog from "./SettingsDialog";
 import HelpDialog from "./HelpDialog";
 import { useDispatch } from "react-redux";
-import { playCards, startPlay, startRound, useSelector } from "../data/store";
+import {
+  becomeAdmin,
+  playCards,
+  startPlay,
+  startRound,
+  useSelector,
+} from "../data/store";
 import useBoolean from "../utils/useBoolean";
 
 export default function Actions() {
@@ -24,6 +30,11 @@ export default function Actions() {
     hideScoresDialog,
   ] = useBoolean();
 
+  const aMinuteAgo = new Date().getTime() - 1000 * 60;
+  const adminIsAway =
+    new Date(
+      game.players.find((p) => p.id === game.admin)?.startOfTimeOffline ?? 0
+    ).getTime() < aMinuteAgo;
   const iAmAdmin = settings.id === game.admin;
   const canMakePlay =
     game.players.find((p) => p.id === settings.id)?.canDrag &&
@@ -49,8 +60,22 @@ export default function Actions() {
     dispatch(startPlay());
   }
 
+  function handleBecomeAdmin() {
+    dispatch(becomeAdmin());
+  }
+
   return (
     <>
+      {!iAmAdmin && adminIsAway && (
+        <Button
+          flexShrink={0}
+          size="lg"
+          colorScheme="yellow"
+          onClick={handleBecomeAdmin}
+        >
+          Become Admin
+        </Button>
+      )}
       {iAmAdmin && (
         <Button
           flexShrink={0}

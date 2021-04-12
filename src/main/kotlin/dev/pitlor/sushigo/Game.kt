@@ -1,5 +1,6 @@
 package dev.pitlor.sushigo
 
+import java.time.LocalDateTime
 import java.util.*
 
 data class Score(val hand: Int, var maki: Int = 0, var pudding: Int = 0)
@@ -16,6 +17,7 @@ class Player(val id: UUID, val settings: MutableMap<String, Any>) {
     var hand: ArrayList<Card> = arrayListOf()
     var currentCard: ArrayList<PlayCardRequest> = arrayListOf()
     val cardsPlayed: ArrayList<Card> = arrayListOf()
+    var startOfTimeOffline: LocalDateTime? = null
 
     // This is a property passed down to the client to enable/disable drag+drop
     @Suppress("unused")

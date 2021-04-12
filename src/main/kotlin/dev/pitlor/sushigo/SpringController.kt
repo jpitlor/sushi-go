@@ -1,5 +1,6 @@
 package dev.pitlor.sushigo
 
+import kotlinx.coroutines.runBlocking
 import org.springframework.context.event.EventListener
 import org.springframework.messaging.handler.annotation.*
 import org.springframework.messaging.simp.SimpMessagingTemplate
@@ -117,5 +118,13 @@ class ServerController(private val socket: SimpMessagingTemplate) {
         val response = server.playCards(gameCode, user.id, request)
         socket.convertAndSend("/topic/games/$gameCode", server.getGame(gameCode))
         return response
+    }
+
+    @MessageMapping("/games/{gameCode}/become-admin")
+    @SendToUser("/topic/successes")
+    fun becomeAdmin(@DestinationVariable gameCode: String, @ModelAttribute user: User): String = runBlocking {
+        val response = server.becomeAdmin(gameCode, user.id)
+        socket.convertAndSend("/topic/games/$gameCode", server.getGame(gameCode))
+        return@runBlocking response
     }
 }

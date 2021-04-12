@@ -49,4 +49,5 @@ export interface Player {
   hand: Card[];
   settings: Settings;
   canDrag: boolean;
+  startOfTimeOffline: Date;
 }

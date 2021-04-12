@@ -2,7 +2,7 @@ import { Card as CardType } from "../types/props";
 import { store } from "../data/store";
 import skins from "../skins";
 
-export default function helpText(card: CardType): string {
+export default function useHelpText(card: CardType): string {
   const state = store.getState();
   const skin = skins[state.settings.skin];
 

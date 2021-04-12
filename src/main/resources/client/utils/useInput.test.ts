@@ -1,17 +1,19 @@
 import { act, renderHook } from "@testing-library/react-hooks";
 import useInput from "./useInput";
-import { FormEvent } from "react";
+import wrapper from "./testWrapper";
 
 describe("useInput", function () {
   it("has a default value", () => {
-    const { result } = renderHook(() => useInput("hello, world"));
+    const { result } = renderHook(() => useInput("hello, world"), { wrapper });
 
     expect(result.current[0]).toBe("hello, world");
   });
 
   it("doesn't change the default value", () => {
     let defaultValue = "hello, world";
-    const { result, rerender } = renderHook(() => useInput(defaultValue));
+    const { result, rerender } = renderHook(() => useInput(defaultValue), {
+      wrapper,
+    });
 
     defaultValue = "goodbye, world";
     rerender();
@@ -20,7 +22,7 @@ describe("useInput", function () {
   });
 
   it("changes value from an input event", () => {
-    const { result } = renderHook(() => useInput("hello, world"));
+    const { result } = renderHook(() => useInput("hello, world"), { wrapper });
 
     act(() => {
       // Type casted because an actual event has many more properties that aren't needed
@@ -32,7 +34,9 @@ describe("useInput", function () {
   });
 
   it("changes value from a literal parameter", () => {
-    const { result } = renderHook(() => useInput("hello, world" as string));
+    const { result } = renderHook(() => useInput("hello, world" as string), {
+      wrapper,
+    });
 
     act(() => {
       result.current[1]("goodbye, world");

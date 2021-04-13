@@ -8,7 +8,6 @@ import App from "../structure/App";
 import history from "../data/history";
 import * as dragDropHandlers from "../data/drag-drop-handlers";
 
-import "animate.css/animate.min.css";
 import { DragDropContext } from "react-beautiful-dnd";
 
 ReactDOM.render(

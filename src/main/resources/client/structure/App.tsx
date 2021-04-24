@@ -40,7 +40,7 @@ export default function App() {
       <Route path="/lobby">
         <Lobby />
       </Route>
-      <Route path="/">
+      <Route path="/" exact>
         <Home />
       </Route>
     </Switch>

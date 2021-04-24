@@ -15,15 +15,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAward, faPie } from "@fortawesome/pro-regular-svg-icons";
 import Card from "./Card";
 import React from "react";
-import Avatars from "@dicebear/avatars";
-import sprites from "@dicebear/avatars-human-sprites";
+import { createAvatar } from "@dicebear/avatars";
+import * as sprites from "@dicebear/avatars-human-sprites";
 import skins from "../skins";
 import { useSelector } from "../data/store";
 import Scrollable from "react-custom-scrollbars";
-import logo from "../public/logo.png";
+import logo from "url:../public/logo.png";
 import useChopsticksNotification from "../utils/useChopsticksNotification";
-
-const avatars = new Avatars(sprites, {});
 
 type OpponentProps = { player: Player };
 export default function Opponent({ player }: OpponentProps) {
@@ -58,7 +56,8 @@ export default function Opponent({ player }: OpponentProps) {
             size="xl"
             shadow="md"
             bg="white"
-            src={avatars.create(settings.avatar, {
+            src={createAvatar(sprites, {
+              seed: settings.avatar,
               width: 100,
               height: 100,
               margin: 15,

@@ -15,19 +15,18 @@ import {
 } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSync } from "@fortawesome/pro-regular-svg-icons";
-import Avatars from "@dicebear/avatars";
-import sprites from "@dicebear/avatars-human-sprites";
+import { createAvatar } from "@dicebear/avatars";
+import * as sprites from "@dicebear/avatars-human-sprites";
 import React, { FormEvent, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { uniqueNamesGenerator, colors, animals } from "unique-names-generator";
 import { v4 as uuidv4 } from "uuid";
 import { goToLobby, saveSettings, useSelector } from "../data/store";
-import logo from "../public/logo.png";
+import logo from "url:../public/logo.png";
 import skins from "../skins";
 import useInput from "../utils/useInput";
 
-const avatars = new Avatars(sprites, {});
 const getRandomName = () =>
   uniqueNamesGenerator({
     dictionaries: [colors, animals],
@@ -100,7 +99,8 @@ export default function Home() {
               <Image
                 size="3xl"
                 mx="auto"
-                src={avatars.create(avatar, {
+                src={createAvatar(sprites, {
+                  seed: avatar,
                   width: 150,
                   height: 150,
                   dataUri: true,

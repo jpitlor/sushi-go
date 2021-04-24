@@ -1,7 +1,7 @@
 import { Box, Center, Image, Text } from "@chakra-ui/react";
 import React from "react";
 import { Card as CardType } from "../types/props";
-import logo from "../public/logo.png";
+import logo from "url:../public/logo.png";
 import { useSelector } from "../data/store";
 import skins from "../skins";
 import toSkinKey from "../utils/toSkinKey";

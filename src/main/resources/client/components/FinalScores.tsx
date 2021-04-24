@@ -13,13 +13,12 @@ import {
 } from "@chakra-ui/react";
 import orderBy from "lodash.orderby";
 import { useSelector } from "../data/store";
-import logo from "../public/logo.png";
-import Avatars from "@dicebear/avatars";
-import sprites from "@dicebear/avatars-human-sprites";
+import logo from "url:../public/logo.png";
+import { createAvatar } from "@dicebear/avatars";
+import * as sprites from "@dicebear/avatars-human-sprites";
 import { faTrophyAlt } from "@fortawesome/pro-duotone-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-const avatars = new Avatars(sprites, {});
+import { useHistory } from "react-router-dom";
 
 function Trophy() {
   return (
@@ -41,12 +40,17 @@ function Trophy() {
 }
 
 export default function FinalScores() {
+  const history = useHistory();
   const game = useSelector((state) => state.currentGame);
   const players = orderBy(
     game.players,
     (p) => p.scores.reduce((a, b) => a + b.maki + b.hand + b.pudding, 0),
     ["desc"]
   );
+
+  function handleGoToLobby() {
+    history.push("/lobby");
+  }
 
   return (
     <Box
@@ -95,7 +99,8 @@ export default function FinalScores() {
                   size="2xl"
                   shadow="md"
                   bg={background}
-                  src={avatars.create(settings.avatar, {
+                  src={createAvatar(sprites, {
+                    seed: settings.avatar,
                     width: 150,
                     height: 150,
                     margin: 15,
@@ -122,7 +127,7 @@ export default function FinalScores() {
           })}
         </VStack>
         <Box p={8}>
-          <Button>Go To Lobby</Button>
+          <Button onClick={handleGoToLobby}>Go To Lobby</Button>
         </Box>
       </Flex>
     </Box>

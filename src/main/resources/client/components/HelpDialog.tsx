@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal, ModalOverlay, ModalContent, Box } from "@chakra-ui/react";
 import { ModalProps } from "../types/props";
-import rulesPdf from "../public/SushiGo-Rules.pdf";
+import rulesPdf from "url:../public/SushiGo-Rules.pdf";
 
 export default function HelpDialog({ isOpen, onClose }: ModalProps) {
   return (

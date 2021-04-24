@@ -7,7 +7,6 @@ const BASE_URL =
   process.env.NODE_ENV === "production"
     ? `https://${window.location.host}`
     : "http://localhost:8080";
-console.log(process.env.NODE_ENV);
 const client = new Client({
   webSocketFactory: () => new SockJS(BASE_URL + "/websocket-server"),
 });

@@ -101,9 +101,11 @@ const saveSettings = createAsyncThunk<
 
 const rejoinGame = createAsyncThunk<void, string, ThunkApi>(
   "rejoinGame",
-  (code, { getState }) => {
+  async (code, { getState }) => {
+    if (!code) return;
+
     const { settings } = getState();
-    api.joinGame(code, settings, true);
+    await api.joinGame(code, settings, true);
     history.push("/game");
   }
 );

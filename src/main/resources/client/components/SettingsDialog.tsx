@@ -18,8 +18,8 @@ import {
   InputRightElement,
   IconButton,
 } from "@chakra-ui/react";
-import Avatars from "@dicebear/avatars";
-import sprites from "@dicebear/avatars-human-sprites";
+import { createAvatar } from "@dicebear/avatars";
+import * as sprites from "@dicebear/avatars-human-sprites";
 import React, { FormEvent, useState } from "react";
 import { useDispatch } from "react-redux";
 import { colors, animals, uniqueNamesGenerator } from "unique-names-generator";
@@ -29,7 +29,6 @@ import skins from "../skins";
 import { ModalProps } from "../types/props";
 import useInput from "../utils/useInput";
 
-const avatars = new Avatars(sprites, {});
 const getRandomName = () =>
   uniqueNamesGenerator({
     dictionaries: [colors, animals],
@@ -44,7 +43,7 @@ export default function SettingsDialog({ isOpen, onClose }: ModalProps) {
     avatar: defaultAvatar = uuidv4(),
     skin: defaultSkin,
   } = useSelector((state) => state.settings);
-  const [avatar, setAvater] = useState(defaultAvatar);
+  const [avatar, setAvatar] = useState(defaultAvatar);
   const [name, setName] = useInput(defaultName);
   const [skin, setSkin] = useInput(defaultSkin);
   const dispatch = useDispatch();
@@ -59,7 +58,7 @@ export default function SettingsDialog({ isOpen, onClose }: ModalProps) {
   function onCancel() {
     setSkin(defaultSkin);
     setName(defaultName);
-    setAvater(defaultAvatar);
+    setAvatar(defaultAvatar);
     onClose();
   }
 
@@ -68,7 +67,7 @@ export default function SettingsDialog({ isOpen, onClose }: ModalProps) {
   }
 
   function randomizeImage() {
-    setAvater(uuidv4());
+    setAvatar(uuidv4());
   }
 
   return (
@@ -84,7 +83,8 @@ export default function SettingsDialog({ isOpen, onClose }: ModalProps) {
               <Image
                 size="3xl"
                 mx="auto"
-                src={avatars.create(avatar, {
+                src={createAvatar(sprites, {
+                  seed: avatar,
                   width: 150,
                   height: 150,
                   dataUri: true,

@@ -15,7 +15,7 @@ import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import RadioCard from "../components/RadioCard";
 import { createAndJoinGame, joinGame, useSelector } from "../data/store";
-import logo from "../public/logo.png";
+import logo from "url:../public/logo.png";
 import useInput from "../utils/useInput";
 
 export default function Lobby() {

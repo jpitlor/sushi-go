@@ -1,14 +1,14 @@
 import { Skin } from "../../types/skins";
-import chopsticks from "./chopsticks.png";
-import dumpling from "./dumpling.png";
-import eggNigiri from "./egg nigiri.png";
-import maki from "./maki.png";
-import pudding from "./pudding.png";
-import salmonNigiri from "./salmon nigiri.png";
-import sashimi from "./sashimi.png";
-import squidNigiri from "./squid nigiri.png";
-import tempura from "./tempura.png";
-import wasabi from "./wasabi.png";
+import chopsticks from "url:./chopsticks.png";
+import dumpling from "url:./dumpling.png";
+import eggNigiri from "url:./egg nigiri.png";
+import maki from "url:./maki.png";
+import pudding from "url:./pudding.png";
+import salmonNigiri from "url:./salmon nigiri.png";
+import sashimi from "url:./sashimi.png";
+import squidNigiri from "url:./squid nigiri.png";
+import tempura from "url:./tempura.png";
+import wasabi from "url:./wasabi.png";
 
 export default {
   chopsticks: {

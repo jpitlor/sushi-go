@@ -66,7 +66,12 @@ class Server {
     }
 
     fun findPlayer(user: UUID): String? {
-        return games.find { g -> g.players.any { p -> p.id == user } }?.code
+        return games
+            .find { g ->
+                val isGameOver = g.round == 3 && g.players.all { p -> p.hand.size == 0 }
+                !isGameOver && g.players.any { p -> p.id == user }
+            }
+            ?.code
     }
 
     fun startRound(code: String, id: UUID) {

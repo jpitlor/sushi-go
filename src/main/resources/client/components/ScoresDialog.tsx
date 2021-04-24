@@ -17,13 +17,11 @@ import {
   Text,
   AvatarBadge,
 } from "@chakra-ui/react";
-import Avatars from "@dicebear/avatars";
-import sprites from "@dicebear/avatars-human-sprites";
+import { createAvatar } from "@dicebear/avatars";
+import * as sprites from "@dicebear/avatars-human-sprites";
 import React from "react";
 import { useSelector } from "../data/store";
 import { ModalProps } from "../types/props";
-
-const avatars = new Avatars(sprites, {});
 
 export default function ScoresDialog({ isOpen, onClose }: ModalProps) {
   const game = useSelector((state) => state.currentGame);
@@ -50,7 +48,8 @@ export default function ScoresDialog({ isOpen, onClose }: ModalProps) {
                         <Avatar
                           mx="auto"
                           mb={4}
-                          src={avatars.create(avatar, {
+                          src={createAvatar(sprites, {
+                            seed: avatar,
                             width: 150,
                             height: 150,
                             margin: 15,

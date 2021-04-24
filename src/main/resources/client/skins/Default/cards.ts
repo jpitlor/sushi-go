@@ -1,12 +1,12 @@
 import { Skin } from "../../types/skins";
 import chopsticks from "url:./chopsticks.png";
 import dumpling from "url:./dumpling.png";
-import eggNigiri from "url:./egg nigiri.png";
+import eggNigiri from "url:./egg-nigiri.png";
 import maki from "url:./maki.png";
 import pudding from "url:./pudding.png";
-import salmonNigiri from "url:./salmon nigiri.png";
+import salmonNigiri from "url:./salmon-nigiri.png";
 import sashimi from "url:./sashimi.png";
-import squidNigiri from "url:./squid nigiri.png";
+import squidNigiri from "url:./squid-nigiri.png";
 import tempura from "url:./tempura.png";
 import wasabi from "url:./wasabi.png";
 

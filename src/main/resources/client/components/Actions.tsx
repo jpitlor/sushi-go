@@ -31,10 +31,10 @@ export default function Actions() {
   ] = useBoolean();
 
   const aMinuteAgo = new Date().getTime() - 1000 * 60;
+  const admin = game.players.find((p) => p.id === game.admin);
   const adminIsAway =
-    new Date(
-      game.players.find((p) => p.id === game.admin)?.startOfTimeOffline ?? 0
-    ).getTime() < aMinuteAgo;
+    !!admin?.startOfTimeOffline &&
+    new Date(admin?.startOfTimeOffline ?? 0).getTime() < aMinuteAgo;
   const iAmAdmin = settings.id === game.admin;
   const canMakePlay =
     game.players.find((p) => p.id === settings.id)?.canDrag &&

@@ -7,7 +7,7 @@
     "version": "1.0.0",
     "scripts": {
         "start": "parcel public/index.html",
-        "build": "parcel build public/index.html --out-dir ../public",
+        "build": "parcel build public/index.html --dist-dir ../public",
         "test": "jest"
     },
     "dependencies": {

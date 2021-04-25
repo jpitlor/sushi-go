@@ -1,7 +1,4 @@
 import { Card, Maki, Nigiri, Wasabi } from "../types/props";
-import { renderHook } from "@testing-library/react-hooks";
-import useHelpText from "./cardHelpText";
-import wrapper from "./testWrapper";
 import toSkinKey from "./toSkinKey";
 
 describe("To Skin Key", function () {

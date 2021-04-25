@@ -41,7 +41,7 @@ internal class GameTest {
         val exception = assertThrows(Exception::class.java) {
             game.startRound()
         }
-        assertEquals("Game can only be played with 2-5 people", exception.message)
+        assertEquals("Game can only be played with 3-5 people", exception.message)
     }
 
     @Test

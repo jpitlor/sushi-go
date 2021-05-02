@@ -3,12 +3,8 @@ import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import { MoveCardRequest, PlayCardRequest } from "../types/props";
 
-const BASE_URL =
-  process.env.NODE_ENV === "production"
-    ? `https://${window.location.host}`
-    : "http://localhost:8080";
 const client = new Client({
-  webSocketFactory: () => new SockJS(BASE_URL + "/websocket-server"),
+  webSocketFactory: () => new SockJS("/websocket-server"),
 });
 client.onConnect = () => {
   client.subscribe("/topic/rejoin-game", ({ body }) => {

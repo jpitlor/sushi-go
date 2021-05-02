@@ -35,7 +35,8 @@ data class User(val id: UUID) : Principal {
 @ControllerAdvice
 class CustomPrincipal {
     @ModelAttribute
-    fun getPrincipal(a: Authentication): User {
+    fun getPrincipal(a: Authentication?): User? {
+        if (a == null) return null
         return a.principal as User
     }
 }

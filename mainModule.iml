@@ -27,8 +27,7 @@
         <webroots />
         <sourceRoots>
           <root url="file://$MODULE_DIR$/src/main/kotlin" />
-          <root url="file://$MODULE_DIR$/src/main/resources/client" />
-          <root url="file://$MODULE_DIR$/src/main/resources/public" />
+          <root url="file://$MODULE_DIR$/src/main/resources" />
         </sourceRoots>
       </configuration>
     </facet>
@@ -43,8 +42,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/kotlin" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/kotlin" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/main/resources/client" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/main/resources/public" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/src/main/resources/client/dist" />
       <excludeFolder url="file://$MODULE_DIR$/src/main/resources/client/.cache" />
       <excludeFolder url="file://$MODULE_DIR$/src/main/resources/client/.parcel-cache" />
@@ -94,16 +92,12 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-web:5.3.3" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-beans:5.3.3" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-webmvc:5.3.3" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-aop:5.3.3" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-context:5.3.3" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-expression:5.3.3" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-websocket:2.4.2" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-messaging:5.3.3" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-websocket:5.3.3" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-security:2.4.2" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework:spring-aop:5.3.3" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-config:5.4.2" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-core:5.4.2" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-web:5.4.2" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.module:jackson-module-kotlin:2.12.0" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.11.4" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.11.4" level="project" />

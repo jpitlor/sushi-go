@@ -14,10 +14,6 @@ import org.springframework.messaging.simp.stomp.StompCommand
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor
 import org.springframework.messaging.support.ChannelInterceptor
 import org.springframework.messaging.support.MessageHeaderAccessor
-import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
-import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker
@@ -35,17 +31,9 @@ data class User(val id: UUID) : Principal {
 @ControllerAdvice
 class CustomPrincipal {
     @ModelAttribute
-    fun getPrincipal(a: Authentication?): User? {
-        if (a == null) return null
-        return a.principal as User
-    }
-}
-
-@Configuration
-@EnableWebSecurity
-open class Security : WebSecurityConfigurerAdapter() {
-    override fun configure(http: HttpSecurity) {
-        http.authorizeRequests().anyRequest().permitAll()
+    fun getPrincipal(principal: Principal?): User? {
+        if (principal == null) return null
+        return principal as User
     }
 }
 

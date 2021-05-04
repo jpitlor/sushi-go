@@ -1,3 +1,5 @@
-node_modules
-.parcel-cache
-dist
+src/main/resources/client/node_modules
+src/main/resources/client/.parcel-cache
+src/main/resources/client/dist
+target
+.idea

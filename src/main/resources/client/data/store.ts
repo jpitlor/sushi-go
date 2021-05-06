@@ -93,7 +93,7 @@ const saveSettings = createAsyncThunk<
 
   api.updateSettings(code, { ...oldSettings, ...settings });
   Object.entries(settings).forEach(([k, v]) => {
-    if (typeof v === "string") localStorage.setItem(k, v);
+    localStorage.setItem(k, v.toString());
   });
 
   return settings;
@@ -157,7 +157,7 @@ const { actions, reducer } = createSlice({
       canStartRound: false,
     },
     settings: {
-      id: localStorage.getItem("uuid"),
+      id: localStorage.getItem("id"),
       avatar: localStorage.getItem("avatar"),
       name: localStorage.getItem("name"),
       skin: localStorage.getItem("skin") || "Default",

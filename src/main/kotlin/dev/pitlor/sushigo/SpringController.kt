@@ -20,6 +20,8 @@ class ServerController(private val socket: SimpMessagingTemplate) {
 
     @EventListener
     fun onConnect(e: SessionConnectEvent) {
+        if (e.user == null) return
+
         val user = e.user as User
         server.findPlayer(user.id)?.let {
             server.updateSettings(it, user.id, mutableMapOf(SETTING_CONNECTED to true))
@@ -29,6 +31,8 @@ class ServerController(private val socket: SimpMessagingTemplate) {
 
     @EventListener
     fun onDisconnect(e: SessionDisconnectEvent) {
+        if (e.user == null) return
+
         val user = e.user as User
         server.findPlayer(user.id)?.let {
             server.updateSettings(it, user.id, mutableMapOf(SETTING_CONNECTED to false))

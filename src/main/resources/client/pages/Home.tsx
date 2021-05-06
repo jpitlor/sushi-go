@@ -37,6 +37,7 @@ const getRandomName = () =>
 
 export default function Home() {
   const {
+    id,
     name: defaultName,
     avatar: defaultAvatar,
     skin: defaultSkin,
@@ -48,17 +49,11 @@ export default function Home() {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  function handleGoToLobby(e: FormEvent<HTMLFormElement>) {
+  async function handleGoToLobby(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    let id = localStorage.getItem("uuid");
-    if (!id) {
-      id = uuidv4();
-      localStorage.setItem("uuid", id);
-    }
-
-    dispatch(saveSettings({ name, skin, avatar, id }));
-    dispatch(goToLobby());
+    await dispatch(saveSettings({ name, skin, avatar, id: id || uuidv4() }));
+    await dispatch(goToLobby());
     history.push("/lobby");
     return false;
   }

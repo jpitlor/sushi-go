@@ -14,8 +14,11 @@ import org.springframework.messaging.simp.stomp.StompCommand
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor
 import org.springframework.messaging.support.ChannelInterceptor
 import org.springframework.messaging.support.MessageHeaderAccessor
+import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ModelAttribute
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer
@@ -34,6 +37,14 @@ class CustomPrincipal {
     fun getPrincipal(principal: Principal?): User? {
         if (principal == null) return null
         return principal as User
+    }
+}
+
+@Controller
+open class StaticFiles {
+    @RequestMapping(value = ["/{path:^(?!websocket-server)[^\\\\.]*}"])
+    open fun spa(@PathVariable path: String): String {
+        return "forward:/"
     }
 }
 

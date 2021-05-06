@@ -4,7 +4,7 @@ import { Client } from "@stomp/stompjs";
 import { MoveCardRequest, PlayCardRequest } from "../types/props";
 
 const client = new Client({
-  webSocketFactory: () => new SockJS("/websocket-server"),
+  webSocketFactory: () => new SockJS(`${location.origin}/websocket-server`),
 });
 client.onConnect = () => {
   client.subscribe("/topic/rejoin-game", ({ body }) => {

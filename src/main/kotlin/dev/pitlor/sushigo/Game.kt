@@ -6,7 +6,7 @@ import java.util.*
 data class Score(val hand: Int, var maki: Int = 0, var pudding: Int = 0)
 
 fun List<Score>.sum(): Int {
-    return this.map { it.hand + it.maki + it.pudding }.sum()
+    return this.sumOf { it.hand + it.maki + it.pudding }
 }
 
 const val SETTING_CONNECTED = "connected"

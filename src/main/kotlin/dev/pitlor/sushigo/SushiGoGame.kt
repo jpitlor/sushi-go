@@ -1,5 +1,6 @@
 package dev.pitlor.sushigo
 
+import dev.pitlor.gamekit_spring_boot_starter.Game
 import java.time.LocalDateTime
 import java.util.*
 
@@ -8,8 +9,6 @@ data class Score(val hand: Int, var maki: Int = 0, var pudding: Int = 0)
 fun List<Score>.sum(): Int {
     return this.sumOf { it.hand + it.maki + it.pudding }
 }
-
-const val SETTING_CONNECTED = "connected"
 
 class Player(val id: UUID, val settings: MutableMap<String, Any>) {
     var scores: List<Score> = listOf()
@@ -24,7 +23,7 @@ class Player(val id: UUID, val settings: MutableMap<String, Any>) {
     val canDrag: Boolean get() = currentCard.size == 0 || (currentCard.size == 1 && cardsPlayed.contains(Chopsticks()))
 }
 
-class Game(val code: String, var admin: UUID) {
+class SushiGoGame(val code: String, var admin: UUID) : Game {
     val players = arrayListOf<Player>()
     var active: Boolean = false
     var round = 0

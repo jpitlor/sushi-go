@@ -4,12 +4,12 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.util.*
 
-internal class GameTest {
+internal class SushiGoGameTest {
     private val settings = mutableMapOf<String, Any>()
 
     @Test
     fun getPlayers() {
-        val game = Game("", UUID.randomUUID())
+        val game = SushiGoGame("", UUID.randomUUID())
         game.players += Player(UUID.randomUUID(), settings)
         game.players += Player(UUID.randomUUID(), settings)
         game.players += Player(UUID.randomUUID(), settings)
@@ -19,7 +19,7 @@ internal class GameTest {
 
     @Test
     fun startRoundMoreThan3Times() {
-        val game = Game("", UUID.randomUUID())
+        val game = SushiGoGame("", UUID.randomUUID())
         game.players += Player(UUID.randomUUID(), settings)
         game.players += Player(UUID.randomUUID(), settings)
         game.players += Player(UUID.randomUUID(), settings)
@@ -35,7 +35,7 @@ internal class GameTest {
 
     @Test
     fun startRoundWithInvalidPlayerCount() {
-        val game = Game("", UUID.randomUUID())
+        val game = SushiGoGame("", UUID.randomUUID())
         game.players += Player(UUID.randomUUID(), settings)
 
         val exception = assertThrows(Exception::class.java) {

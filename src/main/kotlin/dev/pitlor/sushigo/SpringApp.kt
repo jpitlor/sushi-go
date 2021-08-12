@@ -1,88 +1,53 @@
 package dev.pitlor.sushigo
 
-import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.fasterxml.jackson.module.kotlin.kotlinModule
+import dev.pitlor.gamekit_spring_boot_starter.User
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
-import org.springframework.messaging.Message
-import org.springframework.messaging.MessageChannel
-import org.springframework.messaging.simp.config.ChannelRegistration
-import org.springframework.messaging.simp.config.MessageBrokerRegistry
-import org.springframework.messaging.simp.stomp.StompCommand
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor
-import org.springframework.messaging.support.ChannelInterceptor
-import org.springframework.messaging.support.MessageHeaderAccessor
+import org.springframework.messaging.handler.annotation.DestinationVariable
+import org.springframework.messaging.handler.annotation.MessageMapping
+import org.springframework.messaging.handler.annotation.Payload
+import org.springframework.messaging.handler.annotation.SendTo
+import org.springframework.messaging.simp.SimpMessagingTemplate
+import org.springframework.messaging.simp.annotation.SendToUser
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker
-import org.springframework.web.socket.config.annotation.StompEndpointRegistry
-import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer
-import java.security.Principal
 import java.util.*
 
-data class User(val id: UUID) : Principal {
-    override fun getName(): String {
-        return id.toString()
-    }
-}
-
-@ControllerAdvice
-class CustomPrincipal {
-    @ModelAttribute
-    fun getPrincipal(principal: Principal?): User? {
-        if (principal == null) return null
-        return principal as User
-    }
-}
+data class PlayCardRequest(val card: Card, val wasabi: UUID?)
 
 @Controller
-open class StaticFiles {
-    @RequestMapping(value = ["/{path:^(?!websocket-server)[^\\\\.]*}"])
-    open fun spa(@PathVariable path: String): String {
-        return "forward:/"
-    }
-}
-
-@Configuration
-@EnableWebSocketMessageBroker
-open class SocketConfig : WebSocketMessageBrokerConfigurer {
-    override fun configureMessageBroker(registry: MessageBrokerRegistry) {
-        registry.enableSimpleBroker("/topic")
-        registry.setApplicationDestinationPrefixes("/app", "/topic")
+class ServerController(private val server: SushiGoServer, private val socket: SimpMessagingTemplate) {
+    @MessageMapping("/games/{gameCode}/start-round")
+    @SendTo("/topic/games/{gameCode}")
+    fun startRound(@DestinationVariable gameCode: String, @ModelAttribute user: User): SushiGoGame {
+        server.startRound(gameCode, user.id)
+        socket.convertAndSend("/topic/games", server.getGameCodes())
+        return server.getGame(gameCode)
     }
 
-    override fun registerStompEndpoints(registry: StompEndpointRegistry) {
-        registry.addEndpoint("/websocket-server").setAllowedOriginPatterns("*").withSockJS()
+    @MessageMapping("/games/{gameCode}/start-play")
+    @SendTo("/topic/games/{gameCode}")
+    fun startPlay(@DestinationVariable gameCode: String, @ModelAttribute user: User): SushiGoGame {
+        server.startPlay(gameCode, user.id)
+        return server.getGame(gameCode)
     }
 
-    override fun configureClientInboundChannel(registration: ChannelRegistration) {
-        registration.interceptors(object : ChannelInterceptor {
-            override fun preSend(message: Message<*>, channel: MessageChannel): Message<*> {
-                val accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor::class.java)
-                if (accessor.command == StompCommand.CONNECT) {
-                    val uuid = accessor.getNativeHeader("uuid")?.get(0)
-                    accessor.user = User(UUID.fromString(uuid))
-                }
-
-                return message
-            }
-        })
+    @MessageMapping("/games/{gameCode}/play-cards")
+    @SendToUser("/topic/successes")
+    fun playCards(
+        @DestinationVariable gameCode: String,
+        @ModelAttribute user: User,
+        @Payload request: List<PlayCardRequest>
+    ): String {
+        val response = server.playCards(gameCode, user.id, request)
+        socket.convertAndSend("/topic/games/$gameCode", server.getGame(gameCode))
+        return response
     }
-}
-
-@Bean
-fun getJacksonKotlinModule(): KotlinModule {
-    return kotlinModule()
 }
 
 @SpringBootApplication
-open class SushiGoServer
+open class SushiGoApplication
 
 fun main(args: Array<String>) {
-    runApplication<SushiGoServer>(*args)
+    runApplication<SushiGoApplication>(*args)
 }

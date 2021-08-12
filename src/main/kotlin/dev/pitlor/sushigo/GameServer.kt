@@ -1,15 +1,18 @@
 package dev.pitlor.sushigo
 
+import dev.pitlor.gamekit_spring_boot_starter.SETTING_CONNECTED
+import dev.pitlor.gamekit_spring_boot_starter.Server
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import org.springframework.context.annotation.Bean
 import java.time.LocalDateTime
 import java.util.*
 
-val games = arrayListOf<Game>()
+val games = arrayListOf<SushiGoGame>()
 val mutex = Mutex()
 
-class Server {
-    private fun getPlayer(code: String, user: UUID): Pair<Player, Game> {
+object SushiGoServer : Server {
+    private fun getPlayer(code: String, user: UUID): Pair<Player, SushiGoGame> {
         val game = games.find { it.code == code }
         val player = game?.players?.find { it.id == user }
 
@@ -20,11 +23,11 @@ class Server {
         return Pair(player, game)
     }
 
-    fun getGames(): Iterable<String> {
+    override fun getGameCodes(): List<String> {
         return games.filter { !it.active }.map { it.code }
     }
 
-    fun getGame(gameCode: String): Game {
+    override fun getGame(gameCode: String): SushiGoGame {
         val game = games.find { it.code == gameCode }
 
         require(game != null) { "That game does not exist" }
@@ -32,44 +35,44 @@ class Server {
         return game
     }
 
-    fun createGame(code: String, user: UUID): String {
+    override fun createGame(code: String, user: UUID): String {
         require(code.isNotEmpty()) { "Code is empty" }
         require(games.firstOrNull { it.code == code } == null) { "That game code is already in use" }
 
-        games += Game(code, user)
+        games += SushiGoGame(code, user)
 
         return "Game \"${code}\" Created"
     }
 
-    fun joinGame(code: String, user: UUID, settings: MutableMap<String, Any>) {
-        val game = games.find { it.code == code }
+    override fun joinGame(gameCode: String, userId: UUID, settings: MutableMap<String, Any>) {
+        val game = games.find { it.code == gameCode }
 
-        require(code.isNotEmpty()) { "Code is empty" }
+        require(gameCode.isNotEmpty()) { "Code is empty" }
         require(game != null) { "That game does not exist" }
-        require(game.players.find { it.id == user } == null) { "You are already in that game!" }
+        require(game.players.find { it.id == userId } == null) { "You are already in that game!" }
 
         settings[SETTING_CONNECTED] = true
-        val player = Player(user, settings)
+        val player = Player(userId, settings)
         game.players += player
     }
 
-    fun updateSettings(code: String, user: UUID, settings: MutableMap<String, Any>) {
-        val (player, _) = getPlayer(code, user)
+    override fun updateSettings(gameCode: String, userId: UUID, newSettings: MutableMap<String, Any>) {
+        val (player, _) = getPlayer(gameCode, userId)
 
-        player.settings.putAll(settings)
+        player.settings.putAll(newSettings)
 
-        if (settings[SETTING_CONNECTED] == true) {
+        if (newSettings[SETTING_CONNECTED] == true) {
             player.startOfTimeOffline = null
-        } else if (settings[SETTING_CONNECTED] == false) {
+        } else if (newSettings[SETTING_CONNECTED] == false) {
             player.startOfTimeOffline = LocalDateTime.now()
         }
     }
 
-    fun findPlayer(user: UUID): String? {
+    override fun findCodeOfGameWithPlayer(id: UUID): String? {
         return games
             .find { g ->
                 val isGameOver = g.round == 3 && g.players.all { p -> p.hand.size == 0 }
-                !isGameOver && g.players.any { p -> p.id == user }
+                !isGameOver && g.players.any { p -> p.id == id }
             }
             ?.code
     }
@@ -102,15 +105,19 @@ class Server {
         return "Play successfully completed"
     }
 
-    suspend fun becomeAdmin(code: String, user: UUID): String {
-        val (_, game) = getPlayer(code, user)
+    override suspend fun becomeAdmin(gameCode: String, userId: UUID): String {
+        val (_, game) = getPlayer(gameCode, userId)
 
         mutex.withLock {
             check(game.players.find { it.id == game.admin }?.startOfTimeOffline == null) { "Someone already claimed the admin spot" }
-            game.admin = user
+            game.admin = userId
         }
 
         return "You are now the game admin"
     }
 }
 
+@Bean
+fun getServer(): SushiGoServer {
+    return SushiGoServer
+}

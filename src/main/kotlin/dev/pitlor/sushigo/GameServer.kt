@@ -35,13 +35,13 @@ object SushiGoServer : Server {
         return game
     }
 
-    override fun createGame(code: String, user: UUID): String {
-        require(code.isNotEmpty()) { "Code is empty" }
-        require(games.firstOrNull { it.code == code } == null) { "That game code is already in use" }
+    override fun createGame(gameCode: String, adminUserId: UUID): String {
+        require(gameCode.isNotEmpty()) { "Code is empty" }
+        require(games.firstOrNull { it.code == gameCode } == null) { "That game code is already in use" }
 
-        games += SushiGoGame(code, user)
+        games += SushiGoGame(gameCode, adminUserId)
 
-        return "Game \"${code}\" Created"
+        return "Game \"${gameCode}\" Created"
     }
 
     override fun joinGame(gameCode: String, userId: UUID, settings: MutableMap<String, Any>) {

@@ -15,25 +15,15 @@ import {
 } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSync } from "@fortawesome/pro-regular-svg-icons";
-import { createAvatar } from "@dicebear/avatars";
-import * as sprites from "@dicebear/avatars-human-sprites";
+import * as gamekit from "@piticent123/gamekit-client";
 import React, { FormEvent, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { uniqueNamesGenerator, colors, animals } from "unique-names-generator";
 import { v4 as uuidv4 } from "uuid";
 import { goToLobby, saveSettings, useSelector } from "../data/store";
 import logo from "url:../public/logo.png";
 import skins from "../skins";
 import useInput from "../utils/useInput";
-
-const getRandomName = () =>
-  uniqueNamesGenerator({
-    dictionaries: [colors, animals],
-    length: 2,
-    separator: " ",
-    style: "capital",
-  });
 
 export default function Home() {
   const {
@@ -44,7 +34,7 @@ export default function Home() {
   } = useSelector((state) => state.settings);
 
   const [avatar, setAvatar] = useState(defaultAvatar ?? uuidv4());
-  const [name, setName] = useInput(defaultName ?? getRandomName());
+  const [name, setName] = useInput(defaultName ?? gamekit.getRandomName());
   const [skin, setSkin] = useInput(defaultSkin);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -59,7 +49,7 @@ export default function Home() {
   }
 
   function randomizeName() {
-    setName(getRandomName());
+    setName(gamekit.getRandomName());
   }
 
   function randomizeImage() {
@@ -91,16 +81,7 @@ export default function Home() {
           <FormControl id="image">
             <FormLabel>Avatar</FormLabel>
             <InputGroup>
-              <Image
-                size="3xl"
-                mx="auto"
-                src={createAvatar(sprites, {
-                  seed: avatar,
-                  width: 150,
-                  height: 150,
-                  dataUri: true,
-                })}
-              />
+              <Image size="3xl" mx="auto" src={gamekit.asImage(avatar)} />
               <InputRightElement>
                 <IconButton
                   icon={<FontAwesomeIcon icon={faSync} />}

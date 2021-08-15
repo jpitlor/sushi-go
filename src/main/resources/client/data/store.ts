@@ -4,13 +4,13 @@ import {
   createSlice,
   PayloadAction,
 } from "@reduxjs/toolkit";
+import * as gamekit from "@piticent123/gamekit-client";
 import {
   TypedUseSelectorHook,
   useSelector as useUntypedSelector,
 } from "react-redux";
 import { Card, PlayCardRequest, Player } from "../types/props";
 import { Skins } from "../types/skins";
-import * as api from "./api";
 import history from "./history";
 import { DragStart, DropResult } from "react-beautiful-dnd";
 import skins from "../skins";
@@ -58,26 +58,44 @@ interface ThunkApi {
 
 const goToLobby = createAsyncThunk<void, void, ThunkApi>(
   "goToLobby",
-  (_, { getState }) => {
+  (_, { getState, dispatch }) => {
     const { settings } = getState();
-    api.connectToServer(settings.id);
+    gamekit.connectToServer({
+      profile: settings,
+      dispatch,
+      onGamesList: actions.handleGamesListMessage,
+      onGameUpdate: actions.handleGameUpdate,
+      onClientError: actions.handleRequestException,
+      onServerError: actions.handleServerException,
+      onSuccess: actions.handleSuccess,
+    });
   }
 );
 
 const createAndJoinGame = createAsyncThunk<void, string, ThunkApi>(
   "createGame",
-  async (code, { getState }) => {
+  async (gameCode, { getState, dispatch }) => {
     const { settings } = getState();
-    api.createGame(code);
-    await api.joinGame(code, settings);
+    gamekit.createGame(gameCode);
+    await gamekit.joinGame({
+      gameCode,
+      dispatch,
+      profile: settings,
+      onGameUpdate: actions.handleGameUpdate,
+    });
   }
 );
 
 const joinGame = createAsyncThunk<void, string, ThunkApi>(
   "joinGame",
-  async (code, { getState }) => {
+  async (gameCode, { getState, dispatch }) => {
     const { settings } = getState();
-    await api.joinGame(code, settings);
+    await gamekit.joinGame({
+      gameCode,
+      dispatch,
+      profile: settings,
+      onGameUpdate: actions.handleGameUpdate,
+    });
   }
 );
 
@@ -91,7 +109,7 @@ const saveSettings = createAsyncThunk<
     settings: oldSettings,
   } = getState();
 
-  api.updateSettings(code, { ...oldSettings, ...settings });
+  gamekit.updateProfile(code, { ...oldSettings, ...settings });
   Object.entries(settings).forEach(([k, v]) => {
     localStorage.setItem(k, v.toString());
   });
@@ -101,11 +119,16 @@ const saveSettings = createAsyncThunk<
 
 const rejoinGame = createAsyncThunk<void, string, ThunkApi>(
   "rejoinGame",
-  async (code, { getState }) => {
-    if (!code) return;
+  async (gameCode, { dispatch, getState }) => {
+    if (!gameCode) return;
 
     const { settings } = getState();
-    await api.joinGame(code, settings, true);
+    await gamekit.joinGame({
+      gameCode,
+      dispatch,
+      profile: settings,
+      onGameUpdate: actions.handleGameUpdate,
+    });
     history.push("/game");
   }
 );
@@ -114,7 +137,10 @@ const startRound = createAsyncThunk<void, void, ThunkApi>(
   "startRound",
   (_, { getState }) => {
     const { currentGame } = getState();
-    api.startRound(currentGame.code);
+
+    gamekit.sendEvent({
+      route: `/app/games/${currentGame.code}/start-round`,
+    });
   }
 );
 
@@ -122,7 +148,10 @@ const startPlay = createAsyncThunk<void, void, ThunkApi>(
   "startPlay",
   (_, { getState }) => {
     const { currentGame } = getState();
-    api.startPlay(currentGame.code);
+
+    gamekit.sendEvent({
+      route: `/app/games/${currentGame.code}/start-play`,
+    });
   }
 );
 
@@ -130,7 +159,11 @@ const playCards = createAsyncThunk<void, PlayCardRequest[], ThunkApi>(
   "playCard",
   (cards, { getState }) => {
     const { currentGame } = getState();
-    api.playCards(currentGame.code, cards);
+
+    gamekit.sendEvent({
+      route: `/app/games/${currentGame.code}/play-cards`,
+      data: cards,
+    });
   }
 );
 
@@ -138,7 +171,7 @@ const becomeAdmin = createAsyncThunk<void, void, ThunkApi>(
   "becomeAdmin",
   (_, { getState }) => {
     const { currentGame } = getState();
-    api.becomeAdmin(currentGame.code);
+    gamekit.becomeAdmin(currentGame.code);
   }
 );
 

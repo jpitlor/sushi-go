@@ -49,6 +49,7 @@
       <excludeFolder url="file://$MODULE_DIR$/src/main/resources/static" />
       <excludeFolder url="file://$MODULE_DIR$/src/main/resources/public" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/resources/client/coverage" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

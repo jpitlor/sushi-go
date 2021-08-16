@@ -3,6 +3,8 @@ package dev.pitlor.sushigo
 import dev.pitlor.gamekit_spring_boot_starter.User
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import org.springframework.messaging.handler.annotation.DestinationVariable
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.handler.annotation.Payload
@@ -42,6 +44,14 @@ class ServerController(private val server: SushiGoServer, private val socket: Si
         val response = server.playCards(gameCode, user.id, request)
         socket.convertAndSend("/topic/games/$gameCode", server.getGame(gameCode))
         return response
+    }
+}
+
+@Configuration
+open class Dependencies {
+    @Bean
+    open fun sushiGoServer(): SushiGoServer {
+        return SushiGoServer
     }
 }
 

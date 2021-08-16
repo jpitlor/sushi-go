@@ -5,6 +5,7 @@ import dev.pitlor.gamekit_spring_boot_starter.Server
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import java.time.LocalDateTime
 import java.util.*
 
@@ -115,9 +116,4 @@ object SushiGoServer : Server {
 
         return "You are now the game admin"
     }
-}
-
-@Bean
-fun getServer(): SushiGoServer {
-    return SushiGoServer
 }

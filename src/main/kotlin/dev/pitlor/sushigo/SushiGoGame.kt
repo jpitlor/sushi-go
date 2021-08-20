@@ -10,7 +10,7 @@ fun List<Score>.sum(): Int {
     return this.sumOf { it.hand + it.maki + it.pudding }
 }
 
-class Player(override val id: UUID, override val settings: MutableMap<String, Any>) : Player(id, settings) {
+class SushiGoPlayer(override val id: UUID, override var settings: MutableMap<String, Any>) : Player(id, settings) {
     var scores: List<Score> = listOf()
     var puddingCount: Int = 0
     var hand: ArrayList<Card> = arrayListOf()
@@ -22,7 +22,7 @@ class Player(override val id: UUID, override val settings: MutableMap<String, An
     val canDrag: Boolean get() = currentCard.size == 0 || (currentCard.size == 1 && cardsPlayed.contains(Chopsticks()))
 }
 
-class SushiGoGame(override val code: String, override var adminId: UUID) : Game(code, adminId) {
+class SushiGoGame(override val code: String, override var adminId: UUID) : Game<SushiGoPlayer>(code, adminId) {
     var round = 0
 
     // These 2 are properties passed down to the client to disable/enable admin buttons
@@ -100,7 +100,14 @@ class SushiGoGame(override val code: String, override var adminId: UUID) : Game(
             it.cardsPlayed.clear()
         }
 
-        active = true
+        isActive = true
         round++
+    }
+
+    fun safeGetPlayer(id: UUID): SushiGoPlayer {
+        val player = players.find { it.id == id }
+        require(player != null) { "That player is not in this game" }
+
+        return player
     }
 }

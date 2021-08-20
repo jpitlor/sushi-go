@@ -22,7 +22,7 @@ data class PlayCardRequest(val card: Card, val wasabi: UUID?)
 class ServerController(private val server: SushiGoServer, private val socket: SimpMessagingTemplate) {
     @MessageMapping("/games/{gameCode}/start-round")
     @SendTo("/topic/games/{gameCode}")
-    fun startRound(@DestinationVariable gameCode: String, @ModelAttribute user: User): IGame {
+    fun startRound(@DestinationVariable gameCode: String, @ModelAttribute user: User): SushiGoGame {
         server.startRound(gameCode, user.id)
         socket.convertAndSend("/topic/games", server.getGameCodes())
         return server.getGame(gameCode)
@@ -30,7 +30,7 @@ class ServerController(private val server: SushiGoServer, private val socket: Si
 
     @MessageMapping("/games/{gameCode}/start-play")
     @SendTo("/topic/games/{gameCode}")
-    fun startPlay(@DestinationVariable gameCode: String, @ModelAttribute user: User): IGame {
+    fun startPlay(@DestinationVariable gameCode: String, @ModelAttribute user: User): SushiGoGame {
         server.startPlay(gameCode, user.id)
         return server.getGame(gameCode)
     }

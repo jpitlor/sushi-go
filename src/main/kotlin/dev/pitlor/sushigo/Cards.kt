@@ -44,7 +44,7 @@ fun newDeck(): ArrayList<Card> {
     )
 }
 
-fun ArrayList<Player>.scoreRound(isEndOfGame: Boolean = false) {
+fun ArrayList<SushiGoPlayer>.scoreRound(isEndOfGame: Boolean = false) {
     // Sum the cards not dependent on other players
     this.forEach { it.scores += Score(it.cardsPlayed.score()) }
 

@@ -1,6 +1,7 @@
 package dev.pitlor.sushigo
 
-import dev.pitlor.gamekit_spring_boot_starter.User
+import dev.pitlor.gamekit_spring_boot_starter.implementations.User
+import dev.pitlor.gamekit_spring_boot_starter.interfaces.IGame
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
@@ -21,7 +22,7 @@ data class PlayCardRequest(val card: Card, val wasabi: UUID?)
 class ServerController(private val server: SushiGoServer, private val socket: SimpMessagingTemplate) {
     @MessageMapping("/games/{gameCode}/start-round")
     @SendTo("/topic/games/{gameCode}")
-    fun startRound(@DestinationVariable gameCode: String, @ModelAttribute user: User): SushiGoGame {
+    fun startRound(@DestinationVariable gameCode: String, @ModelAttribute user: User): IGame {
         server.startRound(gameCode, user.id)
         socket.convertAndSend("/topic/games", server.getGameCodes())
         return server.getGame(gameCode)
@@ -29,7 +30,7 @@ class ServerController(private val server: SushiGoServer, private val socket: Si
 
     @MessageMapping("/games/{gameCode}/start-play")
     @SendTo("/topic/games/{gameCode}")
-    fun startPlay(@DestinationVariable gameCode: String, @ModelAttribute user: User): SushiGoGame {
+    fun startPlay(@DestinationVariable gameCode: String, @ModelAttribute user: User): IGame {
         server.startPlay(gameCode, user.id)
         return server.getGame(gameCode)
     }
@@ -44,14 +45,6 @@ class ServerController(private val server: SushiGoServer, private val socket: Si
         val response = server.playCards(gameCode, user.id, request)
         socket.convertAndSend("/topic/games/$gameCode", server.getGame(gameCode))
         return response
-    }
-}
-
-@Configuration
-open class Dependencies {
-    @Bean
-    open fun sushiGoServer(): SushiGoServer {
-        return SushiGoServer
     }
 }
 

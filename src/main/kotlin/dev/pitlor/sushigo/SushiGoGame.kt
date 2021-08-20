@@ -1,7 +1,7 @@
 package dev.pitlor.sushigo
 
-import dev.pitlor.gamekit_spring_boot_starter.Game
-import java.time.LocalDateTime
+import dev.pitlor.gamekit_spring_boot_starter.implementations.Game
+import dev.pitlor.gamekit_spring_boot_starter.implementations.Player
 import java.util.*
 
 data class Score(val hand: Int, var maki: Int = 0, var pudding: Int = 0)
@@ -10,22 +10,19 @@ fun List<Score>.sum(): Int {
     return this.sumOf { it.hand + it.maki + it.pudding }
 }
 
-class Player(val id: UUID, val settings: MutableMap<String, Any>) {
+class Player(override val id: UUID, override val settings: MutableMap<String, Any>) : Player(id, settings) {
     var scores: List<Score> = listOf()
     var puddingCount: Int = 0
     var hand: ArrayList<Card> = arrayListOf()
     var currentCard: ArrayList<PlayCardRequest> = arrayListOf()
     val cardsPlayed: ArrayList<Card> = arrayListOf()
-    var startOfTimeOffline: LocalDateTime? = null
 
     // This is a property passed down to the client to enable/disable drag+drop
     @Suppress("unused")
     val canDrag: Boolean get() = currentCard.size == 0 || (currentCard.size == 1 && cardsPlayed.contains(Chopsticks()))
 }
 
-class SushiGoGame(val code: String, var admin: UUID) : Game {
-    val players = arrayListOf<Player>()
-    var active: Boolean = false
+class SushiGoGame(override val code: String, override var adminId: UUID) : Game(code, adminId) {
     var round = 0
 
     // These 2 are properties passed down to the client to disable/enable admin buttons

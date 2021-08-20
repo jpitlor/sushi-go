@@ -1,18 +1,22 @@
 package dev.pitlor.sushigo
 
-import dev.pitlor.gamekit_spring_boot_starter.SETTING_CONNECTED
-import dev.pitlor.gamekit_spring_boot_starter.Server
+import dev.pitlor.gamekit_spring_boot_starter.implementations.Server
+import dev.pitlor.gamekit_spring_boot_starter.interfaces.IGame
+import dev.pitlor.gamekit_spring_boot_starter.interfaces.IGameRepository
+import dev.pitlor.gamekit_spring_boot_starter.interfaces.IPlayer
 import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
-import java.time.LocalDateTime
+import org.springframework.stereotype.Component
 import java.util.*
 
 val games = arrayListOf<SushiGoGame>()
 val mutex = Mutex()
 
-object SushiGoServer : Server {
+@Component
+class SushiGoServer(
+    gameRepository: IGameRepository,
+    gameFactory: (code: String, adminId: UUID) -> IGame,
+    playerFactory: (id: UUID, settings: MutableMap<String, Any>) -> IPlayer
+) : Server(gameRepository, gameFactory, playerFactory) {
     private fun getPlayer(code: String, user: UUID): Pair<Player, SushiGoGame> {
         val game = games.find { it.code == code }
         val player = game?.players?.find { it.id == user }
@@ -24,64 +28,10 @@ object SushiGoServer : Server {
         return Pair(player, game)
     }
 
-    override fun getGameCodes(): List<String> {
-        return games.filter { !it.active }.map { it.code }
-    }
-
-    override fun getGame(gameCode: String): SushiGoGame {
-        val game = games.find { it.code == gameCode }
-
-        require(game != null) { "That game does not exist" }
-
-        return game
-    }
-
-    override fun createGame(gameCode: String, adminUserId: UUID): String {
-        require(gameCode.isNotEmpty()) { "Code is empty" }
-        require(games.firstOrNull { it.code == gameCode } == null) { "That game code is already in use" }
-
-        games += SushiGoGame(gameCode, adminUserId)
-
-        return "Game \"${gameCode}\" Created"
-    }
-
-    override fun joinGame(gameCode: String, userId: UUID, settings: MutableMap<String, Any>) {
-        val game = games.find { it.code == gameCode }
-
-        require(gameCode.isNotEmpty()) { "Code is empty" }
-        require(game != null) { "That game does not exist" }
-        require(game.players.find { it.id == userId } == null) { "You are already in that game!" }
-
-        settings[SETTING_CONNECTED] = true
-        val player = Player(userId, settings)
-        game.players += player
-    }
-
-    override fun updateSettings(gameCode: String, userId: UUID, newSettings: MutableMap<String, Any>) {
-        val (player, _) = getPlayer(gameCode, userId)
-
-        player.settings.putAll(newSettings)
-
-        if (newSettings[SETTING_CONNECTED] == true) {
-            player.startOfTimeOffline = null
-        } else if (newSettings[SETTING_CONNECTED] == false) {
-            player.startOfTimeOffline = LocalDateTime.now()
-        }
-    }
-
-    override fun findCodeOfGameWithPlayer(id: UUID): String? {
-        return games
-            .find { g ->
-                val isGameOver = g.round == 3 && g.players.all { p -> p.hand.size == 0 }
-                !isGameOver && g.players.any { p -> p.id == id }
-            }
-            ?.code
-    }
-
     fun startRound(code: String, id: UUID) {
         val (_, game) = getPlayer(code, id)
 
-        require(game.admin == id) { "You are not the admin of this game" }
+        require(game.adminId == id) { "You are not the admin of this game" }
 
         game.startRound()
     }
@@ -89,7 +39,7 @@ object SushiGoServer : Server {
     fun startPlay(code: String, id: UUID) {
         val (_, game) = getPlayer(code, id)
 
-        require(game.admin == id) { "You are not the admin of this game" }
+        require(game.adminId == id) { "You are not the admin of this game" }
 
         game.startPlay()
     }
@@ -104,16 +54,5 @@ object SushiGoServer : Server {
         game.playCard(user, request)
 
         return "Play successfully completed"
-    }
-
-    override suspend fun becomeAdmin(gameCode: String, userId: UUID): String {
-        val (_, game) = getPlayer(gameCode, userId)
-
-        mutex.withLock {
-            check(game.players.find { it.id == game.admin }?.startOfTimeOffline == null) { "Someone already claimed the admin spot" }
-            game.admin = userId
-        }
-
-        return "You are now the game admin"
     }
 }

@@ -48,6 +48,19 @@ class ServerController(private val server: SushiGoServer, private val socket: Si
     }
 }
 
+@Configuration
+open class Factories {
+    @Bean
+    open fun gameFactory(): (code: String, adminId: UUID) -> SushiGoGame {
+        return ::SushiGoGame
+    }
+
+    @Bean
+    open fun playerFactory(): (id: UUID, settings: MutableMap<String, Any>) -> SushiGoPlayer {
+        return ::SushiGoPlayer
+    }
+}
+
 @SpringBootApplication
 open class SushiGoApplication
 

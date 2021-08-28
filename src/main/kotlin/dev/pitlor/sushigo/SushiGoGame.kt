@@ -103,11 +103,4 @@ class SushiGoGame(override val code: String, override var adminId: UUID) : Game<
         isActive = true
         round++
     }
-
-    fun safeGetPlayer(id: UUID): SushiGoPlayer {
-        val player = players.find { it.id == id }
-        require(player != null) { "That player is not in this game" }
-
-        return player
-    }
 }

@@ -10,9 +10,9 @@ internal class SushiGoGameTest {
     @Test
     fun getPlayers() {
         val game = SushiGoGame("", UUID.randomUUID())
-        game.players += Player(UUID.randomUUID(), settings)
-        game.players += Player(UUID.randomUUID(), settings)
-        game.players += Player(UUID.randomUUID(), settings)
+        game.players += SushiGoPlayer(UUID.randomUUID(), settings)
+        game.players += SushiGoPlayer(UUID.randomUUID(), settings)
+        game.players += SushiGoPlayer(UUID.randomUUID(), settings)
 
         assertEquals(3, game.players.size)
     }
@@ -20,9 +20,9 @@ internal class SushiGoGameTest {
     @Test
     fun startRoundMoreThan3Times() {
         val game = SushiGoGame("", UUID.randomUUID())
-        game.players += Player(UUID.randomUUID(), settings)
-        game.players += Player(UUID.randomUUID(), settings)
-        game.players += Player(UUID.randomUUID(), settings)
+        game.players += SushiGoPlayer(UUID.randomUUID(), settings)
+        game.players += SushiGoPlayer(UUID.randomUUID(), settings)
+        game.players += SushiGoPlayer(UUID.randomUUID(), settings)
 
         game.startRound()
         game.startRound()
@@ -36,7 +36,7 @@ internal class SushiGoGameTest {
     @Test
     fun startRoundWithInvalidPlayerCount() {
         val game = SushiGoGame("", UUID.randomUUID())
-        game.players += Player(UUID.randomUUID(), settings)
+        game.players += SushiGoPlayer(UUID.randomUUID(), settings)
 
         val exception = assertThrows(Exception::class.java) {
             game.startRound()

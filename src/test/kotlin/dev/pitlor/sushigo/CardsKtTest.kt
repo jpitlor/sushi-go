@@ -33,13 +33,13 @@ internal class CardsKtTest {
 
     @Test
     fun scoreRoundNoPudding() {
-        val jim = Player(UUID.randomUUID(), settings)
+        val jim = SushiGoPlayer(UUID.randomUUID(), settings)
         jim.puddingCount = 2
 
-        val jan = Player(UUID.randomUUID(), settings)
+        val jan = SushiGoPlayer(UUID.randomUUID(), settings)
         jan.puddingCount = 1
 
-        val sue = Player(UUID.randomUUID(), settings)
+        val sue = SushiGoPlayer(UUID.randomUUID(), settings)
         sue.puddingCount = 0
 
         val players = arrayListOf(jim, jan, sue)
@@ -52,13 +52,13 @@ internal class CardsKtTest {
 
     @Test
     fun scoreRoundWithPudding() {
-        val jim = Player(UUID.randomUUID(), settings)
+        val jim = SushiGoPlayer(UUID.randomUUID(), settings)
         jim.puddingCount = 2
 
-        val jan = Player(UUID.randomUUID(), settings)
+        val jan = SushiGoPlayer(UUID.randomUUID(), settings)
         jan.puddingCount = 1
 
-        val sue = Player(UUID.randomUUID(), settings)
+        val sue = SushiGoPlayer(UUID.randomUUID(), settings)
         sue.puddingCount = 0
 
         val players = arrayListOf(jim, jan, sue)
@@ -71,13 +71,13 @@ internal class CardsKtTest {
 
     @Test
     fun scoreRoundFirstPlaceMakiTie() {
-        val jim = Player(UUID.randomUUID(), settings)
+        val jim = SushiGoPlayer(UUID.randomUUID(), settings)
         jim.cardsPlayed += Maki(3)
 
-        val jan = Player(UUID.randomUUID(), settings)
+        val jan = SushiGoPlayer(UUID.randomUUID(), settings)
         jan.cardsPlayed += Maki(3)
 
-        val sue = Player(UUID.randomUUID(), settings)
+        val sue = SushiGoPlayer(UUID.randomUUID(), settings)
         sue.cardsPlayed += Maki(1)
 
         val players = arrayListOf(jim, jan, sue)
